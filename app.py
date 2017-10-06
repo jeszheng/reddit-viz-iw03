@@ -1,34 +1,21 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-
 from flask_heroku import Heroku
+from models import Entry, TopPost, ControversialPost
 
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/blog'
 
-# how to connect to the db currently online.
 # TODO COMMENT OUT BEFORE PUSH
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://pdljaindlmyhbe:008fbca0484298c84029cbb521369c31b2bf7387a854310f44853c9b00e5d98a@ec2-54-204-41-80.compute-1.amazonaws.com:5432/dfnh4bhma6efun'
-
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://pdljaindlmyhbe:008fbca0484298c84029cbb521369c31b2bf7387a854310f44853c9b00e5d98a@ec2-54-204-41-80.compute-1.amazonaws.com:5432/dfnh4bhma6efun'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 
-# Create our database model
-class Entry(db.Model):
-    __tablename__ = "entries"
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(120), unique=True)
-
-    def __init__(self, title):
-        self.title = title
-
-    def __repr__(self):
-        return '<h1>%r</h1>' % self.title
-
 @app.route('/')
 def show_entries():
-	entries = db.session.query(Entry).all()
+	entries = db.session.query(TopPost).filter_by(date = 20171005).filter_by(subreddit = 'technology')
 	return render_template('show_entries.html', entries=entries)
 
 # @app.route('/add', methods=['POST'])
