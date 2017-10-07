@@ -27,10 +27,10 @@ def html_escape(text):
 def main():
     # file name.
     allPosts = []
-    date = "20171005"
+    date = "20171006"
 
     with open(
-    '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw/data_collection/' + date + '_top.json') as data_file:
+    '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
         allPosts = json.load(data_file)
 
     # Only use posts in subs poltics, news, worldnews, technology
@@ -80,7 +80,7 @@ def main():
     ################################################################################
 
     with open(
-    '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw/data_collection/' + date + '_controversial.json') as data_file:
+    '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_controversial.json') as data_file:
         allPosts = json.load(data_file)
 
     # Only use posts in subs poltics, news, worldnews, technology
