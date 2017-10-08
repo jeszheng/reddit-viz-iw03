@@ -5,22 +5,12 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 
 # TODO COMMENT OUT LINE BELOW BEFORE PUSH
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://pdljaindlmyhbe:008fbca0484298c84029cbb521369c31b2bf7387a854310f44853c9b00e5d98a@ec2-54-204-41-80.compute-1.amazonaws.com:5432/dfnh4bhma6efun'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/devel_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cqvjbobiquqase:a7d4d05d62c673ed79207cd44c9ae86573c164871b6c26e6b46bed410624295e@ec2-54-221-221-153.compute-1.amazonaws.com:5432/dac5ce63jaaa4s'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-
-class Entry(db.Model):
-    __tablename__ = "entries"
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(), unique=True)
-
-    def __init__(self, title):
-        self.title = title
-
-    def __repr__(self):
-        return '<h1>%r</h1>' % self.title
 
 class TopPost(db.Model):
     __tablename__ = "topPosts"
@@ -64,7 +54,7 @@ class TopPost(db.Model):
         return '<p>%r</p>' % (self.post_id)
 
 class ControversialPost(db.Model):
-    __tablename__ = "controversialPost"
+    __tablename__ = "controversialPosts"
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.String())
     date = db.Column(db.Integer)

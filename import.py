@@ -1,16 +1,6 @@
-from models import Entry, TopPost, ControversialPost
-from models import db
-
+from models import TopPost, ControversialPost, db
 import json
 import sys
-
-# e = Entry('test_script_entry2')
-#
-# db.session.add(e)
-# db.session.commit()
-
-
-# need a python 2 alternative to html escaping.
 
 html_escape_table = {
     "&": "&amp;",
@@ -27,8 +17,14 @@ def html_escape(text):
 def main():
     # file name.
     allPosts = []
-    date = "20171006"
+    date = "20171007"
+    # don't forget to comment out database url in models file!
 
+    ################################################################################
+
+    # Insert in top post data from specified date.
+
+    ################################################################################
     with open(
     '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
         allPosts = json.load(data_file)
@@ -39,11 +35,6 @@ def main():
         if post['subreddit'] == 'politics' or post['subreddit'] == 'news' or post['subreddit'] == 'worldnews' or post['subreddit'] == 'technology':
             selectPosts.append(post)
 
-    ################################################################################
-
-    # Insert in top post data from specified date.
-
-    ################################################################################
 
     for post in selectPosts:
         # filter out pinned or stickied posts.
@@ -83,6 +74,11 @@ def main():
     '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_controversial.json') as data_file:
         allPosts = json.load(data_file)
 
+    selectPosts = []
+    for post in allPosts:
+        if post['subreddit'] == 'politics' or post['subreddit'] == 'news' or post['subreddit'] == 'worldnews' or post['subreddit'] == 'technology':
+            selectPosts.append(post)
+
     # Only use posts in subs poltics, news, worldnews, technology
 
     for post in selectPosts:
@@ -112,7 +108,7 @@ def main():
         db.session.add(controversialPost)
 
     db.session.commit()
-    print 'committed controversia posts from ', date
+    print 'committed controversial posts from ', date
 
 if __name__ == '__main__':
     main()
