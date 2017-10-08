@@ -29,6 +29,12 @@ def render():
 	topic_entry["value"] = 1;
 	topic_entry["category"] = 'top';
 	topics.append(topic_entry);
+	topic_entry = {}
+	topic_entry["label"] = 'Category 2';
+	topic_entry["value"] = 3;
+	topic_entry["category"] = 'controversial';
+	topics.append(topic_entry);
+
 
 	return render_template('index.html', top_posts = top, controversial_posts = controversial, topic_model_data = topics)
 
