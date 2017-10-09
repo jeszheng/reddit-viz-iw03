@@ -6,8 +6,8 @@
     <title>Reddit Data Visualizer</title>
     <!-- D3 Base CSS -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
-    <!-- D3 Topic Model CSS -->
-    <link rel="stylesheet" href="../static/css/topicModel.css">
+    <!-- D3 Bubble Chart Topic Model CSS -->
+    <!-- <link rel="stylesheet" href="../static/css/topicModel.css"> -->
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
@@ -95,10 +95,10 @@
   		</div>
   		<div class="col-md-8">
         <div id="topicModel"></div>
-        <script src="../static/js/topicModel.js"></script>
+        <script src="../static/js/topicModelD3Bubble.js"></script>
         <script>
         var topics = {{ topic_model_data|tojson }};
-        drawBubbles(topics);
+        draw(topics);
         </script>
   		</div>
   		<div class="col-md-2">

@@ -84,8 +84,9 @@ function drawBubbles(data) {
         })
         .text(function(d) {
             //return d.title;
-            var text = d.name.substring(0, d.r / 5);
-            return text;
+            return d.name;
+            // var text = d.name.substring(0, d.r / 5);
+            // return text;
         })
         .style('opacity', 0.2)
         .transition()

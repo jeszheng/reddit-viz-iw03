@@ -5,18 +5,19 @@ from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 import string
 import json
-#
-html_escape_table = {
-    "&amp;" : "&",
-    "&quot;" : '"',
-    "&apos;" : "'",
-    "&gt;" : ">",
-    "&lt;" : "<",
-    }
 
-def html_escape(text):
-    # """Produce entities within text."""
-    return "".join(html_escape_table.get(c,c) for c in text)
+#
+# html_escape_table = {
+#     "&amp;" : "&",
+#     "&quot;" : '"',
+#     "&apos;" : "'",
+#     "&gt;" : ">",
+#     "&lt;" : "<",
+#     }
+#
+# def html_escape(text):
+#     # """Produce entities within text."""
+#     return "".join(html_escape_table.get(c,c) for c in text)
 
 #
 # stop = set(stopwords.words('english'))
@@ -53,8 +54,8 @@ def display_topics(model, feature_names, no_top_words):
 # titles_clean = [clean(title).split() for title in politicsPostTitles]
 
 
-date = '20171007'
-subreddit_of_interest = 'politics'
+date = '20171008'
+subreddit_of_interest = 'news'
 
 with open(
 '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
@@ -65,7 +66,7 @@ politicsPostTitles = []
 for post in allPosts:
     if post['subreddit'] == subreddit_of_interest:
         #politicsPostTitles.append(post['title'])
-        politicsPostTitles.append(html_escape(post['title']))
+        politicsPostTitles.append(post['title'])
 
 # do i need t split them? NO
 #dataset = fetch_20newsgroups(shuffle=True, random_state=1, remove=('headers', 'footers', 'quotes'))
@@ -75,7 +76,7 @@ documents = politicsPostTitles
 #     print documents[i]
 #     print '---divider---'
 
-no_features = 1000
+no_features = 500 #1000
 
 # NMF is able to use tf-idf
 tfidf_vectorizer = TfidfVectorizer(max_df=0.95, min_df=2, max_features=no_features, stop_words='english')
@@ -93,9 +94,9 @@ no_topics = 5
 nmf = NMF(n_components=no_topics, random_state=1, alpha=.1, l1_ratio=.5, init='nndsvd').fit(tfidf)
 
 # Run LDA
-lda = LatentDirichletAllocation(n_topics=no_topics, max_iter=5, learning_method='online', learning_offset=50.,random_state=0).fit(tf)
+lda = LatentDirichletAllocation(n_topics=no_topics, max_iter=5, learning_method='batch', learning_offset=50.,random_state=0).fit(tf)
 
-no_top_words = 10
+no_top_words = 4
 print 'NMF'
 display_topics(nmf, tfidf_feature_names, no_top_words)
 
