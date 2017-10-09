@@ -5,6 +5,20 @@ import json
 import gensim
 from gensim import corpora
 
+
+html_escape_table = {
+    "&amp;" : "&",
+    "&quot;" : '"',
+    "&apos;" : "'",
+    "&gt;" : ">",
+    "&lt;" : "<",
+    }
+
+def html_escape(text):
+    # """Produce entities within text."""
+    return "".join(html_escape_table.get(c,c) for c in text)
+
+
 stop = set(stopwords.words('english'))
 exclude = set(string.punctuation)
 lemma = WordNetLemmatizer()
@@ -15,7 +29,8 @@ def clean(doc):
     normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
     return normalized
 
-date = '20170925'
+date = '20171007'
+subreddit_of_interest = 'politics'
 
 with open(
 '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
@@ -24,8 +39,9 @@ with open(
 politicsPostTitles = []
 
 for post in allPosts:
-    if post['subreddit'] == 'politics':
-        politicsPostTitles.append(post['title'])
+    if post['subreddit'] == subreddit_of_interest:
+        #politicsPostTitles.append(post['title'])
+        politicsPostTitles.append(html_escape(post['title']))
 
 titles_clean = [clean(title).split() for title in politicsPostTitles]
 
@@ -39,6 +55,7 @@ title_term_matrix = [dictionary.doc2bow(title) for title in titles_clean]
 Lda = gensim.models.ldamodel.LdaModel
 
 # Running and Trainign LDA model on the document term matrix.
-ldamodel = Lda(title_term_matrix, num_topics=5, id2word = dictionary, passes=50)
+ldamodel = Lda(title_term_matrix, num_topics=4, id2word = dictionary, passes=50)
 
-print(ldamodel.print_topics(num_topics=5, num_words=3))
+print(ldamodel.show_topics(num_topics=4, num_words=6, log=False, formatted=True))
+# clear() Clear model state (free up some memory). Used in the distributed algo.

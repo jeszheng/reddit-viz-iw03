@@ -1,15 +1,4 @@
-// topics = [
-//     { label: 'Category 1', value: 1, category: 'top' },
-//     { label: 'Category 2', value: 2, category: 'top' },
-//     { label: 'Category 3', value: 3, category: 'controversial' },
-//     { label: 'Category 4', value: 4, category: 'top' },
-//     { label: 'Category 5', value: 5, category: 'top' },
-//     { label: 'Category 6', value: 2, category: 'controversial' },
-//     { label: 'Category 7', value: 3, category: 'controversial' },
-//     { label: 'Category 8', value: 1, category: 'top' },
-// ];
-
-var diameter = 800,
+var diameter = 500,
     bubblePadding = -8, //Give negative value in order to overlop the bubbles
     duration = 750,
     delay = 0;

@@ -13,35 +13,56 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 
+# html_escape_table = {
+#     "&amp;" : "&",
+#     "&quot;" : '"',
+#     "&apos;" : "'",
+#     "&gt;" : ">",
+#     "&lt;" : "<",
+#     }
+#
+# def html_unescape(text):
+#     # """Produce entities within text."""
+#     return "".join(html_escape_table.get(c,c) for c in text)
+
 @app.route('/')
 def render():
-	#entries = db.session.query(TopPost).filter_by(date = 20171005).filter_by(subreddit = 'technology')
-	date_of_interest = 20171007
-	subreddit_of_interest = 'news'
+    #entries = db.session.query(TopPost).filter_by(date = 20171005).filter_by(subreddit = 'technology')
+    date_of_interest = 20171007
+    subreddit_of_interest = 'politics'
 
-	top = db.session.query(TopPost).filter_by(date = date_of_interest).filter_by(subreddit = subreddit_of_interest)
-	controversial = db.session.query(ControversialPost).filter_by(date = date_of_interest).filter_by(subreddit = subreddit_of_interest)
-	# TODO unescape titles.
+    top = db.session.query(TopPost).filter_by(date = date_of_interest).filter_by(subreddit = subreddit_of_interest)
+    controversial = db.session.query(ControversialPost).filter_by(date = date_of_interest).filter_by(subreddit = subreddit_of_interest)
 
-	topics = [];
-	topic_entry = {}
-	topic_entry["label"] = 'Category 1';
-	topic_entry["value"] = 1;
-	topic_entry["category"] = 'top';
-	topics.append(topic_entry);
-	topic_entry = {}
-	topic_entry["label"] = 'Category 2';
-	topic_entry["value"] = 3;
-	topic_entry["category"] = 'controversial';
-	topics.append(topic_entry);
+    topics = []
+    topic_entry = {}
+    topic_entry["label"] = 'Category 1'
+    topic_entry["value"] = 1;
+    topic_entry["category"] = 'top'
+    topics.append(topic_entry)
+    topic_entry = {}
+    topic_entry["label"] = 'Category 2'
+    topic_entry["value"] = 3
+    topic_entry["category"] = 'controversial'
+    topics.append(topic_entry)
 
+    top_titles = []
+    for post in top:
+        top_titles.append(post.title.replace("&apos;", "'"))
 
-	return render_template('index.html', top_posts = top, controversial_posts = controversial, topic_model_data = topics)
+    controversial_titles = []
+    for post in controversial:
+        controversial_titles.append(post.title.replace("&apos;", "'"))
+
+    return render_template('index.html',
+                            top_titles = top_titles,
+                            controversial_titles = controversial_titles,
+                            topic_model_data = topics)
 
 # @app.route('/')
 # def show_entries():
-# 	entries = db.session.query(TopPost).filter_by(date = 20171005).filter_by(subreddit = 'technology')
-# 	return render_template('show_entries.html', entries=entries)
+#       entries = db.session.query(TopPost).filter_by(date = 20171005).filter_by(subreddit = 'technology')
+#       return render_template('show_entries.html', entries=entries)
 
 # @app.route('/add', methods=['POST'])
 # def add_entry():

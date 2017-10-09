@@ -4,14 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Reddit Data Visualizer</title>
-
+    <!-- D3 Base CSS -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <!-- D3 Topic Model CSS -->
     <link rel="stylesheet" href="../static/css/topicModel.css">
 
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <!-- Date Picker CSS and JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="http://code.gijgo.com/1.5.1/js/gijgo.js" type="text/javascript"></script>
+    <link href="http://code.gijgo.com/1.5.1/css/gijgo.css" rel="stylesheet" type="text/css" />
     <!-- Style for NavBar and page padding. -->
     <style>
       body {
@@ -31,7 +35,7 @@
   <body>
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #CEE3F7;">
        <div class="container">
-         <a class="navbar-brand" href="#">Reddit Data Visualizer</a>
+         <a class="navbar-brand" href="#" style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif">Reddit Data Visualizer</a>
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
            <span class="navbar-toggler-icon"></span>
          </button>
@@ -58,15 +62,13 @@
   			</h1>
   		</div>
   		<div class="col-md-3">
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown button
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
+        <div class="form-group">
+          <select class="form-control" id="subreddit_selector">
+            <option>r/politics</option>
+            <option>r/news</option>
+            <option>r/worldnews</option>
+            <option>r/technology</option>
+          </select>
         </div>
   		</div>
   		<div class="col-md-3">
@@ -75,16 +77,20 @@
   			</h1>
   		</div>
   		<div class="col-md-3">
-        <h1>
-          Date
-        </h1>
+        <input id="datepicker" width="276" />
+        <script>
+            $('#datepicker').datepicker({
+                uiLibrary: 'bootstrap4',
+                iconsLibrary: 'fontawesome'
+            });
+        </script>
   		</div>
   	</div>
   	<div class="row">
   		<div class="col-md-2">
-        <p>Top Posts Listed Here</p>
-        {% for post in top_posts %}
-          <p>{{ post.title }}</p>
+        <p>Top Posts</p>
+        {% for title in top_titles %}
+          <p>{{ title }}</p>
         {% endfor %}
   		</div>
   		<div class="col-md-8">
@@ -96,12 +102,18 @@
         </script>
   		</div>
   		<div class="col-md-2">
-        <p>Controversial Posts Listed Here</p>
-        {% for post in controversial_posts %}
-          <p>{{ post.title }}</p>
+        <p>Controversial Posts</p>
+        {% for title in controversial_titles %}
+          <p>{{ title }}</p>
         {% endfor %}
   		</div>
   	</div>
   </div>
   </body>
+  <!-- Bootstrap Scripts -->
+  <!-- Commented out, moved to header. -->
+  <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  <!-- Date Picker Scripts -->
 </html>
