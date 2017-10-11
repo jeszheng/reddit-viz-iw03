@@ -28,10 +28,44 @@ db = SQLAlchemy(app)
 #     # """Produce entities within text."""
 #     return "".join(html_escape_table.get(c,c) for c in text)
 
+def unescape(text):
+    text = text.replace("&apos;", "'")
+    text = text.replace("&quot;", '"')
+    text = text.replace("&amp;", '&')
+    return text
+
+def calculateTopicModelData(top_titles, controversial_titles):
+    topic_model_data = []
+
+    top_topic_data = get_topics(top_titles)
+    topicNumber = 0
+    for topic_tuple in top_topic_data:
+        topic_and_weights = topic_tuple[1].split(' + ')
+        for item in topic_and_weights:
+            topic_entry = {}
+            topic_entry['weight'] = float(item[0:5]) * 25
+            topic_entry['keyword'] = item[7:-1]
+            topic_entry['category'] = 'top-' + str(topicNumber)
+            topic_model_data.append(topic_entry)
+        topicNumber += 1
+
+    controversial_topic_data = get_topics(controversial_titles)
+    topicNumber = 0
+    for topic_tuple in controversial_topic_data:
+        topic_and_weights = topic_tuple[1].split(' + ')
+        for item in topic_and_weights:
+            topic_entry = {}
+            topic_entry['weight'] = float(item[0:5]) * 25
+            topic_entry['keyword'] = item[7:-1]
+            topic_entry['category'] = 'controversial-' + str(topicNumber)
+            topic_model_data.append(topic_entry)
+        topicNumber += 1
+    return topic_model_data
+
 @app.route('/')
 def render():
     #entries = db.session.query(TopPost).filter_by(date = 20171005).filter_by(subreddit = 'technology')
-    date_of_interest = 20171008
+    date_of_interest = 20171009
     subreddit_of_interest = 'news'
 
     top = db.session.query(TopPost).filter_by(date = date_of_interest).filter_by(subreddit = subreddit_of_interest)
@@ -39,31 +73,16 @@ def render():
 
     top_titles = []
     for post in top:
-        top_titles.append(post.title.replace("&apos;", "'"))
+        top_titles.append(unescape(post.title))
     controversial_titles = []
     for post in controversial:
-        controversial_titles.append(post.title.replace("&apos;", "'"))
+        controversial_titles.append(unescape(post.title))
 
-    topics = []
-
-    unprocessed_topic_data = get_topics(top_titles)
-
-    topicNumber = 0
-    for topic_tuple in unprocessed_topic_data:
-        topic_and_weights = topic_tuple[1].split(' + ')
-        for item in topic_and_weights:
-            topic_entry = {}
-            topic_entry['weight'] = float(item[0:5]) * 30
-            topic_entry['keyword'] = item[7:-1]
-            topic_entry['category'] = 'top-' + str(topicNumber)
-            topics.append(topic_entry)
-        topicNumber += 1
-
+    topic_model_data = calculateTopicModelData(top_titles, controversial_titles)
     return render_template('index.html',
                             top_titles = top_titles,
                             controversial_titles = controversial_titles,
-                            topic_model_data = topics)
-
+                            topic_model_data = topic_model_data)
 
 if __name__ == '__main__':
     app.debug = True # debug setting!

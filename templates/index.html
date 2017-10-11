@@ -98,7 +98,7 @@
         <script src="../static/js/topicModelD3Bubble.js"></script>
         <script>
         var topics = {{ topic_model_data|tojson }};
-        draw(topics);
+        draw_bubbles(topics, "#topicModel");
         </script>
   		</div>
   		<div class="col-md-2">

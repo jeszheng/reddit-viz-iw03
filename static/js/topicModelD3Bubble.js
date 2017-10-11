@@ -1,5 +1,5 @@
-var width = 600,
-  height = 600,
+var width = 1000,
+  height = 700,
   padding = 1.5, // separation between same-color nodes
   clusterPadding = 16, // separation between different-color nodes
   maxRadius = 24;
@@ -16,8 +16,8 @@ var clusters = new Array(m);
 var nodes = [];
 
 // get the json data from the file
-function draw(data) {
-  
+function draw_bubbles(data, div_id) {
+
   for (var i = 0; i < data.length; i++) {
     var obj = data[i];
     for (var key in obj) {
@@ -63,7 +63,7 @@ function draw(data) {
     .on("tick", tick)
     .start();
 
-  var svg = d3.select("#topicModel").append("svg")
+  var svg = d3.select(div_id).append("svg")
     .attr("width", width)
     .attr("height", height);
 
@@ -73,8 +73,27 @@ function draw(data) {
 
   var circles = node.append("circle")
     .style("fill", function(d) {
-      // COLOR DECIDED HERE, TODO CHANGE.
-      return color(d.cluster);
+      // COLOR DECIDED HERE.
+      switch(d.category) {
+        case 'top-0':
+            return '#ff4d00';
+        case 'top-1':
+            return '#ff772d';
+        case 'top-2':
+            return '#f9955f';
+        case 'top-3':
+            return '#ffc095';
+        case 'controversial-0':
+            return '#ff4d00';
+        case 'controversial-1':
+            return '#6666ea';
+        case 'controversial-2':
+            return '#8585e1';
+        case 'controversial-3':
+            return '#bebef2';
+        default:
+            return color(d.cluster);
+      }
     })
 
   //add text to the group
@@ -86,7 +105,7 @@ function draw(data) {
     .text(function(d) {
       return d.keyword
     })
-    .style("stroke", "white");
+    .style("fill", "white");
 
 
   node.selectAll("circle").transition()
@@ -118,8 +137,10 @@ function draw(data) {
 
       var cluster = clusters[d.index];
 
-      if (cluster === d) return;
-      var x = d.x - cluster.x,
+      if (cluster === d) {
+        return;
+      }
+      var x = d.x - cluster.x, // cluster is undefined apparently. how does this relate to different places?
         y = d.y - cluster.y,
         l = Math.sqrt(x * x + y * y),
         r = d.radius + cluster.radius;

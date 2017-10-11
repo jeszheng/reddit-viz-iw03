@@ -35,5 +35,4 @@ def get_topics(titles):
     ldamodel = Lda(title_term_matrix, num_topics=number_of_topics, id2word = dictionary, passes=number_of_passes)
 
     result = ldamodel.show_topics(num_topics=number_of_topics, num_words=number_of_words, log=False, formatted=True)
-    print(result)
     return result
