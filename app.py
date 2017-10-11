@@ -43,7 +43,7 @@ def calculateTopicModelData(top_titles, controversial_titles):
         topic_and_weights = topic_tuple[1].split(' + ')
         for item in topic_and_weights:
             topic_entry = {}
-            topic_entry['weight'] = float(item[0:5]) * 25
+            topic_entry['weight'] = float(item[0:5]) * 20
             topic_entry['keyword'] = item[7:-1]
             topic_entry['category'] = 'top-' + str(topicNumber)
             topic_model_data.append(topic_entry)
@@ -55,7 +55,7 @@ def calculateTopicModelData(top_titles, controversial_titles):
         topic_and_weights = topic_tuple[1].split(' + ')
         for item in topic_and_weights:
             topic_entry = {}
-            topic_entry['weight'] = float(item[0:5]) * 25
+            topic_entry['weight'] = float(item[0:5]) * 20
             topic_entry['keyword'] = item[7:-1]
             topic_entry['category'] = 'controversial-' + str(topicNumber)
             topic_model_data.append(topic_entry)

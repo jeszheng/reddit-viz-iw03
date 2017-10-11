@@ -1,5 +1,5 @@
-var width = 1000,
-  height = 700,
+var width = 800,
+  height = 600,
   padding = 1.5, // separation between same-color nodes
   clusterPadding = 16, // separation between different-color nodes
   maxRadius = 24;
@@ -84,7 +84,7 @@ function draw_bubbles(data, div_id) {
         case 'top-3':
             return '#ffc095';
         case 'controversial-0':
-            return '#ff4d00';
+            return '#5252e0';
         case 'controversial-1':
             return '#6666ea';
         case 'controversial-2':
@@ -105,7 +105,16 @@ function draw_bubbles(data, div_id) {
     .text(function(d) {
       return d.keyword
     })
-    .style("fill", "white");
+    .style("fill", "white")
+    .attr('font-size', function(d) {
+        //return (d.r > 85) ? (d.r / 5)+'px' : (d.r / 3)+'px';
+        var len = d.keyword.length;
+        var size = d.r / 5;
+        size *= 13 / len;
+        size += 1;
+        size = (size < 15) ? size : 15;
+        return Math.round(size) + 'px';
+    });
 
 
   node.selectAll("circle").transition()
