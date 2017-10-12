@@ -64,17 +64,20 @@
   		<div class="col-md-3">
         <form class="form-subreddit" action="/" method="post" role="form">
           <div class="form-group">
-            <select type="subreddit" name="subreddit" class="form-control" id="subreddit_selector" onchange="updateSubreddit(this);">
-              <option {% if sub=='politics' %} selected="selected" {% endif %}>r/politics</option>
-              <option {% if sub=='news' %} selected="selected" {% endif %}>r/news</option>
-              <option {% if sub=='worldnews' %} selected="selected" {% endif %}>r/worldnews</option>
-              <option {% if sub=='technology' %} selected="selected" {% endif %}>r/technology</option>
+            <select type="subreddit" name="subreddit" class="form-control" id="subreddit_selector" onchange="getSubreddit(this);">
+              <option>r/politics</option>
+              <option>r/news</option>
+              <option>r/worldnews</option>
+              <option>r/technology</option>
             </select>
           </div>
           <script>
-            function updateSubreddit(formControl) {
+            // send which subreddit to render.
+            function getSubreddit(formControl) {
+                // var subreddit = $(formControl).val();
+                // console.log(subreddit);
                 $.ajax({
-                    url: '/updateSubreddit',
+                    url: '/getSubreddit',
                     data: $('form').serialize(),
                     type: 'POST',
                     success: function(response) {

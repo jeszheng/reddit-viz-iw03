@@ -1,4 +1,4 @@
-var width = 800,
+var width = 700,
   height = 600,
   padding = 1.5, // separation between same-color nodes
   clusterPadding = 16, // separation between different-color nodes
@@ -112,7 +112,7 @@ function draw_bubbles(data, div_id) {
         var size = d.r / 5;
         size *= 13 / len;
         size += 1;
-        size = (size < 15) ? size : 15;
+        size = (size < 18) ? size : 18;
         return Math.round(size) + 'px';
     });
 

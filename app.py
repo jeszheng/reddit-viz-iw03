@@ -3,8 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_heroku import Heroku
 from models import TopPost, ControversialPost
 from topicmodel import get_topics
-
-# form file import function
+import json
 
 app = Flask(__name__)
 
@@ -16,17 +15,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 
-# html_escape_table = {
-#     "&amp;" : "&",
-#     "&quot;" : '"',
-#     "&apos;" : "'",
-#     "&gt;" : ">",
-#     "&lt;" : "<",
-#     }
-#
-# def html_unescape(text):
-#     # """Produce entities within text."""
-#     return "".join(html_escape_table.get(c,c) for c in text)
+# A global variable.
+subreddit_of_interest = 'politics'
 
 def unescape(text):
     text = text.replace("&apos;", "'")
@@ -35,6 +25,11 @@ def unescape(text):
     return text
 
 def calculateTopicModelData(top_titles, controversial_titles):
+    # politics items tend to have a large magnitude.
+    if subreddit_of_interest == 'politics':
+        multiply_factor = 13
+    else:
+        multiply_factor = 17
     topic_model_data = []
 
     top_topic_data = get_topics(top_titles)
@@ -43,7 +38,12 @@ def calculateTopicModelData(top_titles, controversial_titles):
         topic_and_weights = topic_tuple[1].split(' + ')
         for item in topic_and_weights:
             topic_entry = {}
-            topic_entry['weight'] = float(item[0:5]) * 20
+            topic_entry['weight'] = float(item[0:5]) * multiply_factor
+            # correct for extreme values
+            if topic_entry['weight'] < 0.25:
+                topic_entry['weight'] = 0.25
+            elif topic_entry['weight'] > 0.55:
+                topic_entry['weight'] = 0.55
             topic_entry['keyword'] = item[7:-1]
             topic_entry['category'] = 'top-' + str(topicNumber)
             topic_model_data.append(topic_entry)
@@ -55,7 +55,12 @@ def calculateTopicModelData(top_titles, controversial_titles):
         topic_and_weights = topic_tuple[1].split(' + ')
         for item in topic_and_weights:
             topic_entry = {}
-            topic_entry['weight'] = float(item[0:5]) * 20
+            topic_entry['weight'] = float(item[0:5]) * multiply_factor
+            # correct for extreme values
+            if topic_entry['weight'] < 0.25:
+                topic_entry['weight'] = 0.25
+            elif topic_entry['weight'] > 0.55:
+                topic_entry['weight'] = 0.55
             topic_entry['keyword'] = item[7:-1]
             topic_entry['category'] = 'controversial-' + str(topicNumber)
             topic_model_data.append(topic_entry)
@@ -66,7 +71,6 @@ def calculateTopicModelData(top_titles, controversial_titles):
 def render():
     #entries = db.session.query(TopPost).filter_by(date = 20171005).filter_by(subreddit = 'technology')
     date_of_interest = 20171009
-    subreddit_of_interest = 'news'
 
     top = db.session.query(TopPost).filter_by(date = date_of_interest).filter_by(subreddit = subreddit_of_interest)
     controversial = db.session.query(ControversialPost).filter_by(date = date_of_interest).filter_by(subreddit = subreddit_of_interest)
@@ -82,7 +86,16 @@ def render():
     return render_template('index.html',
                             top_titles = top_titles,
                             controversial_titles = controversial_titles,
-                            topic_model_data = topic_model_data)
+                            topic_model_data = topic_model_data,
+                            sub = subreddit_of_interest)
+
+@app.route('/updateSubreddit', methods=['POST'])
+def updateSubreddit():
+    subreddit =  request.form['subreddit']
+    global subreddit_of_interest
+    subreddit_of_interest = subreddit[2:]
+    print 'subreddit_of_interest updated to ', subreddit_of_interest
+    return render()
 
 if __name__ == '__main__':
     app.debug = True # debug setting!
