@@ -94,7 +94,6 @@ def updateSubreddit():
     subreddit =  request.form['subreddit']
     global subreddit_of_interest
     subreddit_of_interest = subreddit[2:]
-    print 'subreddit_of_interest updated to ', subreddit_of_interest
     return render()
 
 if __name__ == '__main__':
