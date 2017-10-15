@@ -107,12 +107,14 @@
   		</div>
   		<div class="col-md-3" style="padding-top: 7px;">
         <form class="form-date" action="/" method="post" role="form">
-          <input type="text" class="form-control" name="daterange" value="10/01/2017 - 10/01/2017"/>
+          <input type="text" class="form-control" name="daterange" value="10/01/2017 - 10/01/2017" onchange="updateDateRange(this);"/>
           <script type="text/javascript">
           $(function() {
               $('input[name="daterange"]').daterangepicker();
           });
           function updateDateRange(formControl) {
+            console.log("changed!");
+            console.log(formControl.daterange);
             // onchange="updateDateRange(this)" TODO
             // $.ajax({
             //     url: '/updateDateRange',

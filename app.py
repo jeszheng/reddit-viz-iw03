@@ -4,6 +4,7 @@ from flask_heroku import Heroku
 from models import TopPost, ControversialPost
 from topicmodel import get_topics
 import json
+import time
 
 app = Flask(__name__)
 
@@ -15,8 +16,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 
+# TODO CHANGE WHEN FIN DATA COLLECTION, also edge cases.
+date_yesterday = int(time.strftime("%Y%m%d-%H%M%S")[:8]) - 1
+
 # A global variable.
 subreddit_of_interest = 'politics'
+start_date = date_yesterday
+end_date = date_yesterday
 
 def unescape(text):
     text = text.replace("&apos;", "'")
@@ -31,6 +37,8 @@ def calculateTopicModelData(top_titles, controversial_titles):
     else:
         multiply_factor = 17
     topic_model_data = []
+
+    # TODO if is digit, don't add to the model.
 
     top_topic_data = get_topics(top_titles)
     topicNumber = 0
@@ -70,10 +78,16 @@ def calculateTopicModelData(top_titles, controversial_titles):
 @app.route('/')
 def render():
     #entries = db.session.query(TopPost).filter_by(date = 20171005).filter_by(subreddit = 'technology')
-    date_of_interest = 20171009
+    # start_date = 20171009
+    # end_date = 20171010
 
-    top = db.session.query(TopPost).filter_by(date = date_of_interest).filter_by(subreddit = subreddit_of_interest)
-    controversial = db.session.query(ControversialPost).filter_by(date = date_of_interest).filter_by(subreddit = subreddit_of_interest)
+    # upper and lower bounds.
+    # how to filter by greater / less?
+
+    # experimenting w/ filtering by dates.
+
+    top = db.session.query(TopPost).filter(TopPost.date >= start_date).filter(TopPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
+    controversial = db.session.query(ControversialPost).filter(ControversialPost.date >= start_date).filter(ControversialPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
 
     top_titles = []
     for post in top:
@@ -83,17 +97,29 @@ def render():
         controversial_titles.append(unescape(post.title))
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles)
+
     return render_template('index.html',
                             top_titles = top_titles,
                             controversial_titles = controversial_titles,
                             topic_model_data = topic_model_data,
-                            sub = subreddit_of_interest)
+                            sub = subreddit_of_interest,
+                            start_date = start_date,
+                            end_date = end_date)
 
 @app.route('/updateSubreddit', methods=['POST'])
 def updateSubreddit():
     subreddit =  request.form['subreddit']
     global subreddit_of_interest
     subreddit_of_interest = subreddit[2:]
+    return render()
+
+@app.route('/updateDateRange', methods=['POST'])
+def updateDateRange():
+    date_range_str = request.form['daterange']
+    global start_date
+    start_date = int(date_range_str[6:10]+date_range_str[0:2]+date_range_str[3:5])
+    global end_date
+    end_date = int(date_range_str[19:23]+date_range_str[13:15]+date_range_str[16:18])
     return render()
 
 if __name__ == '__main__':
