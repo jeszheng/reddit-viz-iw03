@@ -3,6 +3,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 import string
 import gensim
 from gensim import corpora
+import time
 
 stop = set(stopwords.words('english'))
 exclude = set(string.punctuation)
@@ -14,11 +15,21 @@ def clean(doc):
     normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
     return normalized
 
-def get_topics(titles):
+def get_topics(titles, subreddit_of_interest):
+    start_time = time.time()
 
+    # vary between subs?
     number_of_topics = 4
-    number_of_words = 4
-    number_of_passes = 25
+    number_of_words = 5
+
+    if subreddit_of_interest == 'politics':
+        number_of_passes = 50
+    elif subreddit_of_interest == 'news':
+        number_of_passes = 25
+    elif subreddit_of_interest == 'worldnews':
+        number_of_passes = 25
+    elif subreddit_of_interest == 'technology':
+        number_of_passes = 50
 
     titles_clean = [clean(title).split() for title in titles]
 
@@ -32,7 +43,34 @@ def get_topics(titles):
     Lda = gensim.models.ldamodel.LdaModel
 
     # Running and Training LDA model on the document term matrix.
-    ldamodel = Lda(title_term_matrix, num_topics=number_of_topics, id2word = dictionary, passes=number_of_passes)
+    ldamodel1 = Lda(title_term_matrix, num_topics=number_of_topics, id2word = dictionary, passes=number_of_passes)
+    ldamodel2 = Lda(title_term_matrix, num_topics=number_of_topics, id2word = dictionary, passes=number_of_passes)
 
-    result = ldamodel.show_topics(num_topics=number_of_topics, num_words=number_of_words, log=False, formatted=True)
-    return result
+    print "analysis time: ", (time.time() - start_time), " seconds"
+
+    # Create checker list for  batch modeling
+    checker_lda = ldamodel2.show_topics(num_topics=number_of_topics, num_words=number_of_words, log=False, formatted=True)
+    checker_keyword_list = []
+    for topic_tuple in checker_lda:
+        topic_and_weights = topic_tuple[1].split(' + ')
+        for item in topic_and_weights:
+            checker_keyword_list.append(item[7:-1])
+
+    # Return results that are in the intersection of both batches
+    result = ldamodel1.show_topics(num_topics=number_of_topics, num_words=number_of_words, log=False, formatted=True)
+
+    topic_models = []
+    topic_group = 0
+    for topic_tuple in result:
+        topic_and_weights = topic_tuple[1].split(' + ')
+        for item in topic_and_weights:
+            keyword = item[7:-1]
+            if (keyword not in checker_keyword_list):
+                continue
+            topic = {}
+            topic['keyword'] = keyword
+            topic['weight'] = float(item[0:5])
+            topic['group'] = topic_group
+            topic_models.append(topic)
+        topic_group += 1
+    return topic_models

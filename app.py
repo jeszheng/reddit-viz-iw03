@@ -16,8 +16,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 
-# TODO CHANGE WHEN FIN DATA COLLECTION, also edge cases.
 date_yesterday = int(time.strftime("%Y%m%d-%H%M%S")[:8]) - 1
+# edge case for october -> november rollover.
+if (date_yesterday == 20171100):
+    date_yesterday = 20171031
 
 # A global variable.
 subreddit_of_interest = 'politics'
@@ -31,6 +33,7 @@ def unescape(text):
     return text
 
 def calculateTopicModelData(top_titles, controversial_titles):
+    # TODO control magnitude of each sub.
     # politics items tend to have a large magnitude.
     if subreddit_of_interest == 'politics':
         multiply_factor = 13
@@ -38,55 +41,46 @@ def calculateTopicModelData(top_titles, controversial_titles):
         multiply_factor = 17
     topic_model_data = []
 
-    top_topic_data = get_topics(top_titles)
-    topicNumber = 0
-    for topic_tuple in top_topic_data:
-        topic_and_weights = topic_tuple[1].split(' + ')
-        for item in topic_and_weights:
-            topic_entry = {}
+    top_topic_data = get_topics(top_titles, subreddit_of_interest)
+    for model in top_topic_data:
+        topic_entry = {}
+        topic_entry['keyword'] = model['keyword']
+        # Special cases: don't add digits or keywords with only one character.
+        if topic_entry['keyword'].isdigit():
+            continue
+        elif len(topic_entry['keyword']) == 1:
+            continue
 
-            topic_entry['keyword'] = item[7:-1]
-            # Special cases: don't add digits or keywords with only one character.
-            if topic_entry['keyword'].isdigit():
-                continue
-            elif len(topic_entry['keyword']) == 1:
-                continue
+        topic_entry['weight'] = model['weight'] * multiply_factor
+        # correct for extreme values
+        if topic_entry['weight'] < 0.25:
+            topic_entry['weight'] = 0.25
+        elif topic_entry['weight'] > 0.55:
+            topic_entry['weight'] = 0.55
 
-            topic_entry['weight'] = float(item[0:5]) * multiply_factor
-            # correct for extreme values
-            if topic_entry['weight'] < 0.25:
-                topic_entry['weight'] = 0.25
-            elif topic_entry['weight'] > 0.55:
-                topic_entry['weight'] = 0.55
+        topic_entry['category'] = 'top-' + str(model['group'])
+        topic_model_data.append(topic_entry)
 
-            topic_entry['category'] = 'top-' + str(topicNumber)
-            topic_model_data.append(topic_entry)
-        topicNumber += 1
+    controversial_topic_data = get_topics(controversial_titles, subreddit_of_interest)
+    for model in controversial_topic_data:
+        topic_entry = {}
+        topic_entry['keyword'] = model['keyword']
+        # Special cases: don't add digits or keywords with only one character.
+        if topic_entry['keyword'].isdigit():
+            continue
+        elif len(topic_entry['keyword']) == 1:
+            continue
 
-    controversial_topic_data = get_topics(controversial_titles)
-    topicNumber = 0
-    for topic_tuple in controversial_topic_data:
-        topic_and_weights = topic_tuple[1].split(' + ')
-        for item in topic_and_weights:
-            topic_entry = {}
+        topic_entry['weight'] = model['weight'] * multiply_factor
+        # correct for extreme values
+        if topic_entry['weight'] < 0.25:
+            topic_entry['weight'] = 0.25
+        elif topic_entry['weight'] > 0.55:
+            topic_entry['weight'] = 0.55
 
-            topic_entry['keyword'] = item[7:-1]
-            # Special cases: don't add digits or keywords with only one character.
-            if topic_entry['keyword'].isdigit():
-                continue
-            elif len(topic_entry['keyword']) == 1:
-                continue
+        topic_entry['category'] = 'controversial-' + str(model['group'])
+        topic_model_data.append(topic_entry)
 
-            topic_entry['weight'] = float(item[0:5]) * multiply_factor
-            # correct for extreme values
-            if topic_entry['weight'] < 0.25:
-                topic_entry['weight'] = 0.25
-            elif topic_entry['weight'] > 0.55:
-                topic_entry['weight'] = 0.55
-
-            topic_entry['category'] = 'controversial-' + str(topicNumber)
-            topic_model_data.append(topic_entry)
-        topicNumber += 1
     return topic_model_data
 
 @app.route('/')
