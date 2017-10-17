@@ -103,11 +103,14 @@
         /* SUBREDDIT CHANGE*/
         function updateSubreddit(formControl) {
             $('#spinner').show();
+            var time_start = performance.now();
             $.ajax({
                 url: '/updateSubreddit',
                 data: $('form').serialize(),
                 type: 'POST',
                 success: function(response) {
+                  var time_end = performance.now();
+                  console.log("Call to switch subreddit took " + (time_end - time_start)/1000 + " seconds.");
                     $('#spinner').hide();
                     $("#main_view").html(response);
                 },
@@ -144,6 +147,7 @@
             alert("Date range is out of the supported range of 9/25/17 - 20171101" + endDate);
           } else {
             $('#spinner').show();
+            var time_start = performance.now();
             var date_dict = {};
             date_dict["startDate"] = startDate;
             date_dict["endDate"] = endDate;
@@ -152,6 +156,8 @@
                 data: $('form').serialize(),
                 type: 'POST',
                 success: function(response) {
+                   var time_end = performance.now();
+                   console.log("Call to switch date took " + (time_end - time_start)/1000 + " seconds.");
                     $('#spinner').hide();
                     $("#main_view").html(response);
                 },
