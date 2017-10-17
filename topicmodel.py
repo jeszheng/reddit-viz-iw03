@@ -46,7 +46,8 @@ def get_topics(titles, subreddit_of_interest):
     ldamodel1 = Lda(title_term_matrix, num_topics=number_of_topics, id2word = dictionary, passes=number_of_passes)
     ldamodel2 = Lda(title_term_matrix, num_topics=number_of_topics, id2word = dictionary, passes=number_of_passes)
 
-    print "analysis time: ", (time.time() - start_time), " seconds"
+    # TODO comment out print statement beefore deploy!
+    #print "analysis time: ", (time.time() - start_time), " seconds"
 
     # Create checker list for  batch modeling
     checker_lda = ldamodel2.show_topics(num_topics=number_of_topics, num_words=number_of_words, log=False, formatted=True)
