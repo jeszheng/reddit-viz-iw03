@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, request, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_heroku import Heroku
 from models import TopPost, ControversialPost
@@ -83,6 +83,13 @@ def calculateTopicModelData(top_titles, controversial_titles):
 
     return topic_model_data
 
+def stream_template(template_name, **context):
+    app.update_template_context(context)
+    t = app.jinja_env.get_template(template_name)
+    rv = t.stream(context)
+    rv.enable_buffering(5)
+    return rv
+
 @app.route('/')
 def render():
     top = db.session.query(TopPost).filter(TopPost.date >= start_date).filter(TopPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
@@ -97,13 +104,20 @@ def render():
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles)
 
-    return render_template('index.html',
-                            top_titles = top_titles,
-                            controversial_titles = controversial_titles,
-                            topic_model_data = topic_model_data,
-                            sub = subreddit_of_interest,
-                            start_date = start_date,
-                            end_date = end_date)
+    return Response(stream_template('index.html',
+                                    top_titles = top_titles,
+                                    controversial_titles = controversial_titles,
+                                    topic_model_data = topic_model_data,
+                                    sub = subreddit_of_interest,
+                                    start_date = start_date,
+                                    end_date = end_date))
+    # return render_template('index.html',
+    #                         top_titles = top_titles,
+    #                         controversial_titles = controversial_titles,
+    #                         topic_model_data = topic_model_data,
+    #                         sub = subreddit_of_interest,
+    #                         start_date = start_date,
+    #                         end_date = end_date)
 
 @app.route('/updateSubreddit', methods=['POST'])
 def updateSubreddit():
