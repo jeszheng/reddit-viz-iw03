@@ -95,6 +95,9 @@ def render():
     top = db.session.query(TopPost).filter(TopPost.date >= start_date).filter(TopPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
     controversial = db.session.query(ControversialPost).filter(ControversialPost.date >= start_date).filter(ControversialPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
 
+    def yield_heartbeat():
+        yield 'heartbeat'
+
     top_titles = []
     for post in top:
         top_titles.append(unescape(post.title))
@@ -110,7 +113,8 @@ def render():
                                     topic_model_data = topic_model_data,
                                     sub = subreddit_of_interest,
                                     start_date = start_date,
-                                    end_date = end_date))
+                                    end_date = end_date,
+                                    heartbeat = yield_heartbeat()))
     # return render_template('index.html',
     #                         top_titles = top_titles,
     #                         controversial_titles = controversial_titles,
