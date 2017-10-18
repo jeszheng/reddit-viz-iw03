@@ -100,7 +100,7 @@
       <script type="text/javascript">
         $('#spinner').hide();
 
-        /* SUBREDDIT CHANGE*/
+        /* SUBREDDIT CHANGE */
         function updateSubreddit(formControl) {
             $('#spinner').show();
             var time_start = performance.now();
@@ -111,10 +111,12 @@
                 success: function(response) {
                   var time_end = performance.now();
                   console.log("Call to switch subreddit took " + (time_end - time_start)/1000 + " seconds.");
-                    $('#spinner').hide();
-                    $("#main_view").html(response);
+                  $('#spinner').hide();
+                  $("#main_view").html(response);
                 },
                 error: function(error) {
+                    $('#spinner').hide();
+                    alert('Sorry, the computation time exceeded the limit. Please try again with a smaller data range, or use an instance on your local machine');
                     console.log(error);
                 }
             });
@@ -162,6 +164,8 @@
                     $("#main_view").html(response);
                 },
                 error: function(error) {
+                    $('#spinner').hide();
+                    alert('Sorry, the computation time exceeded the limit. Please try again with a smaller data range, or use an instance on your local machine');
                     console.log(error);
                 }
             });
