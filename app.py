@@ -38,7 +38,7 @@ def calculateTopicModelData(top_titles, controversial_titles):
     if subreddit_of_interest == 'politics':
         multiply_factor = 13
     else:
-        multiply_factor = 17
+        multiply_factor = 19
     topic_model_data = []
 
     top_topic_data = get_topics(top_titles, subreddit_of_interest)
