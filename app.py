@@ -16,15 +16,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 
-date_yesterday = int(time.strftime("%Y%m%d-%H%M%S")[:8]) - 1
-# edge case for october -> november rollover.
-if (date_yesterday == 20171100):
-    date_yesterday = 20171031
-
-# A global variable.
-subreddit_of_interest = 'politics'
-start_date = date_yesterday
-end_date = date_yesterday
+# date_yesterday = int(time.strftime("%Y%m%d-%H%M%S")[:8]) - 1
+# # edge case for october -> november rollover.
+# if (date_yesterday == 20171100):
+#     date_yesterday = 20171031
+#
+# # A global variable.
+# subreddit_of_interest = 'politics'
+# start_date = date_yesterday
+# end_date = date_yesterday
 
 def unescape(text):
     text = text.replace("&apos;", "'")
@@ -32,7 +32,7 @@ def unescape(text):
     text = text.replace("&amp;", '&')
     return text
 
-def calculateTopicModelData(top_titles, controversial_titles):
+def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest):
     # TODO control magnitude of each sub.
     # politics items tend to have a large magnitude.
     if subreddit_of_interest == 'politics':
@@ -90,8 +90,21 @@ def stream_template(template_name, **context):
     rv.enable_buffering(5)
     return rv
 
+
 @app.route('/')
-def render():
+def main():
+    date_yesterday = int(time.strftime("%Y%m%d-%H%M%S")[:8]) - 1
+    # edge case for october -> november rollover.
+    if (date_yesterday == 20171100):
+        date_yesterday = 20171031
+
+    subreddit_of_interest = 'politics'
+    start_date = date_yesterday
+    end_date = date_yesterday
+    return render(subreddit_of_interest, start_date, end_date)
+
+#@app.route('/')
+def render(subreddit_of_interest, start_date, end_date):
     top = db.session.query(TopPost).filter(TopPost.date >= start_date).filter(TopPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
     controversial = db.session.query(ControversialPost).filter(ControversialPost.date >= start_date).filter(ControversialPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
 
@@ -105,7 +118,7 @@ def render():
     for post in controversial:
         controversial_titles.append(unescape(post.title))
 
-    topic_model_data = calculateTopicModelData(top_titles, controversial_titles)
+    topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
 
     return Response(stream_template('index.html',
                                     top_titles = top_titles,
@@ -126,18 +139,26 @@ def render():
 @app.route('/updateSubreddit', methods=['POST'])
 def updateSubreddit():
     subreddit =  request.form['subreddit']
-    global subreddit_of_interest
     subreddit_of_interest = subreddit[2:]
-    return render()
+    date_range_str = request.form['daterange']
+    start_date = int(date_range_str[6:10]+date_range_str[0:2]+date_range_str[3:5])
+    end_date = int(date_range_str[19:23]+date_range_str[13:15]+date_range_str[16:18])
+    return render(subreddit_of_interest, start_date, end_date)
 
 @app.route('/updateDateRange', methods=['POST'])
 def updateDateRange():
+    subreddit =  request.form['subreddit']
+    subreddit_of_interest = subreddit[2:]
     date_range_str = request.form['daterange']
-    global start_date
     start_date = int(date_range_str[6:10]+date_range_str[0:2]+date_range_str[3:5])
-    global end_date
     end_date = int(date_range_str[19:23]+date_range_str[13:15]+date_range_str[16:18])
-    return render()
+    return render(subreddit_of_interest, start_date, end_date)
+    # date_range_str = request.form['daterange']
+    # global start_date
+    # start_date = int(date_range_str[6:10]+date_range_str[0:2]+date_range_str[3:5])
+    # global end_date
+    # end_date = int(date_range_str[19:23]+date_range_str[13:15]+date_range_str[16:18])
+    # return render()
 
 if __name__ == '__main__':
     app.debug = True # debug setting!
