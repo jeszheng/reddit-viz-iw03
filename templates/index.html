@@ -11,6 +11,9 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+
+    <!-- Date Range Picker JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
     <!-- Bootstrap core JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
@@ -18,7 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Date Range Picker -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <!--  moved up bc undefined fn. <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script> -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <!--<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
@@ -129,6 +132,7 @@
         var startDateDisplay = '' + startdate.substring(4,6) + "/" + startdate.substring(6,8) + "/" + startdate.substring(0,4);
         var endDateDisplay = '' + enddate.substring(4,6) + "/" + enddate.substring(6,8) + "/" + enddate.substring(0,4);
 
+        // Location of where you put this might matter!
         $(function() {
             $('input[name="daterange"]').daterangepicker({ "startDate": startDateDisplay, "endDate": endDateDisplay});
         });
