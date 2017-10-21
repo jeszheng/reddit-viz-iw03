@@ -108,7 +108,7 @@
             $('#spinner').show();
             var time_start = performance.now();
             $.ajax({
-                url: '/updateSubreddit',
+                url: '/updateDataset',
                 data: $('form').serialize(),
                 type: 'POST',
                 success: function(response) {
@@ -149,7 +149,7 @@
 
           if (startDate < 20170925) {
             alert("startDate range is out of the supported range of 9/25/17 - 20171101 " + startDate);
-          } else if (endDate > 20171019) {
+          } else if (endDate > 20171020) {
             alert("Date range is out of the supported range of 9/25/17 - 20171101" + endDate);
           } else {
             $('#spinner').show();
@@ -158,7 +158,7 @@
             date_dict["startDate"] = startDate;
             date_dict["endDate"] = endDate;
             $.ajax({
-                url: '/updateDateRange',
+                url: '/updateDataset',
                 data: $('form').serialize(),
                 type: 'POST',
                 success: function(response) {
