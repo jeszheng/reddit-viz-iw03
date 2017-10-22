@@ -179,12 +179,23 @@
   	</div>
   	<div class="row">
   		<div class="col-md-2">
-        <p>Top Posts</p>
+        <p style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+                  font-size: 26px;
+                  color: #ff772d;">
+          Top<br/>
+          Posts
+        </p>
         {% for title in top_titles %}
           <p>{{ title }}</p>
         {% endfor %}
   		</div>
-  		<div class="col-md-8">
+  		<div class="col-md-8" style="padding-top: 20px;">
+        <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+                  font-size: 22px;
+                  color: #758db2;
+                  text-align: center">
+          Topic Model
+        </h1>
         <div id="topicModel"></div>
         <script src="../static/js/topicModelD3Bubble.js"></script>
         <script>
@@ -193,7 +204,11 @@
         </script>
   		</div>
   		<div class="col-md-2">
-        <p>Controversial Posts</p>
+        <p style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+                  font-size: 22px;
+                  color: #5252e0;">
+          Controversial Posts
+        </p>
         {% for title in controversial_titles %}
           <p>{{ title }}</p>
         {% endfor %}
