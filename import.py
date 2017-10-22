@@ -17,7 +17,7 @@ def html_escape(text):
 def main():
     # file name.
     allPosts = []
-    date = "20171020"
+    date = "20171021"
     # don't forget to comment out database url in models file!
 
     ################################################################################

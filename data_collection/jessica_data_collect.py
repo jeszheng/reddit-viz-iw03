@@ -15,13 +15,8 @@ reddit = praw.Reddit(client_id='_7DprL1dYvgqlw',
                      user_agent='script.best-of-reddit:v1.0 (by /u/<reddit-best-bot>)')
 
 # subreddits used.
-subreddits = [  'askreddit',
-                'askscience',
-                'politics',
+subreddits = [  'politics',
                 'technology',
-                'feminism',
-                'twoxchromosomes',
-                'esist',
                 'worldnews',
                 'news' ]
 
@@ -63,9 +58,9 @@ for subreddit in subreddits:
         # obtain top and controversial comments. no time sort option available.
         submissionCopy = deepcopy(submission) # since comment_sort can only be called once, make a deep copy.
         submission.comment_sort = 'controversial'
-        submission.comment_limit = 30
+        submission.comment_limit = 25
         submissionCopy.comment_sort = 'top'
-        submissionCopy.comment_limit = 30
+        submissionCopy.comment_limit = 25
 
         if submission.comments is None:
                 post["controversial_comments"] = none
@@ -188,9 +183,9 @@ for subreddit in subreddits:
         # obtain top and controversial comments. no time sort option available.
         submissionCopy = deepcopy(submission) # since comment_sort can only be called once, make a deep copy.
         submission.comment_sort = 'controversial'
-        submission.comment_limit = 25
+        submission.comment_limit = 100
         submissionCopy.comment_sort = 'top'
-        submissionCopy.comment_limit = 25
+        submissionCopy.comment_limit = 100
 
         if submission.comments is None:
                 post["controversial_comments"] = none
