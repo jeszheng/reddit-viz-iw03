@@ -27,8 +27,7 @@ function draw_scatterplot(div_id) {
                      { "text" : "Maximum Drawdown" },
                    ]
 
-
-// TODO move the selects out into index.html
+// Appears to be a slight delay when changing the values -- add a spinner?
 
   // Select X-axis Variable
   var span = d3.select(div_id).append('span')
@@ -62,7 +61,7 @@ function draw_scatterplot(div_id) {
   var body = d3.select('body')
   var margin = { top: 50, right: 50, bottom: 50, left: 50 }
   var h = 500 - margin.top - margin.bottom
-  var w = 500 - margin.left - margin.right
+  var w = 600 - margin.left - margin.right
   var formatPercent = d3.format('.2%')
 
 
@@ -163,16 +162,16 @@ function draw_scatterplot(div_id) {
         d3.min([0,d3.min(data,function (d) { return d[value] })]),
         d3.max([0,d3.max(data,function (d) { return d[value] })])
         ])
-    yAxis.scale(yScale) // change the yScale
-    d3.select('#yAxis') // redraw the yAxis
-      .transition().duration(1000)
-      .call(yAxis)
     d3.select('#yAxisLabel') // change the yAxisLabel
       .text(value)
     d3.selectAll('circle') // move the circles
       .transition().duration(1000)
       .delay(function (d,i) { return i*100})
         .attr('cy',function (d) { return yScale(d[value]) })
+    yAxis.scale(yScale) // change the yScale
+    d3.select('#yAxis') // redraw the yAxis
+      .transition().duration(1000)
+      .call(yAxis)
   }
 
   function xChange() {
@@ -182,10 +181,6 @@ function draw_scatterplot(div_id) {
         d3.min([0,d3.min(data,function (d) { return d[value] })]),
         d3.max([0,d3.max(data,function (d) { return d[value] })])
         ])
-    xAxis.scale(xScale) // change the xScale
-    d3.select('#xAxis') // redraw the xAxis
-      .transition().duration(1000)
-      .call(xAxis)
     d3.select('#xAxisLabel') // change the xAxisLabel
       .transition().duration(1000)
       .text(value)
@@ -193,6 +188,10 @@ function draw_scatterplot(div_id) {
       .transition().duration(1000)
       .delay(function (d,i) { return i*100})
         .attr('cx',function (d) { return xScale(d[value]) })
+    xAxis.scale(xScale) // change the xScale
+    d3.select('#xAxis') // redraw the xAxis
+      .transition().duration(1000)
+      .call(xAxis)
   }
 }
 
