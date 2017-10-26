@@ -55,58 +55,9 @@ for subreddit in subreddits:
                 print "NOT COLLECTED:", submission.title, "by author", submission.author.name
                 continue
 
-        # obtain top and controversial comments. no time sort option available.
-        submissionCopy = deepcopy(submission) # since comment_sort can only be called once, make a deep copy.
-        submission.comment_sort = 'controversial'
-        submission.comment_limit = 25
-        submissionCopy.comment_sort = 'top'
-        submissionCopy.comment_limit = 25
-
-        if submission.comments is None:
-                post["controversial_comments"] = none
-                post["top_comments"] = none
-        else:
-            # remove all MoreComments instances from comment forest
-            submission.comments.replace_more(limit=0)
-            submissionCopy.comments.replace_more(limit=0)
-
-            post["controversial_comments"] = []
-            for comment in list(submission.comments):
-                commentElement = {}
-                if comment.author is None:
-                    continue
-                else:
-                    try:
-                        commentElement["author_comment_karma"]= reddit.redditor(comment.author.name).comment_karma
-                    except:
-                        print "NOT COLLECTED: comment by author", comment.author.name, " in post id = ", submission.id, ", ", submission.title
-                        continue
-                commentElement["body"] = comment.body.replace('\n', '')
-                commentElement["score"] = comment.score
-                commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
-                commentElement["gilded"] = comment.gilded
-                commentElement["stickied"] = comment.stickied
-                commentElement["ups"] = comment.ups
-                post["controversial_comments"].append(commentElement)
-
-            post["top_comments"] = []
-            for comment in list(submissionCopy.comments):
-                commentElement = {}
-                if comment.author is None:
-                    continue
-                else:
-                    try:
-                        commentElement["author_comment_karma"]= reddit.redditor(comment.author.name).comment_karma
-                    except:
-                        print "NOT COLLECTED: comment by author", comment.author.name, " in post id = ", submission.id, ", ", submission.title
-                        continue
-                commentElement["body"] = comment.body.replace('\n', '')
-                commentElement["score"] = comment.score
-                commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
-                commentElement["gilded"] = comment.gilded
-                commentElement["stickied"] = comment.stickied
-                commentElement["ups"] = comment.ups
-                post["top_comments"].append(commentElement)
+        # no comment collection for controversial posts
+        post["controversial_comments"] = []
+        post["top_comments"] = []
 
         # obtain other attributes
         post["permalink"]= submission.permalink
@@ -183,9 +134,7 @@ for subreddit in subreddits:
         # obtain top and controversial comments. no time sort option available.
         submissionCopy = deepcopy(submission) # since comment_sort can only be called once, make a deep copy.
         submission.comment_sort = 'controversial'
-        submission.comment_limit = 100
         submissionCopy.comment_sort = 'top'
-        submissionCopy.comment_limit = 100
 
         if submission.comments is None:
                 post["controversial_comments"] = none
@@ -196,9 +145,12 @@ for subreddit in subreddits:
             submissionCopy.comments.replace_more(limit=0)
 
             post["controversial_comments"] = []
+            count = 0
             for comment in list(submission.comments):
+                if count >= 20:
+                    break;
                 commentElement = {}
-                if comment.author is None:
+                if comment.author is None or comment.stickied:
                     continue
                 else:
                     try:
@@ -213,11 +165,15 @@ for subreddit in subreddits:
                 commentElement["stickied"] = comment.stickied
                 commentElement["ups"] = comment.ups
                 post["controversial_comments"].append(commentElement)
+                count += 1
 
             post["top_comments"] = []
+            count = 0
             for comment in list(submissionCopy.comments):
+                if count >= 20:
+                    break;
                 commentElement = {}
-                if comment.author is None:
+                if comment.author is None or comment.stickied:
                     continue
                 else:
                     try:
@@ -232,6 +188,7 @@ for subreddit in subreddits:
                 commentElement["stickied"] = comment.stickied
                 commentElement["ups"] = comment.ups
                 post["top_comments"].append(commentElement)
+                count += 1
 
         # obtain other attributes
         post["permalink"]= submission.permalink
