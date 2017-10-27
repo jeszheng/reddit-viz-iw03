@@ -8,7 +8,7 @@ subreddits_of_interest = 'politics'
 # '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
 #     allPosts = json.load(data_file)
 with open(
-'/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/experimental/Analysis/20171022_top_exp.json') as data_file:
+'/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/experimental/Analysis/20171026_top_exp.json') as data_file:
     allPosts = json.load(data_file)
 
 # topPoliticsPostTitles = []
