@@ -144,28 +144,7 @@ for subreddit in subreddits:
             submission.comments.replace_more(limit=0)
             submissionCopy.comments.replace_more(limit=0)
 
-            post["controversial_comments"] = []
-            count = 0
-            for comment in list(submission.comments):
-                if count >= 20:
-                    break;
-                commentElement = {}
-                if comment.author is None or comment.stickied:
-                    continue
-                else:
-                    try:
-                        commentElement["author_comment_karma"]= reddit.redditor(comment.author.name).comment_karma
-                    except:
-                        print "NOT COLLECTED: comment by author", comment.author.name, " in post id = ", submission.id, ", ", submission.title
-                        continue
-                commentElement["body"] = comment.body.replace('\n', '')
-                commentElement["score"] = comment.score
-                commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
-                commentElement["gilded"] = comment.gilded
-                commentElement["stickied"] = comment.stickied
-                commentElement["ups"] = comment.ups
-                post["controversial_comments"].append(commentElement)
-                count += 1
+            dup_comment_ids = []
 
             post["top_comments"] = []
             count = 0
@@ -183,11 +162,41 @@ for subreddit in subreddits:
                         continue
                 commentElement["body"] = comment.body.replace('\n', '')
                 commentElement["score"] = comment.score
+                commentElement["comment_id"] = comment.id
                 commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
                 commentElement["gilded"] = comment.gilded
                 commentElement["stickied"] = comment.stickied
                 commentElement["ups"] = comment.ups
                 post["top_comments"].append(commentElement)
+                dup_comment_ids.append(comment.id)
+                count += 1
+
+            # harvest only controversial comments that are not part of
+            # top comments.
+            post["controversial_comments"] = []
+            count = 0
+            for comment in list(submission.comments):
+                if count >= 20:
+                    break;
+                if comment.id in dup_comment_ids:
+                    continue
+                commentElement = {}
+                if comment.author is None or comment.stickied:
+                    continue
+                else:
+                    try:
+                        commentElement["author_comment_karma"]= reddit.redditor(comment.author.name).comment_karma
+                    except:
+                        print "NOT COLLECTED: comment by author", comment.author.name, " in post id = ", submission.id, ", ", submission.title
+                        continue
+                commentElement["body"] = comment.body.replace('\n', '')
+                commentElement["score"] = comment.score
+                commentElement["comment_id"] = comment.id
+                commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
+                commentElement["gilded"] = comment.gilded
+                commentElement["stickied"] = comment.stickied
+                commentElement["ups"] = comment.ups
+                post["controversial_comments"].append(commentElement)
                 count += 1
 
         # obtain other attributes

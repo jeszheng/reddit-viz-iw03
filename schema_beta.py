@@ -29,7 +29,6 @@ class TopPost(db.Model):
     green = db.Column(db.Float)
     liberal = db.Column(db.Float)
     conservative = db.Column(db.Float)
-    submission_time = db.Column(db.String())
     sentiment_compound = db.Column(db.Float)
     tc_strongly_pos = db.Column(db.Integer)
     tc_pos = db.Column(db.Integer)
@@ -41,8 +40,14 @@ class TopPost(db.Model):
     cc_neu = db.Column(db.Integer)
     cc_neg = db.Column(db.Integer)
     cc_strongly_neg = db.Column(db.Integer)
+    tc_libertarian_avg = db.Column(db.Float)
+    tc_conservative_avg = db.Column(db.Float)
+    tc_liberal_avg = db.Column(db.Float)
+    cc_libertarian_avg = db.Column(db.Float)
+    cc_conservative_avg = db.Column(db.Float)
+    cc_liberal_avg = db.Column(db.Float)
 
-    def __init__(self, post_id, date, permalink, url, title, selftext, author_link_karma, subreddit, score, upvote_ratio, num_comments, libertarian, green, liberal, conservative, submission_time, sentiment_compound, tc_strongly_pos, tc_pos, tc_neu, tc_neg, tc_strongly_neg, cc_strongly_pos, cc_pos, cc_neu, cc_neg, cc_strongly_neg):
+    def __init__(self, post_id, date, permalink, url, title, selftext, author_link_karma, subreddit, score, upvote_ratio, num_comments, libertarian, green, liberal, conservative, sentiment_compound, tc_strongly_pos, tc_pos, tc_neu, tc_neg, tc_strongly_neg, cc_strongly_pos, cc_pos, cc_neu, cc_neg, cc_strongly_neg, tc_libertarian_avg, tc_conservative_avg, tc_liberal_avg, cc_libertarian_avg, cc_conservative_avg, cc_liberal_avg):
         self.post_id = post_id
         self.date = date
         self.permalink = permalink
@@ -58,7 +63,6 @@ class TopPost(db.Model):
         self.green = green
         self.liberal = liberal
         self.conservative = conservative
-        self.submission_time = submission_time
         self.sentiment_compound = sentiment_compound
         self.tc_strongly_pos = tc_strongly_pos
         self.tc_pos = tc_pos
@@ -70,6 +74,12 @@ class TopPost(db.Model):
         self.cc_neu = cc_neu
         self.cc_neg = cc_neg
         self.cc_strongly_neg = cc_strongly_neg
+        self.tc_libertarian_avg = tc_libertarian_avg
+        self.tc_conservative_avg = tc_conservative_avg
+        self.tc_liberal_avg = tc_liberal_avg
+        self.cc_libertarian_avg = cc_libertarian_avg
+        self.cc_conservative_avg = cc_conservative_avg
+        self.cc_liberal_avg = cc_liberal_avg
 
     def __repr__(self):
         return '<p>%r</p>' % (self.post_id)
@@ -93,10 +103,9 @@ class ControversialPost(db.Model):
     green = db.Column(db.Float)
     liberal = db.Column(db.Float)
     conservative = db.Column(db.Float)
-    submission_time = db.Column(db.String())
     sentiment_compound = db.Column(db.Float)
 
-    def __init__(self, post_id, date, permalink, url, title, selftext, author_link_karma, subreddit, score, upvote_ratio, num_comments, libertarian, green, liberal, conservative, submission_time, sentiment_compound):
+    def __init__(self, post_id, date, permalink, url, title, selftext, author_link_karma, subreddit, score, upvote_ratio, num_comments, libertarian, green, liberal, conservative, sentiment_compound):
         self.post_id = post_id
         self.date = date
         self.permalink = permalink
@@ -112,7 +121,6 @@ class ControversialPost(db.Model):
         self.green = green
         self.liberal = liberal
         self.conservative = conservative
-        self.submission_time = submission_time
         self.sentiment_compound = sentiment_compound
 
     def __repr__(self):

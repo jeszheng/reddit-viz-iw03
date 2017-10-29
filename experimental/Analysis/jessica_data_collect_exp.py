@@ -17,9 +17,9 @@ reddit = praw.Reddit(client_id='_7DprL1dYvgqlw',
 # subreddits used.
 subreddits = [
                 'politics',
-                'technology',
-                'worldnews',
-                 'news'
+                # 'technology',
+                # 'worldnews',
+                #  'news'
                 ]
 
 # use the date to mark file name.
@@ -28,132 +28,6 @@ timestr = timestr[:8]
 
 controvesialFileName = '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/experimental/Analysis/' + timestr + "_controversial_exp.json"
 topFileName = '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/experimental/Analysis/' + timestr + "_top_exp.json"
-
-################################################################################
-
-# get the top 50 controversial posts within the last 24 hours
-
-################################################################################
-
-# print "gathering top post data:"
-#
-# controversialPosts = []
-#
-# # is actually top.
-#
-# for subreddit in subreddits:
-#     print "gathering post data and comments from", subreddit
-#     numposts = 0
-#     for submission in reddit.subreddit(subreddit).top('day', limit = 5):
-#         post = {}
-#
-#         # obtain author info
-#         if submission.author is None:
-#             print "NOT COLLECTED:", submission.title
-#             continue
-#         else:
-#             # in case of broken author links, which sadly occur a lot :(
-#             try:
-#                 post["author_link_karma"]= reddit.redditor(submission.author.name).link_karma
-#             except:
-#                 print "NOT COLLECTED:", submission.title, "by author", submission.author.name
-#                 continue
-#
-#         # obtain top and controversial comments. no time sort option available.
-#         submissionCopy = deepcopy(submission) # since comment_sort can only be called once, make a deep copy.
-#         submission.comment_sort = 'controversial'
-#         submission.comment_limit = 100
-#         submissionCopy.comment_sort = 'top'
-#         submissionCopy.comment_limit = 100
-#
-#         if submission.comments is None:
-#                 post["controversial_comments"] = none
-#                 post["top_comments"] = none
-#         else:
-#             # remove all MoreComments instances from comment forest
-#             submission.comments.replace_more(limit=0)
-#             submissionCopy.comments.replace_more(limit=0)
-#
-#             post["controversial_comments"] = []
-#             for comment in list(submission.comments):
-#                 commentElement = {}
-#                 if comment.author is None:
-#                     continue
-#                 else:
-#                     try:
-#                         commentElement["author_comment_karma"]= reddit.redditor(comment.author.name).comment_karma
-#                     except:
-#                         print "NOT COLLECTED: comment by author", comment.author.name, " in post id = ", submission.id, ", ", submission.title
-#                         continue
-#                 commentElement["body"] = comment.body.replace('\n', '')
-#                 commentElement["score"] = comment.score
-#                 commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
-#                 commentElement["gilded"] = comment.gilded
-#                 commentElement["stickied"] = comment.stickied
-#                 commentElement["ups"] = comment.ups
-#                 post["controversial_comments"].append(commentElement)
-#
-#             post["top_comments"] = []
-#             for comment in list(submissionCopy.comments):
-#                 commentElement = {}
-#                 if comment.author is None:
-#                     continue
-#                 else:
-#                     try:
-#                         commentElement["author_comment_karma"]= reddit.redditor(comment.author.name).comment_karma
-#                     except:
-#                         print "NOT COLLECTED: comment by author", comment.author.name, " in post id = ", submission.id, ", ", submission.title
-#                         continue
-#                 commentElement["body"] = comment.body.replace('\n', '')
-#                 commentElement["score"] = comment.score
-#                 commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
-#                 commentElement["gilded"] = comment.gilded
-#                 commentElement["stickied"] = comment.stickied
-#                 commentElement["ups"] = comment.ups
-#                 post["top_comments"].append(commentElement)
-#
-#         # obtain other attributes
-#         post["permalink"]= submission.permalink
-#         post["url"]= submission.url
-#         post["title"]= submission.title
-#         post["id"]= submission.id
-#         post["selftext"]= submission.selftext.replace('\n', '')
-#         post["subreddit"]= submission.subreddit.display_name
-#         post["score"]= submission.score
-#         post["upvote_ratio"]= submission.upvote_ratio
-#         post["num_comments"]= submission.num_comments
-#         post["over_18"]= submission.over_18
-#         post["pinned"]= submission.pinned
-#         post["contest_mode"]= submission.contest_mode
-#         post["gilded"]= submission.gilded
-#         post["stickied"]= submission.stickied
-#         post["spoiler"]= submission.spoiler
-#         post["submission_time"]= datetime.datetime.fromtimestamp(submission.created).ctime()
-#
-#         # # sentiment analysis for r/politics, r/news, r/worldnews
-#         # if post['subreddit'] == 'politics' or post['subreddit'] == 'news' or post['subreddit'] == 'worldnews':
-#         #     # API call made here
-#         #     sentiment = political(post['title'] + post['selftext'])
-#         #     post['libertarian'] = sentiment["Libertarian"]
-#         #     post['green'] = sentiment["Green"]
-#         #     post['liberal'] = sentiment["Liberal"]
-#         #     post['conservative'] = sentiment["Conservative"]
-#         # else:
-#         post['libertarian'] = -1.0
-#         post['green'] = -1.0
-#         post['liberal'] = -1.0
-#         post['conservative'] = -1.0
-#         controversialPosts.append(post)
-#         numposts = numposts + 1
-#     print subreddit, ": ", numposts
-#
-#
-# print "time elapsed so far:", (time.time() - start_time), " seconds"
-# print "controversial posts collected:", len(controversialPosts)
-#
-# with open(controvesialFileName, 'w') as outfile:
-#     json.dump(controversialPosts, outfile)
-
 
 
 ################################################################################
@@ -169,8 +43,9 @@ topPosts = []
 for subreddit in subreddits:
     print "gathering post data and comments from", subreddit
     numposts = 0
-    for submission in reddit.subreddit(subreddit).top('day', limit = 3):
+    for submission in reddit.subreddit(subreddit).top('day', limit = 1):
         post = {}
+        print submission.permalink
 
         # obtain author info
         if submission.author is None:
@@ -199,13 +74,45 @@ for subreddit in subreddits:
             submission.comments.replace_more(limit=0)
             submissionCopy.comments.replace_more(limit=0)
 
-            comment_karma_id = []
+            dup_comment_ids = []
+            post["top_comments"] = []
+            count = 0
+            for comment in submissionCopy.comments.list():
+                if count >= 20:
+                    break;
+                commentElement = {}
+                if comment.author is None or comment.stickied:
+                    continue
+                else:
+                    try:
+                        commentElement["author_comment_karma"]= reddit.redditor(comment.author.name).comment_karma
+                    except:
+                        print "NOT COLLECTED: comment by author", comment.author.name, " in post id = ", submission.id, ", ", submission.title
+                        continue
+                commentElement["body"] = comment.body.replace('\n', '')
+                # commentElement["score"] = comment.score
+                commentElement["comment_id"] = comment.id
+                # commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
+                # commentElement["gilded"] = comment.gilded
+                # commentElement["stickied"] = comment.stickied
+                # commentElement["ups"] = comment.ups
+                post["top_comments"].append(commentElement)
+                dup_comment_ids.append(comment.id)
+                print comment.body.replace('\n', '')
+                print ''
+                count += 1
 
             post["controversial_comments"] = []
             count = 0
-            for comment in list(submission.comments):
+            dupCount_id = 0
+            dupCount_orig = 0
+            dupCount_karma = 0
+            dup_body = []
+            for comment in submission.comments.list():
                 if count >= 20:
                     break;
+                if comment.id in dup_comment_ids:
+                    continue
                 commentElement = {}
                 if comment.author is None or comment.stickied:
                     continue
@@ -216,71 +123,35 @@ for subreddit in subreddits:
                         print "NOT COLLECTED: comment by author", comment.author.name, " in post id = ", submission.id, ", ", submission.title
                         continue
                 commentElement["body"] = comment.body.replace('\n', '')
-                commentElement["score"] = comment.score
-                commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
-                commentElement["gilded"] = comment.gilded
-                commentElement["stickied"] = comment.stickied
-                commentElement["ups"] = comment.ups
+                # commentElement["score"] = comment.score
+                commentElement["comment_id"] = comment.id
+                # commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
+                # commentElement["gilded"] = comment.gilded
+                # commentElement["stickied"] = comment.stickied
+                # commentElement["ups"] = comment.ups
+                    # don't scrape if already in top.
+                    # dup_body.append(comment.body)
+                    # dupCount_id += 1
                 post["controversial_comments"].append(commentElement)
-
-                # DEBUG
-                comment_karma_id.append(commentElement["author_comment_karma"])
-
-                # DEBUG
                 count += 1
-
-            post["top_comments"] = []
-            count = 0
-            dupCount = 0
-            for comment in list(submissionCopy.comments):
-                if count >= 20:
-                    break;
-                commentElement = {}
-                if comment.author is None or comment.stickied:
-                    continue
-                else:
-                    try:
-                        commentElement["author_comment_karma"]= reddit.redditor(comment.author.name).comment_karma
-                    except:
-                        print "NOT COLLECTED: comment by author", comment.author.name, " in post id = ", submission.id, ", ", submission.title
-                        continue
-                commentElement["body"] = comment.body.replace('\n', '')
-                commentElement["score"] = comment.score
-                commentElement["submission_time"] = datetime.datetime.fromtimestamp(comment.created).ctime()
-                commentElement["gilded"] = comment.gilded
-                commentElement["stickied"] = comment.stickied
-                commentElement["ups"] = comment.ups
-                post["top_comments"].append(commentElement)
-                if commentElement["author_comment_karma"] in comment_karma_id:
-                    dupCount += 1
-                count += 1
-
-        # obtain other attributes
-        post["permalink"]= submission.permalink
-        post["url"]= submission.url
-        post["title"]= submission.title
-        post["id"]= submission.id
-        post["selftext"]= submission.selftext.replace('\n', '')
-        post["subreddit"]= submission.subreddit.display_name
-        post["score"]= submission.score
-        post["upvote_ratio"]= submission.upvote_ratio
-        post["num_comments"]= submission.num_comments
-        post["over_18"]= submission.over_18
-        post["pinned"]= submission.pinned
-        post["contest_mode"]= submission.contest_mode
-        post["gilded"]= submission.gilded
-        post["stickied"]= submission.stickied
-        post["spoiler"]= submission.spoiler
-        post["submission_time"]= datetime.datetime.fromtimestamp(submission.created).ctime()
-        post['libertarian'] = -1.0
-        post['green'] = -1.0
-        post['liberal'] = -1.0
-        post['conservative'] = -1.0
 
         print 'top comments:', len(post['top_comments'])
         #print post['top_comments']
-        print 'controversial comments:', len(post['top_comments'])
-        print 'num overlap: ', dupCount
+        print 'controversial comments:', len(post['controversial_comments'])
+        for comment in post['controversial_comments']:
+            if comment['comment_id'] in dup_comment_ids:
+                print 'dup! should not occur.'
+        # print 'Top Comments:'
+        # for comment in post["top_comments"]:
+        #     print comment['body']
+        # print ''
+        # print 'Controversial Comments:'
+        # for comment in post["controversial_comments"]:
+        #     print comment['body']
+        # print 'dup count id: ', dupCount_id
+        #print 'dup count orig: ', dupCount_orig
+        #print 'dup count karma: ', dupCount_karma
+        #print dup_body
         #print post['controversial_comments']
 
         topPosts.append(post)
