@@ -1,4 +1,4 @@
-# from models import TopPost, ControversialPost, db
+from models import TopPost, ControversialPost, db
 import json
 import sys
 
@@ -17,9 +17,7 @@ def html_escape(text):
 def main():
     # file name.
     allPosts = []
-    date = "20171028"
-    # TODO conditional reading from extra commenting process.
-    # don't forget to comment out database url in models file!
+    date = "20171001"
 
     ################################################################################
 
@@ -34,16 +32,6 @@ def main():
     with open(
     '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/post-processing/jsonfiles/top_title_sentiment_' + date + '.json') as data_file:
         t_titlePosNegSentiments = json.load(data_file)
-
-    # Load comments pos/neg sentiments (all subreddits)
-    with open(
-    '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/post-processing/jsonfiles/comments_posneg_sentiment_' + date + '.json') as data_file:
-        commentsPosNegSentiments = json.load(data_file)
-
-    # # Load comments poltical sentiments (for r/politics only)
-    # with open(
-    # '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/post-processing/jsonfiles/comments_political_sentiment_' + date + '.json') as data_file:
-    #     commentsPoliticalSentiments = json.load(data_file)
 
     # Only use posts in subs poltics, news, worldnews, technology
     selectPosts = []
@@ -180,7 +168,8 @@ def main():
             post['libertarian'],
             post['green'],
             post['liberal'],
-            post['conservative'])
+            post['conservative'],
+            sentiment_compound)
         db.session.add(controversialPost)
 
     db.session.commit()

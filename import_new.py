@@ -213,7 +213,8 @@ def main():
         #     post['libertarian'],
         #     post['green'],
         #     post['liberal'],
-        #     post['conservative'])
+        #     post['conservative'],
+        #     sentiment_compound)
     #     db.session.add(controversialPost)
     #
     # db.session.commit()
