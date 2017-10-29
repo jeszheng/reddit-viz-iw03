@@ -1,4 +1,4 @@
-from models import TopPost, ControversialPost, db
+# from models import TopPost, ControversialPost, db
 import json
 import sys
 
@@ -17,7 +17,7 @@ def html_escape(text):
 def main():
     # file name.
     allPosts = []
-    date = "20170925"
+    date = "20171028"
     # TODO conditional reading from extra commenting process.
     # don't forget to comment out database url in models file!
 
@@ -30,7 +30,7 @@ def main():
     '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
         allPosts = json.load(data_file)
 
-    Load title pos/neg sentiments
+    #Load title pos/neg sentiments
     with open(
     '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/post-processing/jsonfiles/top_title_sentiment_' + date + '.json') as data_file:
         t_titlePosNegSentiments = json.load(data_file)
@@ -40,10 +40,10 @@ def main():
     '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/post-processing/jsonfiles/comments_posneg_sentiment_' + date + '.json') as data_file:
         commentsPosNegSentiments = json.load(data_file)
 
-    # Load comments poltiical sentiments (for r/politics only)
-    with open(
-    '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/post-processing/jsonfiles/comments_political_sentiment_' + date + '.json') as data_file:
-        commentsPoliticalSentiments = json.load(data_file)
+    # # Load comments poltical sentiments (for r/politics only)
+    # with open(
+    # '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/post-processing/jsonfiles/comments_political_sentiment_' + date + '.json') as data_file:
+    #     commentsPoliticalSentiments = json.load(data_file)
 
     # Only use posts in subs poltics, news, worldnews, technology
     selectPosts = []
@@ -97,30 +97,30 @@ def main():
         if not found:
             print 'Comment pos/neg sentiment not found!' # should never occur
 
-
-        # Comment Political Sentiment processing for r/politics.
-
-        if post['subreddit'] != 'politics':
-            tc_libertarian_avg = float(-1)
-            tc_conservative_avg = float(-1)
-            tc_liberal_avg = float(-1)
-            cc_libertarian_avg = float(-1)
-            cc_conservative_avg = float(-1)
-            cc_liberal_avg = float(-1)
-        else:
-            found = False
-            for politicalSentiment in commentsPoliticalSentiments:
-                if politicalSentiment['id'] == post['id']:
-                    tc_libertarian_avg = politicalSentiment['tc_libertarian_avg']
-                    tc_conservative_avg = politicalSentiment['tc_conservative_avg']
-                    tc_liberal_avg = politicalSentiment['tc_liberal_avg']
-                    cc_libertarian_avg = politicalSentiment['cc_libertarian_avg']
-                    cc_conservative_avg = politicalSentiment['cc_conservative_avg']
-                    cc_liberal_avg = politicalSentiment['cc_liberal_avg']
-                    found = True
-                    break
-            if not found:
-                print 'Comment political sentiment not found!' # should never occur
+    #
+    #     # Comment Political Sentiment processing for r/politics.
+    #
+    #     if post['subreddit'] != 'politics':
+    #         tc_libertarian_avg = float(-1)
+    #         tc_conservative_avg = float(-1)
+    #         tc_liberal_avg = float(-1)
+    #         cc_libertarian_avg = float(-1)
+    #         cc_conservative_avg = float(-1)
+    #         cc_liberal_avg = float(-1)
+    #     else:
+    #         found = False
+    #         for politicalSentiment in commentsPoliticalSentiments:
+    #             if politicalSentiment['id'] == post['id']:
+    #                 tc_libertarian_avg = politicalSentiment['tc_libertarian_avg']
+    #                 tc_conservative_avg = politicalSentiment['tc_conservative_avg']
+    #                 tc_liberal_avg = politicalSentiment['tc_liberal_avg']
+    #                 cc_libertarian_avg = politicalSentiment['cc_libertarian_avg']
+    #                 cc_conservative_avg = politicalSentiment['cc_conservative_avg']
+    #                 cc_liberal_avg = politicalSentiment['cc_liberal_avg']
+    #                 found = True
+    #                 break
+    #         if not found:
+    #             print 'Comment political sentiment not found!' # should never occur
 
         # topPost = TopPost(post['id'],
         #     date,

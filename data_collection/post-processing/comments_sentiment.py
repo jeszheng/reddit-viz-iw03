@@ -1,4 +1,5 @@
 import json
+import sys
 
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
@@ -15,7 +16,8 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 # 10/26/2017 - 11/19/2017.
 # or maybe Nov 1.
-date = "20171026"
+#date = "20171026"
+date = sys.argv[1]
 
 # data source: the top posts file.
 with open(
@@ -35,7 +37,7 @@ with open(
 ################################################################################
 
 sid = SentimentIntensityAnalyzer()
-strongly_negative_cutoff = -0.75
+strongly_negative_cutoff = -0.6
 negative_cutoff = -0.3
 neutral_cutoff = 0.3
 positive_cutoff = 0.6
@@ -134,8 +136,8 @@ for post in allPosts:
         comment_postneg_sentiments.append(data)
 
 # Write file.
-# with open('./jsonfiles/comments_posneg_sentiment_' + date + '.json', 'w') as outfile:
-#     json.dump(comment_postneg_sentiments, outfile)
+with open('./jsonfiles/comments_posneg_sentiment_' + date + '.json', 'w') as outfile:
+    json.dump(comment_postneg_sentiments, outfile)
 
 ################################################################################
 
@@ -163,7 +165,7 @@ for post in allPosts:
 # dataset_1 = [] # RAW
 # dataset_2 = [] # averaged.
 #
-# # TODO test with only one post.
+# # TODO test with only one date -- tonight.
 # for post in allPoliticalPosts:
 #     data1 = {}
 #     data2 = {}

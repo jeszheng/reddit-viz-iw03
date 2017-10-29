@@ -82,14 +82,14 @@ def stream_template(template_name, **context):
 
 @app.route('/')
 def main():
-    date_yesterday = int(time.strftime("%Y%m%d-%H%M%S")[:8]) - 1
-    # edge case for october -> november rollover.
-    if (date_yesterday == 20171100):
-        date_yesterday = 20171031
+    # date_yesterday = int(time.strftime("%Y%m%d-%H%M%S")[:8]) - 1
+    # # edge case for october -> november rollover.
+    # if (date_yesterday == 20171100):
+    #     date_yesterday = 20171031
 
     subreddit_of_interest = 'politics'
-    start_date = date_yesterday
-    end_date = date_yesterday
+    start_date = 20171001
+    end_date = 20171001
     return render(subreddit_of_interest, start_date, end_date)
 
 def render(subreddit_of_interest, start_date, end_date):
