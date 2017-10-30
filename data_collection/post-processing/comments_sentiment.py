@@ -3,9 +3,13 @@ import sys
 
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-# import indicoio
-# from indicoio import political
-# indicoio.config.api_key = "598d8af7949f6586681afe593346a87d" #Julie's API key
+import indicoio
+from indicoio import political
+indicoio.config.api_key = "656f0d163f4f34b477145c7495b42612" #My API key
+
+#indicoio.config.api_key = "598d8af7949f6586681afe593346a87d" #Julie's API key
+
+#indicoio.config.api_key = '2ccb28236e4172929679bf7edf504083' # Oliver's API Key
 
 ################################################################################
 
@@ -139,6 +143,8 @@ for post in allPosts:
 with open('./jsonfiles/comments_posneg_sentiment_' + date + '.json', 'w') as outfile:
     json.dump(comment_postneg_sentiments, outfile)
 
+print 'finished comment pos/neg sentiment analysis for ', date
+
 ################################################################################
 
 # POLITICAL SENTIMENT ANALYSIS ON TOP POSTS IN R/POLITICS ONLY
@@ -156,74 +162,122 @@ with open('./jsonfiles/comments_posneg_sentiment_' + date + '.json', 'w') as out
 ################################################################################
 
 # Obtain only posts in political subreddits
-# allPoliticalPosts = []
-#
-# for post in allPosts:
-#     if post['subreddit'] == 'politics':
-#         allPoliticalPosts.append(post)
-#
-# dataset_1 = [] # RAW
-# dataset_2 = [] # averaged.
-#
-# # TODO test with only one date -- tonight.
-# for post in allPoliticalPosts:
-#     data1 = {}
-#     data2 = {}
-#     data1['id'] = post['id']
-#     data2['id'] = post['id']
-#
-#     top_comments_body = []
-#     controversial_comments_body = []
-#
-#     # Gather top comments
-#     for comment in post['top_comments']:
-#         top_comments_body.append(comment['body'])
-#
-#     # Gather controversial comments
-#     for comment in post['controversial_comments']:
-#         controversial_comments_body.append(comment['body'])
-#
-#     # Indico call, compute sentiments for each post.
-#     top_comments_political_sentiments = indicoio.political(top_comments_body)
-#     controversial_comments_political_sentiments = indicoio.political(controversial_comments_body)
-#
-#     # Store raw data indico into dataset 1
-#     data1['top_sentiments'] = top_comments_political_sentiments
-#     data1['controversial_sentiments'] = controversial_comments_political_sentiments
-#     dataset_1.append(data1)
-#
-#     # compute the average sentiment, store into dataset 2.
-#     tc_libertarian = []
-#     tc_conservative = []
-#     tc_liberal = []
-#     cc_libertarian = []
-#     cc_conservative = []
-#     cc_liberal = []
-#
-#     for comment_sentiment in top_comments_political_sentiments:
-#         tc_libertarian.append(comment_sentiment['Libertarian'])
-#         tc_conservative.append(comment_sentiment['Conservative'])
-#         tc_liberal.append(comment_sentiment['Liberal'])
-#
-#     for comment_sentiment in controversial_comments_political_sentiments:
-#         cc_libertarian.append(comment_sentiment['Libertarian'])
-#         cc_conservative.append(comment_sentiment['Conservative'])
-#         cc_liberal.append(comment_sentiment['Liberal'])
-#
-#     data2['tc_libertarian_avg'] = sum(tc_libertarian)/float(len(tc_libertarian))
-#     data2['tc_conservative_avg'] = sum(tc_conservative)/float(len(tc_conservative))
-#     data2['tc_liberal_avg'] = sum(tc_liberal)/float(len(tc_liberal))
-#
-#     data2['cc_libertarian_avg'] = sum(cc_libertarian)/float(len(cc_libertarian))
-#     data2['cc_conservative_avg'] = sum(cc_conservative)/float(len(cc_conservative))
-#     data2['cc_liberal_avg'] = sum(cc_liberal)/float(len(cc_liberal))
-#
-#     dataset_2.append(data2)
-#
-# # Write outputs to 2 different files.
-#
-# with open('./jsonfiles/RAW_comments_political_sentiment_' + date + '.json', 'w') as outfile:
-#     json.dump(dataset_1, outfile)
-#
-# with open('./jsonfiles/comments_political_sentiment_' + date + '.json', 'w') as outfile:
-#     json.dump(dataset_2, outfile)
+
+allPoliticalPosts = []
+
+for post in allPosts:
+    if post['subreddit'] == 'politics':
+        allPoliticalPosts.append(post)
+
+# First make indico calls, write output to json (as backup)
+
+raw_sentiments = []
+
+for post in allPoliticalPosts:
+    data1 = {}
+    data1['id'] = post['id']
+
+    top_comments_body = []
+    controversial_comments_body = []
+
+    # Gather top comments
+    for comment in post['top_comments']:
+        top_comments_body.append(comment['body'])
+
+    # Gather controversial comments
+    for comment in post['controversial_comments']:
+        controversial_comments_body.append(comment['body'])
+
+    print len(controversial_comments_body), ' controversial comments to analyze'
+
+    top_comments_political_sentiments = []
+    controversial_comments_political_sentiments = []
+
+    # Indico call, compute sentiments for each post.
+    count = 0
+    try:
+        for comment_body in top_comments_body:
+            if comment_body is None or comment_body == '':
+                continue
+            data = indicoio.political(comment_body)
+            top_comments_political_sentiments.append(data)
+            count += 1
+    except:
+        print 'Error occured when calculating sentiment for top comment #', count, ' writing output to json file.'
+        with open('./jsonfiles/ERR_RAW_comments_political_sentiment_' + date + '.json', 'w') as outfile:
+            json.dump(raw_sentiments, outfile)
+
+    count = 0
+    try:
+        for comment_body in controversial_comments_body:
+            if comment_body is None or comment_body == '':
+                continue
+            data = indicoio.political(comment_body)
+            controversial_comments_political_sentiments.append(data)
+            count += 1
+    except:
+        print 'Error occured when calculating sentiment for top comment #', count, ' writing output to json file.'
+        with open('./jsonfiles/ERR_RAW_comments_political_sentiment_' + date + '.json', 'w') as outfile:
+            json.dump(raw_sentiments, outfile)
+
+    # Store raw data indico into dataset 1
+    data1['top_sentiments'] = top_comments_political_sentiments
+    data1['controversial_sentiments'] = controversial_comments_political_sentiments
+    raw_sentiments.append(data1)
+    print 'finished calling indico for post ', post['id']
+
+with open('./jsonfiles/RAW_comments_political_sentiment_' + date + '.json', 'w') as outfile:
+    json.dump(raw_sentiments, outfile)
+
+print 'wrote indico data to RAW_comments_political_sentiment_', date, '.json'
+
+# with open(
+# './jsonfiles/RAW_comments_political_sentiment_' + date + '.json') as data_file:
+#     raw_sentiments = json.load(data_file)
+
+# Now compute the averaged values
+
+avg_sentiments = [] # averaged.
+
+for post_sentiment in raw_sentiments:
+    data2 = {}
+    data2['id'] = post_sentiment['id']
+
+    # compute the average sentiment, store into dataset 2.
+    tc_libertarian = []
+    tc_conservative = []
+    tc_liberal = []
+    cc_libertarian = []
+    cc_conservative = []
+    cc_liberal = []
+
+    for comment_sentiment in post_sentiment['top_sentiments']:
+        tc_libertarian.append(comment_sentiment['Libertarian'])
+        tc_conservative.append(comment_sentiment['Conservative'])
+        tc_liberal.append(comment_sentiment['Liberal'])
+
+    data2['tc_libertarian_avg'] = sum(tc_libertarian)/float(len(tc_libertarian))
+    data2['tc_conservative_avg'] = sum(tc_conservative)/float(len(tc_conservative))
+    data2['tc_liberal_avg'] = sum(tc_liberal)/float(len(tc_liberal))
+
+    if len(post_sentiment['controversial_sentiments']) == 0:
+        data2['cc_libertarian_avg'] = float(-1)
+        data2['cc_conservative_avg'] = float(-1)
+        data2['cc_liberal_avg'] = float(-1)
+    else:
+        for comment_sentiment in post_sentiment['controversial_sentiments']:
+            cc_libertarian.append(comment_sentiment['Libertarian'])
+            cc_conservative.append(comment_sentiment['Conservative'])
+            cc_liberal.append(comment_sentiment['Liberal'])
+
+        data2['cc_libertarian_avg'] = sum(cc_libertarian)/float(len(cc_libertarian))
+        data2['cc_conservative_avg'] = sum(cc_conservative)/float(len(cc_conservative))
+        data2['cc_liberal_avg'] = sum(cc_liberal)/float(len(cc_liberal))
+
+    avg_sentiments.append(data2)
+
+# Write output to json.
+with open('./jsonfiles/comments_political_sentiment_' + date + '.json', 'w') as outfile:
+    json.dump(avg_sentiments, outfile)
+
+print 'finished comment political sentiment analysis for ', date
