@@ -129,6 +129,7 @@ def updateDataset():
     start_date = int(date_range_str[6:10]+date_range_str[0:2]+date_range_str[3:5])
     end_date = int(date_range_str[19:23]+date_range_str[13:15]+date_range_str[16:18])
     return render(subreddit_of_interest, start_date, end_date)
+# TODO make render into the message being delayed. 
 
 # @app.route('/updateSubreddit', methods=['POST'])
 # def updateSubreddit():
