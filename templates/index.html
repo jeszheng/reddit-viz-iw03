@@ -107,49 +107,42 @@
         /* SUBREDDIT CHANGE */
         function updateSubreddit(formControl) {
             $('#spinner').show();
-            var time_start = performance.now();
             $.ajax({
                 url: '/updateDataset',
                 data: $('form').serialize(),
                 type: 'POST',
                 success: function(response) {
-                  var time_end = performance.now();
-                  console.log("Call to switch subreddit took " + (time_end - time_start)/1000 + " seconds.");
-                  callBack();
-                  $('#spinner').hide();
-                  $("#main_view").html(response);
+                  pollForData(response);
                 },
                 error: function(error) {
                     $('#spinner').hide();
-                    alert('Sorry, the computation time exceeded the limit. Please try again with a smaller data range, or use an instance on your local machine');
+                    alert('Sorry, an error occured. Please reload the page and try again.');
                     console.log(error);
                 }
             });
         }
 
-        function callBack() {
+        function pollForData(job_id) {
           $.ajax({
-              url: '/testPrint',
-              data: $('form').serialize(),
-              type: 'POST',
+              url: ('/results/'+job_id),
+              type: 'GET',
               success: function(response) {
                 console.log(response);
-                callBack2();
+                if (response == "NOT COMPLETED") {
+                  setTimeout(
+                    function() {
+                      pollForData(job_id)
+                    }, 3000);
+                } else {
+                  console.log('done!, now rendering.');
+                  $('#spinner').hide();
+                  $("#main_view").html(response);
+                }
               },
               error: function(error) {
-              }
-          });
-        }
-
-        function callBack2() {
-          $.ajax({
-              url: '/testPrint2',
-              data: $('form').serialize(),
-              type: 'POST',
-              success: function(response) {
-                console.log(response);
-              },
-              error: function(error) {
+                $('#spinner').hide();
+                alert('Sorry, an error occured. Please reload the page and try again.');
+                console.log(error);
               }
           });
         }
@@ -191,15 +184,11 @@
                 data: $('form').serialize(),
                 type: 'POST',
                 success: function(response) {
-                   var time_end = performance.now();
-                   console.log("Call to switch date took " + (time_end - time_start)/1000 + " seconds.");
-                   $('#spinner').hide();
-                   $("#main_view").html(response);
-
+                  pollForData(response);
                 },
                 error: function(error) {
                     $('#spinner').hide();
-                    alert('Sorry, the computation time exceeded the limit. Please try again with a smaller data range, or use an instance on your local machine');
+                    alert('Sorry, an error occured. Please reload the page and try again.');
                     console.log(error);
                 }
             });

@@ -11,7 +11,7 @@ app = Flask(__name__)
 # TODO COMMENT OUT BEFORE PUSH
 
 # purple
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cmodmuptjjyklg:e48f9a96060da864807bd5b967ea0447fd5c4814a7583facde3afd9d729726ce@ec2-184-72-248-8.compute-1.amazonaws.com:5432/dbogg3844cnn32'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cmodmuptjjyklg:e48f9a96060da864807bd5b967ea0447fd5c4814a7583facde3afd9d729726ce@ec2-184-72-248-8.compute-1.amazonaws.com:5432/dbogg3844cnn32'
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cqvjbobiquqase:a7d4d05d62c673ed79207cd44c9ae86573c164871b6c26e6b46bed410624295e@ec2-54-221-221-153.compute-1.amazonaws.com:5432/dac5ce63jaaa4s'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -71,10 +71,9 @@ def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_inter
 
         topic_entry['category'] = 'controversial-' + str(model['group'])
         topic_model_data.append(topic_entry)
-
     return topic_model_data
 
-def render(subreddit_of_interest, start_date, end_date):
+def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     top = db.session.query(TopPost).filter(TopPost.date >= start_date).filter(TopPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
     controversial = db.session.query(ControversialPost).filter(ControversialPost.date >= start_date).filter(ControversialPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
 
@@ -87,15 +86,12 @@ def render(subreddit_of_interest, start_date, end_date):
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
 
-    return render_template('index.html',
-                                    top_titles = top_titles,
-                                    controversial_titles = controversial_titles,
-                                    topic_model_data = topic_model_data,
-                                    sub = subreddit_of_interest,
-                                    start_date = start_date,
-                                    end_date = end_date)
+    dataset = {}
+    dataset['top_titles'] = top_titles
+    dataset['controversial_titles'] = controversial_titles
+    dataset['topic_model_data'] = topic_model_data
+    dataset['start_date'] = start_date
+    dataset['end_date'] = end_date
+    dataset['subreddit_of_interest'] = subreddit_of_interest
 
-def test():
-    time.sleep(15)
-    print 'test is executing'
-    return 'hello'
+    return dataset
