@@ -15,7 +15,7 @@ app = Flask(__name__)
 # TODO COMMENT OUT BEFORE PUSH
 
 # purple
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cmodmuptjjyklg:e48f9a96060da864807bd5b967ea0447fd5c4814a7583facde3afd9d729726ce@ec2-184-72-248-8.compute-1.amazonaws.com:5432/dbogg3844cnn32'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cmodmuptjjyklg:e48f9a96060da864807bd5b967ea0447fd5c4814a7583facde3afd9d729726ce@ec2-184-72-248-8.compute-1.amazonaws.com:5432/dbogg3844cnn32'
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cqvjbobiquqase:a7d4d05d62c673ed79207cd44c9ae86573c164871b6c26e6b46bed410624295e@ec2-54-221-221-153.compute-1.amazonaws.com:5432/dac5ce63jaaa4s'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -63,7 +63,6 @@ def get_results(job_key):
                                         sub = subreddit_of_interest,
                                         start_date = start_date,
                                         end_date = end_date)
-        #return jsonify(job.result)
     else:
         return "NOT COMPLETED"
 
@@ -79,11 +78,18 @@ def updateDataset():
 
 @app.route('/')
 def main():
-    subreddit_of_interest = 'politics'
-    start_date = 20171001
-    end_date = 20171001
-    rendered = render(subreddit_of_interest, start_date, end_date)
-    return rendered
+    # subreddit_of_interest = 'politics'
+    # start_date = 20171001
+    # end_date = 20171001
+    # rendered = render(subreddit_of_interest, start_date, end_date)
+    # return rendered
+    return render_template('index.html',
+                                    top_titles = ['top titles will be displayed here'],
+                                    controversial_titles = ['controversial titles will be displayed here'],
+                                    topic_model_data = [],
+                                    sub = 'politics',
+                                    start_date = 20171001,
+                                    end_date = 20171001)
 
 if __name__ == '__main__':
     app.debug = True # debug setting!
