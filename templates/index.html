@@ -115,6 +115,7 @@
                 success: function(response) {
                   var time_end = performance.now();
                   console.log("Call to switch subreddit took " + (time_end - time_start)/1000 + " seconds.");
+                  callBack();
                   $('#spinner').hide();
                   $("#main_view").html(response);
                 },
@@ -124,6 +125,33 @@
                     console.log(error);
                 }
             });
+        }
+
+        function callBack() {
+          $.ajax({
+              url: '/testPrint',
+              data: $('form').serialize(),
+              type: 'POST',
+              success: function(response) {
+                console.log(response);
+                callBack2();
+              },
+              error: function(error) {
+              }
+          });
+        }
+
+        function callBack2() {
+          $.ajax({
+              url: '/testPrint2',
+              data: $('form').serialize(),
+              type: 'POST',
+              success: function(response) {
+                console.log(response);
+              },
+              error: function(error) {
+              }
+          });
         }
 
         /* DATE CHANGE */
@@ -149,9 +177,9 @@
           var endDate = parseInt(dateValue.substring(19,23) + dateValue.substring(13,15) + dateValue.substring(16,18));
 
           if (startDate < 20171001) {
-            alert("startDate range is out of the supported range of 10/01/17 - 11/19/17 " + startDate);
+            alert("Date range is out of the supported range of 10/01/17 - 11/19/17 " + startDate);
           } else if (endDate > 20171119) {
-            alert("Date range is out of the supported range of 910/01/17 - 11/19/17" + endDate);
+            alert("Date range is out of the supported range of 10/01/17 - 11/19/17" + endDate);
           } else {
             $('#spinner').show();
             var time_start = performance.now();
@@ -165,8 +193,9 @@
                 success: function(response) {
                    var time_end = performance.now();
                    console.log("Call to switch date took " + (time_end - time_start)/1000 + " seconds.");
-                    $('#spinner').hide();
-                    $("#main_view").html(response);
+                   $('#spinner').hide();
+                   $("#main_view").html(response);
+
                 },
                 error: function(error) {
                     $('#spinner').hide();
