@@ -1,5 +1,7 @@
 import json
 import sys
+import time
+start_time = time.time()
 
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
@@ -144,6 +146,7 @@ with open('./jsonfiles/comments_posneg_sentiment_' + date + '.json', 'w') as out
     json.dump(comment_postneg_sentiments, outfile)
 
 print 'finished comment pos/neg sentiment analysis for ', date
+print "time elapsed so far:", (time.time() - start_time), " seconds"
 
 ################################################################################
 
@@ -173,6 +176,8 @@ for post in allPosts:
 
 raw_sentiments = []
 
+postCount = 0
+
 for post in allPoliticalPosts:
     data1 = {}
     data1['id'] = post['id']
@@ -195,42 +200,50 @@ for post in allPoliticalPosts:
 
     # Indico call, compute sentiments for each post.
     count = 0
+    cur_comment_body = None
     try:
         for comment_body in top_comments_body:
-            if comment_body is None or comment_body == '':
+            if comment_body is None or comment_body == '' or 'http' in comment_body:
                 continue
+            cur_comment_body = comment_body
             data = indicoio.political(comment_body)
             top_comments_political_sentiments.append(data)
             count += 1
     except:
-        print 'Error occured when calculating sentiment for top comment #', count, ' writing output to json file.'
+        print 'Error occured when calculating sentiment for top comment #', count, ' in post ',  postCount ,'writing output to json file.'
+        print cur_comment_body
         with open('./jsonfiles/ERR_RAW_comments_political_sentiment_' + date + '.json', 'w') as outfile:
             json.dump(raw_sentiments, outfile)
+        sys.exit()
 
     count = 0
     try:
         for comment_body in controversial_comments_body:
-            if comment_body is None or comment_body == '':
+            if comment_body is None or comment_body == '' or 'http' in comment_body:
                 continue
+            cur_comment_body = comment_body
             data = indicoio.political(comment_body)
             controversial_comments_political_sentiments.append(data)
             count += 1
     except:
-        print 'Error occured when calculating sentiment for top comment #', count, ' writing output to json file.'
+        print 'Error occured when calculating sentiment for controversial comment #', count, ' in post ',  postCount ,'writing output to json file.'
+        print cur_comment_body
         with open('./jsonfiles/ERR_RAW_comments_political_sentiment_' + date + '.json', 'w') as outfile:
             json.dump(raw_sentiments, outfile)
+        sys.exit()
 
     # Store raw data indico into dataset 1
     data1['top_sentiments'] = top_comments_political_sentiments
     data1['controversial_sentiments'] = controversial_comments_political_sentiments
     raw_sentiments.append(data1)
     print 'finished calling indico for post ', post['id']
+    postCount += 1
 
 with open('./jsonfiles/RAW_comments_political_sentiment_' + date + '.json', 'w') as outfile:
     json.dump(raw_sentiments, outfile)
 
 print 'wrote indico data to RAW_comments_political_sentiment_', date, '.json'
-
+print "time elapsed so far:", (time.time() - start_time), " seconds"
 # with open(
 # './jsonfiles/RAW_comments_political_sentiment_' + date + '.json') as data_file:
 #     raw_sentiments = json.load(data_file)
@@ -279,5 +292,5 @@ for post_sentiment in raw_sentiments:
 # Write output to json.
 with open('./jsonfiles/comments_political_sentiment_' + date + '.json', 'w') as outfile:
     json.dump(avg_sentiments, outfile)
-
+print "time elapsed so far:", (time.time() - start_time), " seconds"
 print 'finished comment political sentiment analysis for ', date

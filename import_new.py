@@ -2,6 +2,9 @@ from models import TopPost, ControversialPost, db
 import json
 import sys
 
+import time
+start_time = time.time()
+
 html_escape_table = {
     "&": "&amp;",
     '"': "&quot;",
@@ -17,7 +20,7 @@ def html_escape(text):
 def main():
     # file name.
     allPosts = []
-    date = "20171029"
+    date = "20171030"
     # TODO conditional reading from extra commenting process.
     # don't forget to comment out database url in models file!
 
@@ -161,6 +164,7 @@ def main():
 
     db.session.commit()
     print 'committed top posts from', date
+    print "time elapsed so far:", (time.time() - start_time), " seconds"
 
     ################################################################################
 
@@ -221,6 +225,7 @@ def main():
 
     db.session.commit()
     print 'committed controversial posts from ', date
+    print "time elapsed so far:", (time.time() - start_time), " seconds"
 
 if __name__ == '__main__':
     main()
