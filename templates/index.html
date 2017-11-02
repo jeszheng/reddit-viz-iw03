@@ -12,21 +12,20 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 
-    <!-- Date Range Picker JS -->
-    <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
-    <!-- Bootstrap core JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
-    <!-- font awesome spinner -->
+    <!-- font awesome spinner CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!-- Date Range Picker -->
-    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script> -->
+    <!-- Bootstrap core JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
 
+    <!-- Date Range Picker JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <!--<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
     <!-- Style for NavBar and page padding. -->
     <style>
       body {
@@ -127,14 +126,12 @@
               url: ('/results/'+job_id),
               type: 'GET',
               success: function(response) {
-                console.log(response);
                 if (response == "NOT COMPLETED") {
                   setTimeout(
                     function() {
                       pollForData(job_id)
                     }, 3000);
                 } else {
-                  console.log('done!, now rendering.');
                   $('#spinner').hide();
                   $("#main_view").html(response);
                 }
