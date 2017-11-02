@@ -12,8 +12,6 @@ from module_functions import *
 
 app = Flask(__name__)
 
-# TODO COMMENT OUT BEFORE PUSH
-
 # purple
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cmodmuptjjyklg:e48f9a96060da864807bd5b967ea0447fd5c4814a7583facde3afd9d729726ce@ec2-184-72-248-8.compute-1.amazonaws.com:5432/dbogg3844cnn32'
 
@@ -23,28 +21,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 q = Queue(connection=conn)
-
-# used exclusively for the first time the app loads?
-def render(subreddit_of_interest, start_date, end_date):
-    top = db.session.query(TopPost).filter(TopPost.date >= start_date).filter(TopPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
-    controversial = db.session.query(ControversialPost).filter(ControversialPost.date >= start_date).filter(ControversialPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
-
-    top_titles = []
-    for post in top:
-        top_titles.append(unescape(post.title))
-    controversial_titles = []
-    for post in controversial:
-        controversial_titles.append(unescape(post.title))
-
-    topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
-
-    return render_template('index.html',
-                                    top_titles = top_titles,
-                                    controversial_titles = controversial_titles,
-                                    topic_model_data = topic_model_data,
-                                    sub = subreddit_of_interest,
-                                    start_date = start_date,
-                                    end_date = end_date)
 
 @app.route("/results/<job_key>", methods=['GET'])
 def get_results(job_key):
@@ -78,11 +54,6 @@ def updateDataset():
 
 @app.route('/')
 def main():
-    # subreddit_of_interest = 'politics'
-    # start_date = 20171001
-    # end_date = 20171001
-    # rendered = render(subreddit_of_interest, start_date, end_date)
-    # return rendered
     return render_template('index.html',
                                     top_titles = ['top titles will be displayed here'],
                                     controversial_titles = ['controversial titles will be displayed here'],
