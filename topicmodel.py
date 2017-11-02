@@ -20,7 +20,7 @@ def get_topics(titles, subreddit_of_interest):
 
     # vary between subs?
     number_of_topics = 4
-    number_of_words = 5
+    number_of_words = 4
 
     if subreddit_of_interest == 'politics':
         number_of_passes = 50

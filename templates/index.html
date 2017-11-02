@@ -12,21 +12,20 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 
-    <!-- Date Range Picker JS -->
-    <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
-    <!-- Bootstrap core JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
-    <!-- font awesome spinner -->
+    <!-- font awesome spinner CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!-- Date Range Picker -->
-    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script> -->
+    <!-- Bootstrap core JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
 
+    <!-- Date Range Picker JS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <!--<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
     <!-- Style for NavBar and page padding. -->
     <style>
       body {
@@ -67,7 +66,7 @@
 
   <div class="container-fluid" id="main_view">
   	<div class="row">
-      <div class="col-md-2">
+      <div class="col-md-2" style="margin-left: -30px;">
       </div>
   		<div class="col-md-1">
   			<h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif">
@@ -77,7 +76,7 @@
   		<div class="col-md-3" style="padding-top: 7px;">
         <form class="form-subreddit" action="/" method="post" role="form">
           <div class="form-group">
-            <select type="subreddit" name="subreddit" class="form-control" id="subreddit_selector" onchange="updateSubreddit(this);">
+            <select type="subreddit" name="subreddit" class="form-control" id="subreddit_selector">
               <option {% if sub=='politics' %} selected="selected" {% endif %}>r/politics</option>
               <option {% if sub=='news' %} selected="selected" {% endif %}>r/news</option>
               <option {% if sub=='worldnews' %} selected="selected" {% endif %}>r/worldnews</option>
@@ -91,45 +90,47 @@
   				on
   			</h1>
   		</div>
-  		<div class="col-md-3" style="padding-top: 7px; padding-left: 0px; padding-right:0px;">
+  		<div class="col-md-3" style="padding-top: 7px; padding-left: 0px; padding-right:0px; max-width:22%">
         <form class="form-date" action="/" method="post" role="form">
-            <input type="text" class="form-control" name="daterange" onchange="updateDateRange(this);">
-          </form>
+            <input type="text" class="form-control" name="daterange">
+        </form>
   		</div>
-      <div class="col-md-2" style="padding-top: 5px; padding-left: 2px;">
+      <div class="col-md-2" style="padding-top: 7px; padding-left: 10px;">
+        <form class="form-date" action="/" method="post" role="form">
+          <button type="button" class="btn btn-primary" onclick="updateData(this);">Go</button>
+        </form>
         <div id="spinner">
           <i class="fa fa-gear fa-spin" style="font-size:32px; padding:5px; color:#4885ed;"></i>
         </div>
       </div>
       <script type="text/javascript">
         $('#spinner').hide();
-
-        /* SUBREDDIT CHANGE */
-        function updateSubreddit(formControl) {
-            $('#spinner').show();
-            var time_start = performance.now();
-            $.ajax({
-                url: '/updateDataset',
-                data: $('form').serialize(),
-                type: 'POST',
-                success: function(response) {
-                  var time_end = performance.now();
-                  console.log("Call to switch subreddit took " + (time_end - time_start)/1000 + " seconds.");
+        function pollForData(job_id) {
+          $.ajax({
+              url: ('/results/'+job_id),
+              type: 'GET',
+              success: function(response) {
+                if (response == "NOT COMPLETED") {
+                  setTimeout(
+                    function() {
+                      pollForData(job_id)
+                    }, 3000);
+                } else {
                   $('#spinner').hide();
                   $("#main_view").html(response);
-                },
-                error: function(error) {
-                    $('#spinner').hide();
-                    alert('Sorry, the computation time exceeded the limit. Please try again with a smaller data range, or use an instance on your local machine');
-                    console.log(error);
                 }
-            });
+              },
+              error: function(error) {
+                $('#spinner').hide();
+                alert('Sorry, an error occured. Please reload the page and try again.');
+                console.log(error);
+              }
+          });
         }
 
         /* DATE CHANGE */
         var startdate = '' + {{start_date}};
         var enddate = '' + {{end_date}};
-
         var startDateDisplay = '' + startdate.substring(4,6) + "/" + startdate.substring(6,8) + "/" + startdate.substring(0,4);
         var endDateDisplay = '' + enddate.substring(4,6) + "/" + enddate.substring(6,8) + "/" + enddate.substring(0,4);
 
@@ -138,39 +139,29 @@
             $('input[name="daterange"]').daterangepicker({ "startDate": startDateDisplay, "endDate": endDateDisplay});
         });
 
-        function updateDateRange(formControl) {
+        function updateData(formControl) {
           var prevValue = '' + startDateDisplay + ' - ' + endDateDisplay;
           var dateValue = $(formControl).val();
 
-          if (prevValue == dateValue) {
-            return;
-          }
           var startDate = parseInt(dateValue.substring(6,10) + dateValue.substring(0,2) + dateValue.substring(3,5));
           var endDate = parseInt(dateValue.substring(19,23) + dateValue.substring(13,15) + dateValue.substring(16,18));
 
           if (startDate < 20171001) {
-            alert("startDate range is out of the supported range of 10/01/17 - 11/19/17 " + startDate);
+            alert("Date range is out of the supported range of 10/01/17 - 11/19/17 " + startDate);
           } else if (endDate > 20171119) {
-            alert("Date range is out of the supported range of 910/01/17 - 11/19/17" + endDate);
+            alert("Date range is out of the supported range of 10/01/17 - 11/19/17" + endDate);
           } else {
             $('#spinner').show();
-            var time_start = performance.now();
-            var date_dict = {};
-            date_dict["startDate"] = startDate;
-            date_dict["endDate"] = endDate;
             $.ajax({
                 url: '/updateDataset',
                 data: $('form').serialize(),
                 type: 'POST',
                 success: function(response) {
-                   var time_end = performance.now();
-                   console.log("Call to switch date took " + (time_end - time_start)/1000 + " seconds.");
-                    $('#spinner').hide();
-                    $("#main_view").html(response);
+                  pollForData(response);
                 },
                 error: function(error) {
                     $('#spinner').hide();
-                    alert('Sorry, the computation time exceeded the limit. Please try again with a smaller data range, or use an instance on your local machine');
+                    alert('Sorry, an error occured. Please reload the page and try again.');
                     console.log(error);
                 }
             });
