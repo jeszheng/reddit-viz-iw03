@@ -20,7 +20,7 @@ def html_escape(text):
 def main():
     # file name.
     allPosts = []
-    date = "20171030"
+    date = "20171101"
     # TODO conditional reading from extra commenting process.
     # don't forget to comment out database url in models file!
 
@@ -29,6 +29,7 @@ def main():
     # Insert in top post data from specified date.
 
     ################################################################################
+    print 'committing top posts from ', date, '...'
     with open(
     '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
         allPosts = json.load(data_file)
@@ -171,7 +172,7 @@ def main():
     # Insert in controversial post data from specified date.
 
     ################################################################################
-
+    print 'committing controversial posts from ', date, '...'
     with open(
     '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_controversial.json') as data_file:
         allPosts = json.load(data_file)
