@@ -49,7 +49,7 @@ def updateDataset():
     date_range_str = request.form['daterange']
     start_date = int(date_range_str[6:10]+date_range_str[0:2]+date_range_str[3:5])
     end_date = int(date_range_str[19:23]+date_range_str[13:15]+date_range_str[16:18])
-    job = q.enqueue_call( func=dataToBeRendered, args=(subreddit_of_interest,start_date,end_date,), result_ttl=5000)
+    job = q.enqueue_call( func=dataToBeRendered, args=(subreddit_of_interest,start_date,end_date,), result_ttl=30)
     return job.get_id()
 
 @app.route('/')

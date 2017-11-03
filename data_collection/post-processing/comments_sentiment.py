@@ -13,7 +13,7 @@ from indicoio import political
 # uses: 1
 
 indicoio.config.api_key = '2ccb28236e4172929679bf7edf504083' # Oliver's API Key
-# uses: 1
+# uses: 2
 
 ################################################################################
 
