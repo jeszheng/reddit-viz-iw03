@@ -1,35 +1,4 @@
-var data = [];
-var a = {};
-a['Positive-Negative Sentiment'] = 0.296;
-a['Post Score'] = 51261;
-a['Author Karma'] = 25300;
-a['Upvote Ratio'] = 0.88;
-a['Number of Comments'] = 5683;
-a['Title'] = 'Republicans just introduced a bill to remove Mueller from the Trump-Russia investigation';
-a['Category'] = 'top';
-data.push(a);
-
-var b = {};
-b['Positive-Negative Sentiment'] = -0.75;
-b['Post Score'] = 20081;
-b['Author Karma'] = 43261;
-b['Upvote Ratio'] = 0.9;
-b['Number of Comments'] = 1720;
-b['Title'] = 'Robert Mueller is reportedly zeroing in on Jared Kushner over his role in firing James Comey';
-b['Category'] = 'top';
-data.push(b);
-
-var d = {};
-d['Positive-Negative Sentiment'] = 0.0;
-d['Post Score'] = 42;
-d['Author Karma'] = 8111;
-d['Upvote Ratio'] = 0.52;
-d['Number of Comments'] = 170;
-d['Title'] = 'Donna Brazile’s bombshell about the DNC and Hillary Clinton, explained - Vox';
-d['Category'] = 'controversial';
-data.push(d);
-
-function draw_scatterplot(div_id) {
+function draw_scatterplot(data, div_id) {
   //var body = d3.select('body')
   var body = d3.select(div_id)
   var selectData = [
@@ -61,7 +30,7 @@ function draw_scatterplot(div_id) {
   var formatPercent = d3.format('.2%')
 
   // Scales
-  var colorScale = d3.scale.category20()
+  //var colorScale = d3.scale.category20()
   var xScale = d3.scale.linear()
     .domain( [-1,1] ) // -1 to 1 for sentiment compound
     .range([0,w])
@@ -97,7 +66,14 @@ function draw_scatterplot(div_id) {
       .attr('r','7')
       .attr('stroke','black')
       .attr('stroke-width',1)
-      .attr('fill',function (d,i) { return colorScale(i) }) // COLOR DECIDED HERE.
+      .attr('fill',function (d,i) {
+        // COLOR DECIDED HERE.
+        if (d['Category'] == 'top') {
+          return '#ff772d'
+        } else {
+          return '#6666ea'
+        }
+      })
       .on('mouseover', function () {
         d3.select(this)
           .transition()
@@ -187,5 +163,3 @@ function draw_scatterplot(div_id) {
         .attr('cx',function (d) { return xScale(d[value]) })
   }
 }
-
-draw_scatterplot('#posNegModel');
