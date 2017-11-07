@@ -20,8 +20,7 @@ def html_escape(text):
 def main():
     # file name.
     allPosts = []
-    date = "20171103"
-    # TODO conditional reading from extra commenting process.
+    date = "20171106"
 
     ################################################################################
 
