@@ -20,9 +20,8 @@ def html_escape(text):
 def main():
     # file name.
     allPosts = []
-    date = "20171102"
+    date = "20171103"
     # TODO conditional reading from extra commenting process.
-    # don't forget to comment out database url in models file!
 
     ################################################################################
 

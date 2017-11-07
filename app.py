@@ -32,13 +32,15 @@ def get_results(job_key):
         subreddit_of_interest = job.result['subreddit_of_interest']
         start_date = job.result['start_date']
         end_date = job.result['end_date']
+        posneg_data = job.result['posneg_data']
         return render_template('index.html',
                                         top_titles = top_titles,
                                         controversial_titles = controversial_titles,
                                         topic_model_data = topic_model_data,
                                         sub = subreddit_of_interest,
                                         start_date = start_date,
-                                        end_date = end_date)
+                                        end_date = end_date,
+                                        posneg_data = posneg_data)
     else:
         return "NOT COMPLETED"
 
@@ -60,7 +62,8 @@ def main():
                                     topic_model_data = [],
                                     sub = 'politics',
                                     start_date = 20171001,
-                                    end_date = 20171001)
+                                    end_date = 20171001,
+                                    posneg_data = [])
 
 if __name__ == '__main__':
     app.debug = True # debug setting!

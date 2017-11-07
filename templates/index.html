@@ -194,6 +194,19 @@
         var topics = {{ topic_model_data|tojson }};
         draw_bubbles(topics, "#topicModel");
         </script>
+        <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+                  font-size: 22px;
+                  color: #758db2;
+                  text-align: center">
+          Positive - Negative Sentiment Analysis
+        </h1>
+        <style>.y-axis { font: 10px sans-serif; }</style>
+        <div id="posNegModel" style="text-align: center"></div>
+        <script src="../static/js/posNegScatterplot.js"></script>
+        <script>
+          var posNegData = {{ posneg_data|tojson }};
+          draw_scatterplot(posNegData, '#posNegModel');
+        </script>
   		</div>
   		<div class="col-md-2">
         <p style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;

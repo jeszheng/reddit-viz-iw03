@@ -78,11 +78,32 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     controversial = db.session.query(ControversialPost).filter(ControversialPost.date >= start_date).filter(ControversialPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
 
     top_titles = []
+    controversial_titles = []
+    posneg_data = []
+
     for post in top:
         top_titles.append(unescape(post.title))
-    controversial_titles = []
+        posneg = {}
+        posneg['Positive-Negative Sentiment'] = post.sentiment_compound
+        posneg['Post Score'] = post.score
+        posneg['Author Karma'] = post.author_link_karma
+        posneg['Upvote Ratio'] = post.upvote_ratio
+        posneg['Number of Comments'] = post.num_comments
+        posneg['Title'] = unescape(post.title)
+        posneg['Category'] = 'top'
+        posneg_data.append(posneg)
+
     for post in controversial:
         controversial_titles.append(unescape(post.title))
+        posneg = {}
+        posneg['Positive-Negative Sentiment'] = post.sentiment_compound
+        posneg['Post Score'] = post.score
+        posneg['Author Karma'] = post.author_link_karma
+        posneg['Upvote Ratio'] = post.upvote_ratio
+        posneg['Number of Comments'] = post.num_comments
+        posneg['Title'] = unescape(post.title)
+        posneg['Category'] = 'controversial'
+        posneg_data.append(posneg)
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
 
@@ -93,5 +114,6 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     dataset['start_date'] = start_date
     dataset['end_date'] = end_date
     dataset['subreddit_of_interest'] = subreddit_of_interest
+    dataset['posneg_data'] = posneg_data
 
     return dataset
