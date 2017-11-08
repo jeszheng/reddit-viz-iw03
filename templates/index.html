@@ -43,9 +43,9 @@
   </head>
 
   <body>
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #CEE3F7;">
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #DCEDB8;">
        <div class="container">
-         <a class="navbar-brand" href="#" style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif">reddit data visualizer</a>
+         <a class="navbar-brand" href="#" style="color: #455449; font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif">reddit data visualizer</a>
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
            <span class="navbar-toggler-icon"></span>
          </button>
@@ -97,7 +97,7 @@
   		</div>
       <div class="col-md-2" style="padding-top: 7px; padding-left: 10px;">
         <form class="form-date" action="/" method="post" role="form">
-          <button type="button" class="btn btn-primary" onclick="updateData(this);">Go</button>
+          <button type="button" class="btn btn-success" onclick="updateData(this);">Go</button>
         </form>
         <div id="spinner">
           <i class="fa fa-gear fa-spin" style="font-size:32px; padding:5px; color:#4885ed;"></i>
@@ -173,7 +173,7 @@
   		<div class="col-md-2">
         <p style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 26px;
-                  color: #ff772d;">
+                  color: #63A500;">
           Top<br/>
           Posts
         </p>
@@ -211,7 +211,7 @@
   		<div class="col-md-2">
         <p style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 22px;
-                  color: #5252e0;">
+                  color: #ff772d;">
           Controversial Posts
         </p>
         {% for title in controversial_titles %}

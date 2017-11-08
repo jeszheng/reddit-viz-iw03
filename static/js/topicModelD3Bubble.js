@@ -17,6 +17,9 @@ var nodes = [];
 
 // get the json data from the file
 function draw_bubbles(data, div_id) {
+  if (data.length == 0) {
+    return;
+  }
 
   for (var i = 0; i < data.length; i++) {
     var obj = data[i];
@@ -76,21 +79,21 @@ function draw_bubbles(data, div_id) {
       // COLOR DECIDED HERE.
       switch(d.category) {
         case 'top-0':
-            return '#ff4d00';
+            return '#24A800';
         case 'top-1':
-            return '#ff772d';
+            return '#57BC0F';
         case 'top-2':
-            return '#f9955f';
+            return '#8DC916';
         case 'top-3':
-            return '#ffc095';
+            return '#B8D60E';
         case 'controversial-0':
-            return '#5252e0';
+            return '#ff4d00';
         case 'controversial-1':
-            return '#6666ea';
+            return '#ff772d';
         case 'controversial-2':
-            return '#8585e1';
+            return '#f9955f';
         case 'controversial-3':
-            return '#bebef2';
+            return '#ffc095';
         default:
             return color(d.cluster);
       }
