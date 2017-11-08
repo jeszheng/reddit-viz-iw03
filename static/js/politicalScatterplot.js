@@ -9,6 +9,25 @@ function draw_political_scatterplot(data, div_id) {
                      { "text" : "Upvote Ratio" },
                      { "text" : "Number of Comments" },
                    ]
+  var selectData_X = [
+                    { "text" : "Liberal Sentiment" },
+                    { "text" : "Conservative Sentiment" },
+                    { "text" : "Libertarian Sentiment" },
+                  ]
+
+   // Select X-axis Variable
+   var span = body.append('span')
+     .text('Select X-Axis variable: ')
+   var xInput = body.append('select')
+       .attr('id','xSelect')
+       .on('change',xChange)
+     .selectAll('option')
+       .data(selectData_X)
+       .enter()
+     .append('option')
+       .attr('value', function (d) { return d.text })
+       .text(function (d) { return d.text ;})
+   body.append('br')
 
   // Select Y-axis Variable
   var span = body.append('span')
@@ -24,6 +43,9 @@ function draw_political_scatterplot(data, div_id) {
       .text(function (d) { return d.text ;})
   body.append('br')
 
+  var curXVal = 'Liberal Sentiment';
+  var curYVal = 'Post Score';
+
   // Variables
   var body = d3.select(div_id)
   var margin = { top: 50, right: 50, bottom: 50, left: 50 }
@@ -32,7 +54,7 @@ function draw_political_scatterplot(data, div_id) {
 
   // Scales
   var xScale = d3.scale.linear()
-    .domain( [0,1] ) // 0 to 1 for political sentiments
+    .domain( [0,d3.max(data,function (d) { return d['Liberal Sentiment'] })] ) // 0 to 1 for political sentiments
     .range([0,w])
 
   var yScaleScores = [];
@@ -98,6 +120,8 @@ function draw_political_scatterplot(data, div_id) {
       .text(function (d) { return d['Title']
                           +
                            '\nLiberal Sentiment: ' + d['Liberal Sentiment'] +
+                           '\nConservative Sentiment: ' + d['Conservative Sentiment'] +
+                           '\nLibertarian Sentiment: ' + d['nLibertarian Sentiment'] +
                            '\nPost Score: ' + d['Post Score'] +
                            '\nAuthor Karma: ' + d['Author Karma'] +
                            '\nUpvote Ratio: ' + d['Upvote Ratio'] +
@@ -197,11 +221,11 @@ function draw_political_scatterplot(data, div_id) {
     var top_data = data.filter(function(d) {return d['Category'] == 'top'});
     var controversial_data = data.filter(function(d) {return d['Category'] == 'controversial'});
 
-    var xSeries_top = top_data.map(function(d) { return d['Liberal Sentiment']; });
+    var xSeries_top = top_data.map(function(d) { return d[curXVal]; });
     var ySeries_top = top_data.map(function(d) { return d[value]; });
     var correlation_top = calculateCorrelation(xSeries_top, ySeries_top);
 
-    var xSeries_con = controversial_data.map(function(d) { return d['Liberal Sentiment']; });
+    var xSeries_con = controversial_data.map(function(d) { return d[curXVal]; });
     var ySeries_con = controversial_data.map(function(d) { return d[value]; });
     var correlation_con = calculateCorrelation(xSeries_con, ySeries_con);
 
@@ -212,25 +236,57 @@ function draw_political_scatterplot(data, div_id) {
     d3.select('#correlation-con-pol')
       .transition().duration(500)
       .text('controversial: r = ' + correlation_con.toFixed(3))
+
+    curYVal = value;
+    // console.log(curXVal + " -vs- " + curYVal);
   }
 
   function xChange() {
     var value = this.value // get the new x value
+
     xScale // change the xScale
       .domain([
-        d3.min([0,d3.min(data,function (d) { return d[value] })]),
+        0,
         d3.max([0,d3.max(data,function (d) { return d[value] })])
         ])
     xAxis.scale(xScale) // change the xScale
+
     d3.select('#xAxis-political') // redraw the xAxis
       .transition().duration(1000)
       .call(xAxis)
     d3.select('#xAxisLabel-political') // change the xAxisLabel
       .transition().duration(1000)
       .text(value)
-  d3.selectAll('.circle-political') // move the circles
+
+    d3.selectAll('.circle-political') // move the circles
       .transition().duration(1000)
-      .delay(function (d,i) { return i*100})
-        .attr('cx',function (d) { return xScale(d[value]) })
+      .delay(0) // delay = 0 moves all the circles at the same time.
+          .attr('cx',function (d) { return xScale(d[value]) })
+
+    // todo correlation calculation. more tricky.
+    // TODO somehow store what was in each axis label.
+
+    // may difference between liberal/conservative?
+    var top_data = data.filter(function(d) {return d['Category'] == 'top'});
+    var controversial_data = data.filter(function(d) {return d['Category'] == 'controversial'});
+
+    var xSeries_top = top_data.map(function(d) { return d[value]; });
+    var ySeries_top = top_data.map(function(d) { return d[curYVal]; });
+    var correlation_top = calculateCorrelation(xSeries_top, ySeries_top);
+
+    var xSeries_con = controversial_data.map(function(d) { return d[value]; });
+    var ySeries_con = controversial_data.map(function(d) { return d[curYVal]; });
+    var correlation_con = calculateCorrelation(xSeries_con, ySeries_con);
+
+    d3.select('#correlation-top-pol')
+      .transition().duration(500)
+      .text('top: r = ' + correlation_top.toFixed(3))
+
+    d3.select('#correlation-con-pol')
+      .transition().duration(500)
+      .text('controversial: r = ' + correlation_con.toFixed(3))
+
+    curXVal = value;
+    // console.log(curXVal + " -vs- " + curYVal);
   }
 }
