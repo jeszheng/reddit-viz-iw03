@@ -202,10 +202,24 @@
         </h1>
         <style>.y-axis { font: 10px sans-serif; }</style>
         <div id="posNegModel" style="text-align: center"></div>
+        <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+                  font-size: 22px;
+                  color: #758db2;
+                  text-align: center">
+          Political Sentiment Analysis
+        </h1>
+        <div id="politicalModel" style="text-align: center"></div>
+        <script src="../static/js/statistics.js"></script>
         <script src="../static/js/posNegScatterplot.js"></script>
+        <script src="../static/js/politicalScatterplot.js"></script>
         <script>
           var posNegData = {{ posneg_data|tojson }};
-          draw_scatterplot(posNegData, '#posNegModel');
+          draw_posneg_scatterplot(posNegData, '#posNegModel');
+          // TODO remove for non-politics.
+          // if (subreddit == 'politics') {
+          //   draw_political_scatterplot(posNegData, '#politicalModel');
+          // }
+          draw_political_scatterplot(posNegData, '#politicalModel');
         </script>
   		</div>
   		<div class="col-md-2">

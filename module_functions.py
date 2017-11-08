@@ -80,6 +80,7 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     top_titles = []
     controversial_titles = []
     posneg_data = []
+    political_data = []
 
     for post in top:
         top_titles.append(unescape(post.title))
@@ -91,6 +92,9 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         posneg['Number of Comments'] = post.num_comments
         posneg['Title'] = unescape(post.title)
         posneg['Category'] = 'top'
+        posneg['Liberal Sentiment'] = post.liberal
+        posneg['Conservative Sentiment'] = post.conservative
+        posneg['Libertarian Sentiment'] = post.libertarian
         posneg_data.append(posneg)
 
     for post in controversial:
@@ -103,6 +107,9 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         posneg['Number of Comments'] = post.num_comments
         posneg['Title'] = unescape(post.title)
         posneg['Category'] = 'controversial'
+        posneg['Liberal Sentiment'] = post.liberal
+        posneg['Conservative Sentiment'] = post.conservative
+        posneg['Libertarian Sentiment'] = post.libertarian
         posneg_data.append(posneg)
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)

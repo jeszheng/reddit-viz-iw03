@@ -1,4 +1,4 @@
-function draw_posneg_scatterplot(data, div_id) {
+function draw_political_scatterplot(data, div_id) {
   if (data.length == 0) {
     return;
   }
@@ -14,7 +14,7 @@ function draw_posneg_scatterplot(data, div_id) {
   var span = body.append('span')
       .text('Select Y-Axis variable: ')
   var yInput = body.append('select')
-      .attr('id','ySelect-posneg')
+      .attr('id','ySelect-political')
       .on('change',yChange)
     .selectAll('option')
       .data(selectData)
@@ -32,7 +32,7 @@ function draw_posneg_scatterplot(data, div_id) {
 
   // Scales
   var xScale = d3.scale.linear()
-    .domain( [-1,1] ) // -1 to 1 for sentiment compound
+    .domain( [0,1] ) // 0 to 1 for political sentiments
     .range([0,w])
 
   var yScaleScores = [];
@@ -46,7 +46,7 @@ function draw_posneg_scatterplot(data, div_id) {
       Math.ceil(d3.quantile(yScaleScores, 0.05)/100)*100
       ])
     .range([h,0])
-  var svg1 = body.append('svg')
+  var svg2 = body.append('svg')
       .attr('height',h + margin.top + margin.bottom)
       .attr('width',w + margin.left + margin.right)
     .append('g')
@@ -62,12 +62,12 @@ function draw_posneg_scatterplot(data, div_id) {
     .ticks(5)
     .orient('left')
   // Circles
-  var circles = svg1.selectAll('circle')
+  var circles = svg2.selectAll('circle')
       .data(data)
       .enter()
     .append('circle')
-      .attr('class','circle-posneg')
-      .attr('cx',function (d) { return xScale(d['Positive-Negative Sentiment']) })
+      .attr('class','circle-political')
+      .attr('cx',function (d) { return xScale(d['Liberal Sentiment']) })
       .attr('cy',function (d) { return yScale(d['Post Score']) })
       .attr('r','5')
       .attr('stroke','black')
@@ -97,32 +97,32 @@ function draw_posneg_scatterplot(data, div_id) {
     .append('title') // TOOLTIP FOR EACH CIRCLE
       .text(function (d) { return d['Title']
                           +
-                           '\nPositive-Negative Sentiment: ' + d['Positive-Negative Sentiment'] +
+                           '\nLiberal Sentiment: ' + d['Liberal Sentiment'] +
                            '\nPost Score: ' + d['Post Score'] +
                            '\nAuthor Karma: ' + d['Author Karma'] +
                            '\nUpvote Ratio: ' + d['Upvote Ratio'] +
                            '\nNumber of Comments: ' + d['Number of Comments']
                          })
   // X-axis
-  svg1.append('g')
+  svg2.append('g')
       .attr('class','axis')
-      .attr('id','xAxis-posneg')
+      .attr('id','xAxis-political')
       .attr('transform', 'translate(0,' + h + ')')
       .call(xAxis)
     .append('text') // X-axis Label
-      .attr('id','xAxisLabel-posneg')
+      .attr('id','xAxisLabel-political')
       .attr('y',-15)
       .attr('x',w)
       .attr('dy','.71em')
       .style('text-anchor','end')
-      .text('Positive-Negative Sentiment')
+      .text('Liberal Sentiment')
   // Y-axis
-  svg1.append('g')
+  svg2.append('g')
       .attr('class','y-axis')
-      .attr('id','yAxis-posneg')
+      .attr('id','yAxis-political')
       .call(yAxis)
     .append('text') // y-axis Label
-      .attr('id', 'yAxisLabel-posneg')
+      .attr('id', 'yAxisLabel-political')
       .attr('transform','rotate(-90)')
       .attr('x',0)
       .attr('y',5)
@@ -134,29 +134,29 @@ function draw_posneg_scatterplot(data, div_id) {
     var top_data =  data.filter(function(d) {return d['Category'] == 'top'});
     var controversial_data = data.filter(function(d) {return d['Category'] == 'controversial'});
 
-    var xSeries_top = top_data.map(function(d) { return d['Positive-Negative Sentiment']; });
+    var xSeries_top = top_data.map(function(d) { return d['Liberal Sentiment']; });
 		var ySeries_top = top_data.map(function(d) { return d['Post Score']; });
     var correlation_top = calculateCorrelation(xSeries_top, ySeries_top);
 
-    var xSeries_con = controversial_data.map(function(d) { return d['Positive-Negative Sentiment']; });
+    var xSeries_con = controversial_data.map(function(d) { return d['Liberal Sentiment']; });
 		var ySeries_con = controversial_data.map(function(d) { return d['Post Score']; });
     var correlation_con = calculateCorrelation(xSeries_con, ySeries_con);
 
   // Correlation Labels
-  svg1.append('g')
+  svg2.append('g')
       .attr('class','correlation-top')
   .append('text') // top correlation
-    .attr('id','correlation-top-posneg')
+    .attr('id','correlation-top-pol')
     .attr('x',w)
     .attr('y',5)
     .style('text-anchor','end')
     .style('fill','#24A800')
     .text('top: r = ' + correlation_top.toFixed(3))
 
-  svg1.append('g')
+  svg2.append('g')
       .attr('class','correlation-con')
   .append('text') // controversial correlation
-    .attr('id','correlation-con-posneg')
+    .attr('id','correlation-con-pol')
     .attr('x',w)
     .attr('y',22)
     .style('text-anchor','end')
@@ -182,12 +182,12 @@ function draw_posneg_scatterplot(data, div_id) {
         maxYVal
         ])
     yAxis.scale(yScale) // change the yScale
-    d3.select('#yAxis-posneg') // redraw the yAxis
+    d3.select('#yAxis-political') // redraw the yAxis
       .transition().duration(1000)
       .call(yAxis)
-    d3.select('#yAxisLabel-posneg') // change the yAxisLabel
+    d3.select('#yAxisLabel-political') // change the yAxisLabel
       .text(value)
-    d3.selectAll('.circle-posneg') // move the circles
+    d3.selectAll('.circle-political') // move the circles
       .transition().duration(1000)
       .delay(0) // delay = 0 moves all the circles at the same time.
       .attr('cy',function (d) { return yScale(d[value]) })
@@ -197,40 +197,40 @@ function draw_posneg_scatterplot(data, div_id) {
     var top_data = data.filter(function(d) {return d['Category'] == 'top'});
     var controversial_data = data.filter(function(d) {return d['Category'] == 'controversial'});
 
-    var xSeries_top = top_data.map(function(d) { return d['Positive-Negative Sentiment']; });
+    var xSeries_top = top_data.map(function(d) { return d['Liberal Sentiment']; });
     var ySeries_top = top_data.map(function(d) { return d[value]; });
     var correlation_top = calculateCorrelation(xSeries_top, ySeries_top);
 
-    var xSeries_con = controversial_data.map(function(d) { return d['Positive-Negative Sentiment']; });
+    var xSeries_con = controversial_data.map(function(d) { return d['Liberal Sentiment']; });
     var ySeries_con = controversial_data.map(function(d) { return d[value]; });
     var correlation_con = calculateCorrelation(xSeries_con, ySeries_con);
 
-    d3.select('#correlation-top-posneg')
+    d3.select('#correlation-top-pol')
       .transition().duration(500)
       .text('top: r = ' + correlation_top.toFixed(3))
 
-    d3.select('#correlation-con-posneg')
+    d3.select('#correlation-con-pol')
       .transition().duration(500)
       .text('controversial: r = ' + correlation_con.toFixed(3))
   }
 
-  // function xChange() {
-  //   var value = this.value // get the new x value
-  //   xScale // change the xScale
-  //     .domain([
-  //       d3.min([0,d3.min(data,function (d) { return d[value] })]),
-  //       d3.max([0,d3.max(data,function (d) { return d[value] })])
-  //       ])
-  //   xAxis.scale(xScale) // change the xScale
-  //   d3.select('#xAxis-posneg') // redraw the xAxis
-  //     .transition().duration(1000)
-  //     .call(xAxis)
-  //   d3.select('#xAxisLabel-posneg') // change the xAxisLabel
-  //     .transition().duration(1000)
-  //     .text(value)
-  //   d3.selectAll('.circle-posneg') // move the circles
-  //     .transition().duration(1000)
-  //     .delay(function (d,i) { return i*100})
-  //       .attr('cx',function (d) { return xScale(d[value]) })
-  // }
+  function xChange() {
+    var value = this.value // get the new x value
+    xScale // change the xScale
+      .domain([
+        d3.min([0,d3.min(data,function (d) { return d[value] })]),
+        d3.max([0,d3.max(data,function (d) { return d[value] })])
+        ])
+    xAxis.scale(xScale) // change the xScale
+    d3.select('#xAxis-political') // redraw the xAxis
+      .transition().duration(1000)
+      .call(xAxis)
+    d3.select('#xAxisLabel-political') // change the xAxisLabel
+      .transition().duration(1000)
+      .text(value)
+  d3.selectAll('.circle-political') // move the circles
+      .transition().duration(1000)
+      .delay(function (d,i) { return i*100})
+        .attr('cx',function (d) { return xScale(d[value]) })
+  }
 }
