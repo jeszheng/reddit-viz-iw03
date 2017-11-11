@@ -20,7 +20,7 @@ function render(data, div_id) {
           .rangeBands([20, height]);
 
   var sub_const_top = d3.min(data,function (d) { return d[top] }) - 0.01;
-  var mult_const = 1400;
+  var mult_const = 1200;
   var sub_const_con = d3.min(data,function (d) { return d[con] }) - 0.01;
   var add_const = 200;
 
