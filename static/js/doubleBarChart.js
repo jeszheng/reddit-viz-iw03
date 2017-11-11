@@ -57,6 +57,7 @@ function render(data, div_id) {
           })
           .attr("height", y.rangeBand())
           .attr('stroke','white')
+          .attr('stroke-width',3)
           .attr('fill',function (d) {
             // COLOR DECIDED HERE.
             var colors = ['#63A500', '#71B709', '#8EB712', '#A9BC18', '#B4C625', '#BCD123'];
@@ -91,6 +92,7 @@ function render(data, div_id) {
           })
           .attr("height", y.rangeBand())
           .attr('stroke','white')
+          .attr('stroke-width',3)
           .attr('fill',function (d) {
             // COLOR DECIDED HERE.
             var colors = ['#FF772D', '#FF812D', '#FF8B2D', '#FC942D', '#FC9F2D', '#FCAD2D'];

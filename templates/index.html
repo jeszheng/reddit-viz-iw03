@@ -139,7 +139,6 @@
         });
 
         function updateData(formControl) {
-          // console.log($('form').serializeArray());
           var dateValue = $('form').serializeArray()[1]["value"];
 
           var startDate = parseInt(dateValue.substring(6,10) + dateValue.substring(0,2) + dateValue.substring(3,5));
