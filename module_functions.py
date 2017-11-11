@@ -26,11 +26,6 @@ def unescape(text):
     return text
 
 def calculateTopicModelData_old(top_titles, controversial_titles, subreddit_of_interest):
-    # print "ibm top topics:"
-    # ibm_get_topics(top_titles)
-    # print "ibm controversial topics:"
-    # ibm_get_topics(controversial_titles)
-
     # TODO control magnitude of each sub.
     if subreddit_of_interest == 'politics':
         multiply_factor = 13
@@ -90,15 +85,10 @@ def calculateTopicModelData_old(top_titles, controversial_titles, subreddit_of_i
 def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest):
     raw_top_topics = ibm_get_topics(top_titles)
     raw_controversial_topics = ibm_get_topics(controversial_titles)
-    print 'top'
-    print raw_top_topics
-    print 'controversial'
-    print raw_controversial_topics
 
     topic_model_data = []
 
     for i in range(0,min(len(raw_top_topics['keywords']), len(raw_controversial_topics['keywords']))):
-        print i
         topic_entry = {}
         top_model = raw_top_topics['keywords'][i]
         con_model = raw_controversial_topics['keywords'][i]
@@ -109,7 +99,6 @@ def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_inter
         topic_entry['index'] = i
         topic_model_data.append(topic_entry)
 
-    print topic_model_data
     return topic_model_data
 
 def dataToBeRendered(subreddit_of_interest, start_date, end_date):

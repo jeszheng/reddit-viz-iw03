@@ -4,7 +4,6 @@ import watson_developer_cloud.natural_language_understanding.features.v1 \
   as Features
 
 def ibm_get_topics(titles):
-    print 'called!'
     all_titles = ". ".join(titles)
 
     natural_language_understanding = NaturalLanguageUnderstandingV1(
