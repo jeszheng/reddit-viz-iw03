@@ -5,6 +5,7 @@ from models import TopPost, ControversialPost
 from topicmodel import get_topics
 import json
 import time
+from ibm_topic_modeler import ibm_get_topics
 
 app = Flask(__name__)
 
@@ -24,13 +25,19 @@ def unescape(text):
     text = text.replace("&amp;", '&')
     return text
 
-def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest):
+def calculateTopicModelData_old(top_titles, controversial_titles, subreddit_of_interest):
+    # print "ibm top topics:"
+    # ibm_get_topics(top_titles)
+    # print "ibm controversial topics:"
+    # ibm_get_topics(controversial_titles)
+
     # TODO control magnitude of each sub.
     if subreddit_of_interest == 'politics':
         multiply_factor = 13
     else:
         multiply_factor = 19
     topic_model_data = []
+    totalWeight = 0.0
 
     top_topic_data = get_topics(top_titles, subreddit_of_interest)
     for model in top_topic_data:
@@ -51,6 +58,7 @@ def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_inter
 
         topic_entry['category'] = 'top-' + str(model['group'])
         topic_model_data.append(topic_entry)
+        totalWeight += topic_entry['weight']
 
     controversial_topic_data = get_topics(controversial_titles, subreddit_of_interest)
     for model in controversial_topic_data:
@@ -71,6 +79,37 @@ def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_inter
 
         topic_entry['category'] = 'controversial-' + str(model['group'])
         topic_model_data.append(topic_entry)
+        totalWeight += topic_entry['weight']
+
+    # Correct for overall weight.
+    tot_mult_factor = 8.0/totalWeight
+    for topic in topic_model_data:
+        topic['weight'] = topic['weight'] * tot_mult_factor
+    return topic_model_data
+
+def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest):
+    raw_top_topics = ibm_get_topics(top_titles)
+    raw_controversial_topics = ibm_get_topics(controversial_titles)
+    print 'top'
+    print raw_top_topics
+    print 'controversial'
+    print raw_controversial_topics
+
+    topic_model_data = []
+
+    for i in range(0,min(len(raw_top_topics['keywords']), len(raw_controversial_topics['keywords']))):
+        print i
+        topic_entry = {}
+        top_model = raw_top_topics['keywords'][i]
+        con_model = raw_controversial_topics['keywords'][i]
+        topic_entry['top-keyword'] = top_model['text']
+        topic_entry['top-relevance'] = top_model['relevance']
+        topic_entry['con-keyword'] = con_model['text']
+        topic_entry['con-relevance'] = con_model['relevance']
+        topic_entry['index'] = i
+        topic_model_data.append(topic_entry)
+
+    print topic_model_data
     return topic_model_data
 
 def dataToBeRendered(subreddit_of_interest, start_date, end_date):
@@ -95,6 +134,8 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         posneg['Liberal Sentiment'] = post.liberal
         posneg['Conservative Sentiment'] = post.conservative
         posneg['Libertarian Sentiment'] = post.libertarian
+        posneg['Liberal Conservative Ratio'] = post.liberal/post.conservative
+        posneg['Liberal Conservative Difference'] = post.liberal - post.conservative
         posneg_data.append(posneg)
 
     for post in controversial:
@@ -110,6 +151,8 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         posneg['Liberal Sentiment'] = post.liberal
         posneg['Conservative Sentiment'] = post.conservative
         posneg['Libertarian Sentiment'] = post.libertarian
+        posneg['Liberal Conservative Ratio'] = post.liberal/post.conservative # can be weird.
+        posneg['Liberal Conservative Difference'] = post.liberal - post.conservative
         posneg_data.append(posneg)
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
