@@ -13,6 +13,8 @@ function draw_political_scatterplot(data, div_id) {
                     { "text" : "Liberal Sentiment" },
                     { "text" : "Conservative Sentiment" },
                     { "text" : "Libertarian Sentiment" },
+                    // { "text" : 'Liberal Conservative Ratio' },
+                    { "text" : 'Liberal Conservative Difference' },
                   ]
 
    // Select X-axis Variable
@@ -54,7 +56,9 @@ function draw_political_scatterplot(data, div_id) {
 
   // Scales
   var xScale = d3.scale.linear()
-    .domain( [0,d3.max(data,function (d) { return d['Liberal Sentiment'] })] ) // 0 to 1 for political sentiments
+    .domain(
+      [d3.min([0,d3.min(data,function (d) { return d['Liberal Sentiment'] })])
+      ,d3.max(data,function (d) { return d['Liberal Sentiment'] })] ) // 0 to 1 for political sentiments
     .range([0,w])
 
   var yScaleScores = [];
@@ -121,7 +125,7 @@ function draw_political_scatterplot(data, div_id) {
                           +
                            '\nLiberal Sentiment: ' + d['Liberal Sentiment'] +
                            '\nConservative Sentiment: ' + d['Conservative Sentiment'] +
-                           '\nLibertarian Sentiment: ' + d['nLibertarian Sentiment'] +
+                           '\nLibertarian Sentiment: ' + d['Libertarian Sentiment'] +
                            '\nPost Score: ' + d['Post Score'] +
                            '\nAuthor Karma: ' + d['Author Karma'] +
                            '\nUpvote Ratio: ' + d['Upvote Ratio'] +
@@ -197,8 +201,30 @@ function draw_political_scatterplot(data, div_id) {
     if (value == 'Upvote Ratio') {
       maxYVal = 1.0;
     } else {
-      maxYVal = Math.ceil(d3.quantile(new_yScaleScores, 0.05)/100)*100;
+      function sortNumber(a,b) {
+          return a - b;
+      }
+      var sortedArr = new_yScaleScores.sort(sortNumber); // check that this doesnt mess with new_yScaleScores
+      var num_to_exclude = Math.ceil((sortedArr.length * 0.05)/1);
+      maxYVal = sortedArr[sortedArr.length - num_to_exclude];
     }
+    // if (value == 'Upvote Ratio') {
+    //   maxYVal = 1.0;
+    // } else if (value == 'Author Karma'){
+    //   function sortNumber(a,b) {
+    //       return a - b;
+    //   }
+    //   var sortedArr = new_yScaleScores.sort(sortNumber); // check that this doesnt mess with new_yScaleScores
+    //   //console.log(sortedArr);
+    //   var num_to_exclude = Math.ceil((sortedArr.length * 0.05)/1);
+    //   //console.log(num_to_exclude);
+    //   maxYVal = sortedArr[sortedArr.length - num_to_exclude];
+    //   //console.log("maxYVal" + maxYVal);
+    // } else if (value == 'Number of Comments'){
+    //   maxYVal = Math.ceil(d3.quantile(new_yScaleScores, 0.03)/100)*100;
+    // } else { // Post Score
+    //   maxYVal = Math.ceil(d3.quantile(new_yScaleScores, 0.05)/100)*100;
+    // }
 
     yScale // change the yScale
       .domain([
@@ -246,8 +272,10 @@ function draw_political_scatterplot(data, div_id) {
 
     xScale // change the xScale
       .domain([
-        0,
+        d3.min([0,d3.min(data,function (d) { return d[value] })]),
         d3.max([0,d3.max(data,function (d) { return d[value] })])
+        // though may want to use percentile eventually...there seems to be
+        // some extreme outliers.
         ])
     xAxis.scale(xScale) // change the xScale
 
@@ -262,9 +290,6 @@ function draw_political_scatterplot(data, div_id) {
       .transition().duration(1000)
       .delay(0) // delay = 0 moves all the circles at the same time.
           .attr('cx',function (d) { return xScale(d[value]) })
-
-    // todo correlation calculation. more tricky.
-    // TODO somehow store what was in each axis label.
 
     // may difference between liberal/conservative?
     var top_data = data.filter(function(d) {return d['Category'] == 'top'});

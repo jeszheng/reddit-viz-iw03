@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<!--The code is modified from: https://jasonneylon.wordpress.com/2013/09/05/two-sided-horizontal-barchart-using-d3-js/-->
+<html>
+<head>
+    <title>Bar Chart</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <style type="text/css">
+        .chart {
+            margin: 10px;
+            padding-top: 10px;
+        }
+
+        .chart .right {
+            stroke: white;
+            fill: #ff772d;
+        }
+
+        .chart .left {
+            stroke: white;
+            fill: #63A500;
+        }
+
+        .chart rect:hover {
+            fill: #64707d;
+        }
+
+        .chart text {
+            fill: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+<div id="topicModel"></div>
+<script type="text/javascript">
+    function render(data, div_id) {
+
+      var labelArea = 160;
+      var chart,
+              width = 400,
+              bar_height = 45, // BAR HEIGHT HERE
+              height = bar_height * data.length;
+      //var rightOffset = width + labelArea;
+      var rightOffset = width; // make the bars back to back
+
+      var lCol = "infant.mortality";
+      var rCol = "gdp";
+      var xFrom = d3.scale.linear()
+              .range([0, width]);
+      var xTo = d3.scale.linear()
+              .range([0, width]);
+      var y = d3.scale.ordinal()
+              .rangeBands([20, height]);
+
+      var chart = d3.select(div_id)
+              .append('svg')
+              .attr('class', 'chart')
+              .attr('width', labelArea + width + width)
+              .attr('height', height);
+
+      xFrom.domain(d3.extent(data, function (d) {
+          return d[lCol];
+      }));
+      xTo.domain(d3.extent(data, function (d) {
+          return d[rCol];
+      }));
+
+      y.domain(data.map(function (d) {
+          return d.countries;
+      }));
+
+      var yPosByIndex = function (d) {
+          return y(d.countries);
+      };
+      chart.selectAll("rect.left")
+              .data(data)
+              .enter().append("rect")
+              .attr("x", function (d) {
+                  // return width - xFrom(d[lCol]);
+                  return width - d[lCol];
+              })
+              .attr("y", yPosByIndex)
+              .attr("class", "left")
+              .attr("width", function (d) {
+                // console.log("d[lCol]: " + d[lCol]);
+                // console.log("xfrom: " + xFrom(d[lCol]));
+                  //return xFrom(d[lCol]);
+                  return d[lCol];
+                  // xFrom doesnt work well.
+
+              })
+              .attr("height", y.rangeBand())
+              .append('title') // TOOLTIP
+                .text(function (d) { return 'hover me'
+                                   });
+      chart.selectAll("text.leftscore")
+              .data(data)
+              .enter().append("text")
+              .attr("x", function (d) {
+                  //return width - xFrom(d[lCol])-40;
+                  return width - 30; // make it be next to the divider.
+              })
+              .attr("y", function (d) {
+                  return y(d.countries) + y.rangeBand() / 2;
+              })
+              .attr("dx", "20")
+              .attr("dy", ".36em")
+              .attr("text-anchor", "end")
+              .attr('class', 'leftscore')
+              // .text(function(d){return d[lCol];});
+              .text(function(d){return 'text';});
+
+      chart.selectAll("rect.right")
+              .data(data)
+              .enter().append("rect")
+              .attr("x", rightOffset)
+              .attr("y", yPosByIndex)
+              .attr("class", "right")
+              .attr("width", function (d) {
+                  return d[rCol];
+              })
+              .attr("height", y.rangeBand())
+              .append('title') // TOOLTIP
+                .text(function (d) { return 'hover me'
+              });
+      chart.selectAll("text.score")
+              .data(data)
+              .enter().append("text")
+              .attr("x", function (d) {
+                  //return xTo(d[rCol]) + rightOffset+40;
+                  return rightOffset+50;
+              })
+              .attr("y", function (d) {
+                  return y(d.countries) + y.rangeBand() / 2;
+              })
+              .attr("dx", -5)
+              .attr("dy", ".36em")
+              .attr("text-anchor", "end")
+              .attr('class', 'score')
+              .text(function(d){return d[rCol];});
+    }
+
+    var dataset = []
+    dataset.push({"countries": 'A', "gdp": 125, "infant.mortality" : 125})
+    dataset.push({"countries": 'B', "gdp": 143, "infant.mortality" : 143})
+    dataset.push({"countries": 'C',"gdp": 203, "infant.mortality" : 203})
+    render(dataset, '#topicModel');
+</script>
+</body>
+</html>

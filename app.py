@@ -60,7 +60,7 @@ def main():
                                     top_titles = ['top titles will be displayed here'],
                                     controversial_titles = ['controversial titles will be displayed here'],
                                     topic_model_data = [],
-                                    sub = 'news',
+                                    sub = 'politics',
                                     start_date = 20171001,
                                     end_date = 20171001,
                                     posneg_data = [])

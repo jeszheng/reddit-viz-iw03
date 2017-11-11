@@ -19,8 +19,8 @@ def get_topics(titles, subreddit_of_interest):
     start_time = time.time()
 
     # vary between subs?
-    number_of_topics = 4
-    number_of_words = 4
+    number_of_topics = 3
+    number_of_words = 5
 
     if subreddit_of_interest == 'politics':
         number_of_passes = 50

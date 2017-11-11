@@ -79,11 +79,11 @@ function draw_bubbles(data, div_id) {
       // COLOR DECIDED HERE.
       switch(d.category) {
         case 'top-0':
-            return '#24A800';
+            return '#009B0F';
         case 'top-1':
             return '#57BC0F';
         case 'top-2':
-            return '#8DC916';
+            return '#A2C916';
         case 'top-3':
             return '#B8D60E';
         case 'controversial-0':
