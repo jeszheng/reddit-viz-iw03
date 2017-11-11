@@ -18,3 +18,23 @@ function calculateCorrelation(xSeries, ySeries) {
 
   return correlation;
 }
+
+
+function calculateMean(series) {
+  var reduceSumFunc = function(prev, cur) { return prev + cur; };
+  return series.reduce(reduceSumFunc) * 1.0 / series.length;
+}
+
+function calculateMedian(values) {
+  values.sort( function(a,b) {return a - b;} );
+  var half = Math.floor(values.length/2);
+  if(values.length % 2)
+    return values[half];
+  else
+  return (values[half-1] + values[half]) / 2.0;
+}
+
+
+function sortNumber(a,b) {
+    return a - b;
+}

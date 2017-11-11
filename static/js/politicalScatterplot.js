@@ -62,9 +62,21 @@ function draw_political_scatterplot(data, div_id) {
     .range([0,w])
 
   var yScaleScores = [];
+  var yScaleScoresCopy = [];
   data.forEach(function(d) {
     yScaleScores.push(d['Post Score']);
+    yScaleScoresCopy.push(d['Post Score']);
   });
+  yScaleScoresCopy.sort(sortNumber);
+  var init_num_to_exclude = Math.ceil((yScaleScoresCopy.length * 0.05)/1);
+  var initMaxYVal = yScaleScoresCopy[yScaleScoresCopy.length - init_num_to_exclude];
+
+  var yScale = d3.scale.linear()
+    .domain([
+      d3.min([0,d3.min(data,function (d) { return d['Post Score'] })]),
+      initMaxYVal
+      ])
+    .range([h,0])
 
   var yScale = d3.scale.linear()
     .domain([
@@ -191,6 +203,70 @@ function draw_political_scatterplot(data, div_id) {
     .style('fill','#ff4d00')
     .text('controversial: r = ' + correlation_con.toFixed(3))
 
+  // calculate the mean x value.
+  var xSeries_mean_top = calculateMean(xSeries_top);
+  var xSeries_mean_con = calculateMean(xSeries_con);
+  var ySeries_mean_top = calculateMedian(ySeries_top);
+  var ySeries_mean_con = calculateMedian(ySeries_con);
+  var mean_trendData = [[xSeries_mean_top, xSeries_mean_con, ySeries_mean_top, ySeries_mean_con]]
+
+  var mean_trendline_top_x_p = svg2.selectAll(".mean_trendline_top_x_p")
+    .data(mean_trendData);
+  var mean_trendline_con_x_p = svg2.selectAll(".mean_trendline_con_x_p")
+    .data(mean_trendData);
+  var mean_trendline_top_y_p = svg2.selectAll(".mean_trendline_top_y_p")
+    .data(mean_trendData);
+  var mean_trendline_con_y_p = svg2.selectAll(".mean_trendline_con_y_p")
+    .data(mean_trendData);
+
+  mean_trendline_top_x_p.enter()
+    .append("line")
+      .attr("class", "mean_trendline")
+      .attr("id", "mean_trendline_top_x_p")
+      .attr("x1", function(d) { return xScale(d[0]); })
+      .attr("y1", yScale(0))
+      .attr("x2", function(d) { return xScale(d[0]); })
+      .attr("y2", 0)
+      .attr("stroke", '#24A800')
+      .attr("stroke-width", 2)
+      .style("stroke-dasharray", ("3, 3"))
+
+  mean_trendline_con_x_p.enter()
+    .append("line")
+      .attr("class", "mean_trendline")
+      .attr("id", "mean_trendline_con_x_p")
+      .attr("x1", function(d) { return xScale(d[1]); })
+      .attr("y1", yScale(0))
+      .attr("x2", function(d) { return xScale(d[1]); })
+      .attr("y2", 0)
+      .attr("stroke", '#ff4d00')
+      .attr("stroke-width", 2)
+      .style("stroke-dasharray", ("3, 3"))
+
+  mean_trendline_top_y_p.enter()
+    .append("line")
+      .attr("class", "mean_trendline")
+      .attr("id", "mean_trendline_top_y_p")
+      .attr("x1", xScale(1.0))
+      .attr("y1", function(d) { return yScale(d[2]); })
+      .attr("x2", 0)
+      .attr("y2", function(d) { return yScale(d[2]); })
+      .attr("stroke", '#24A800')
+      .attr("stroke-width", 2)
+      .style("stroke-dasharray", ("3, 3"))
+
+    mean_trendline_con_y_p.enter()
+      .append("line")
+        .attr("class", "mean_trendline")
+        .attr("id", "mean_trendline_con_y_p")
+        .attr("x1", xScale(1.0))
+        .attr("y1", function(d) { return yScale(d[3]); })
+        .attr("x2", 0)
+        .attr("y2", function(d) { return yScale(d[3]); })
+        .attr("stroke", '#ff4d00')
+        .attr("stroke-width", 2)
+        .style("stroke-dasharray", ("3, 3"))
+
   function yChange() {
     var value = this.value // get the new y value
     var new_yScaleScores = [];
@@ -263,8 +339,19 @@ function draw_political_scatterplot(data, div_id) {
       .transition().duration(500)
       .text('controversial: r = ' + correlation_con.toFixed(3))
 
+    var ySeries_mean_top = calculateMedian(ySeries_top);
+    var ySeries_mean_con = calculateMedian(ySeries_con);
+
+    d3.select('#mean_trendline_top_y_p')
+      .transition().duration(1000)
+      .attr("y1", function(d) { return yScale(ySeries_mean_top); })
+      .attr("y2", function(d) { return yScale(ySeries_mean_top); })
+
+    d3.select('#mean_trendline_con_y_p')
+      .transition().duration(1000)
+      .attr("y1", function(d) { return yScale(ySeries_mean_con); })
+      .attr("y2", function(d) { return yScale(ySeries_mean_con); })
     curYVal = value;
-    // console.log(curXVal + " -vs- " + curYVal);
   }
 
   function xChange() {
@@ -312,6 +399,18 @@ function draw_political_scatterplot(data, div_id) {
       .text('controversial: r = ' + correlation_con.toFixed(3))
 
     curXVal = value;
-    // console.log(curXVal + " -vs- " + curYVal);
+    var xSeries_mean_top = calculateMean(xSeries_top);
+    var xSeries_mean_con = calculateMean(xSeries_con);
+
+    d3.select('#mean_trendline_top_x_p')
+      .transition().duration(1000)
+      .attr("x1", function(d) { return xScale(xSeries_mean_top); })
+      .attr("x2", function(d) { return xScale(xSeries_mean_top); })
+
+    d3.select('#mean_trendline_con_x_p')
+      .transition().duration(1000)
+      .attr("x1", function(d) { return xScale(xSeries_mean_con); })
+      .attr("x2", function(d) { return xScale(xSeries_mean_con); })
+    curYVal = value;
   }
 }

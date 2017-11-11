@@ -36,16 +36,22 @@ function draw_posneg_scatterplot(data, div_id) {
     .range([0,w])
 
   var yScaleScores = [];
+  var yScaleScoresCopy = [];
   data.forEach(function(d) {
     yScaleScores.push(d['Post Score']);
+    yScaleScoresCopy.push(d['Post Score']);
   });
+  yScaleScoresCopy.sort(sortNumber);
+  var init_num_to_exclude = Math.ceil((yScaleScoresCopy.length * 0.05)/1);
+  var initMaxYVal = yScaleScoresCopy[yScaleScoresCopy.length - init_num_to_exclude];
 
   var yScale = d3.scale.linear()
     .domain([
       d3.min([0,d3.min(data,function (d) { return d['Post Score'] })]),
-      Math.ceil(d3.quantile(yScaleScores, 0.05)/100)*100
+      initMaxYVal
       ])
     .range([h,0])
+
   var svg1 = body.append('svg')
       .attr('height',h + margin.top + margin.bottom)
       .attr('width',w + margin.left + margin.right)
@@ -95,8 +101,7 @@ function draw_posneg_scatterplot(data, div_id) {
           .attr('stroke-width',1)
       })
     .append('title') // TOOLTIP FOR EACH CIRCLE
-      .text(function (d) { return d['Title']
-                          +
+      .text(function (d) { return d['Title'] +
                            '\nPositive-Negative Sentiment: ' + d['Positive-Negative Sentiment'] +
                            '\nPost Score: ' + d['Post Score'] +
                            '\nAuthor Karma: ' + d['Author Karma'] +
@@ -163,6 +168,72 @@ function draw_posneg_scatterplot(data, div_id) {
     .style('fill','#ff4d00')
     .text('controversial: r = ' + correlation_con.toFixed(3))
 
+  // MEAN LINES
+
+  // calculate the mean x value.
+  var xSeries_mean_top = calculateMean(xSeries_top);
+  var xSeries_mean_con = calculateMean(xSeries_con);
+  var ySeries_mean_top = calculateMedian(ySeries_top);
+  var ySeries_mean_con = calculateMedian(ySeries_con);
+  var mean_trendData = [[xSeries_mean_top, xSeries_mean_con, ySeries_mean_top, ySeries_mean_con]]
+
+  var mean_trendline_top_x = svg1.selectAll(".mean_trendline_top_x")
+    .data(mean_trendData);
+  var mean_trendline_con_x = svg1.selectAll(".mean_trendline_con_x")
+    .data(mean_trendData);
+  var mean_trendline_top_y = svg1.selectAll(".mean_trendline_top_y")
+    .data(mean_trendData);
+  var mean_trendline_con_y = svg1.selectAll(".mean_trendline_con_y")
+    .data(mean_trendData);
+
+  mean_trendline_top_x.enter()
+    .append("line")
+      .attr("class", "mean_trendline_top_x")
+      .attr("id", "mean_trendline_top_x")
+      .attr("x1", function(d) { return xScale(d[0]); })
+      .attr("y1", yScale(0))
+      .attr("x2", function(d) { return xScale(d[0]); })
+      .attr("y2", 0)
+      .attr("stroke", '#24A800')
+      .attr("stroke-width", 2)
+      .style("stroke-dasharray", ("3, 3"))
+
+  mean_trendline_con_x.enter()
+    .append("line")
+      .attr("class", "mean_trendline")
+      .attr("id", "mean_trendline_con_x")
+      .attr("x1", function(d) { return xScale(d[1]); })
+      .attr("y1", yScale(0))
+      .attr("x2", function(d) { return xScale(d[1]); })
+      .attr("y2", 0)
+      .attr("stroke", '#ff4d00')
+      .attr("stroke-width", 2)
+      .style("stroke-dasharray", ("3, 3"))
+
+  mean_trendline_top_y.enter()
+    .append("line")
+      .attr("class", "mean_trendline")
+      .attr("id", "mean_trendline_top_y")
+      .attr("x1", xScale(1.0))
+      .attr("y1", function(d) { return yScale(d[2]); })
+      .attr("x2", 0)
+      .attr("y2", function(d) { return yScale(d[2]); })
+      .attr("stroke", '#24A800')
+      .attr("stroke-width", 2)
+      .style("stroke-dasharray", ("3, 3"))
+
+  mean_trendline_con_y.enter()
+    .append("line")
+      .attr("class", "mean_trendline")
+      .attr("id", "mean_trendline_con_y")
+      .attr("x1", xScale(1.0))
+      .attr("y1", function(d) { return yScale(d[3]); })
+      .attr("x2", 0)
+      .attr("y2", function(d) { return yScale(d[3]); })
+      .attr("stroke", '#ff4d00')
+      .attr("stroke-width", 2)
+      .style("stroke-dasharray", ("3, 3"))
+
   function yChange() {
     var value = this.value // get the new y value
     var new_yScaleScores = [];
@@ -177,11 +248,9 @@ function draw_posneg_scatterplot(data, div_id) {
           return a - b;
       }
       var sortedArr = new_yScaleScores.sort(sortNumber); // check that this doesnt mess with new_yScaleScores
-      //console.log(sortedArr);
       var num_to_exclude = Math.ceil((sortedArr.length * 0.05)/1);
-      //console.log(num_to_exclude);
       maxYVal = sortedArr[sortedArr.length - num_to_exclude];
-      //console.log("maxYVal" + maxYVal);
+      console.log("recalcualted maxYVal:" + maxYVal);
     }
 
     // else if (value == 'Author Karma'){
@@ -236,25 +305,18 @@ function draw_posneg_scatterplot(data, div_id) {
     d3.select('#correlation-con-posneg')
       .transition().duration(500)
       .text('controversial: r = ' + correlation_con.toFixed(3))
-  }
 
-  // function xChange() {
-  //   var value = this.value // get the new x value
-  //   xScale // change the xScale
-  //     .domain([
-  //       d3.min([0,d3.min(data,function (d) { return d[value] })]),
-  //       d3.max([0,d3.max(data,function (d) { return d[value] })])
-  //       ])
-  //   xAxis.scale(xScale) // change the xScale
-  //   d3.select('#xAxis-posneg') // redraw the xAxis
-  //     .transition().duration(1000)
-  //     .call(xAxis)
-  //   d3.select('#xAxisLabel-posneg') // change the xAxisLabel
-  //     .transition().duration(1000)
-  //     .text(value)
-  //   d3.selectAll('.circle-posneg') // move the circles
-  //     .transition().duration(1000)
-  //     .delay(function (d,i) { return i*100})
-  //       .attr('cx',function (d) { return xScale(d[value]) })
-  // }
+    var ySeries_mean_top = calculateMedian(ySeries_top);
+    var ySeries_mean_con = calculateMedian(ySeries_con);
+
+    d3.select('#mean_trendline_top_y')
+      .transition().duration(1000)
+      .attr("y1", function(d) { return yScale(ySeries_mean_top); })
+      .attr("y2", function(d) { return yScale(ySeries_mean_top); })
+
+    d3.select('#mean_trendline_con_y')
+      .transition().duration(1000)
+      .attr("y1", function(d) { return yScale(ySeries_mean_con); })
+      .attr("y2", function(d) { return yScale(ySeries_mean_con); })
+  }
 }
