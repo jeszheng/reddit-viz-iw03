@@ -60,12 +60,12 @@ function draw_posneg_scatterplot(data, div_id) {
   // X-axis
   var xAxis = d3.svg.axis()
     .scale(xScale)
-    .ticks(5)
+    .ticks(7)
     .orient('bottom')
   // Y-axis
   var yAxis = d3.svg.axis()
     .scale(yScale)
-    .ticks(5)
+    .ticks(7)
     .orient('left')
   // Circles
   var circles = svg1.selectAll('circle')
