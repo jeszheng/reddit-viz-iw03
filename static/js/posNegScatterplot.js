@@ -56,7 +56,7 @@ function draw_posneg_scatterplot(data, div_id) {
       .attr('height',h + margin.top + margin.bottom)
       .attr('width',w + margin.left + margin.right)
     .append('g')
-      .attr('transform','translate(' + margin.left + ',' + margin.top + ')')
+      .attr('transform','translate(' + (margin.left + 15) + ',' + margin.top + ')')
   // X-axis
   var xAxis = d3.svg.axis()
     .scale(xScale)

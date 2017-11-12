@@ -54,11 +54,13 @@ function draw_political_scatterplot(data, div_id) {
   var h = 500 - margin.top - margin.bottom
   var w = 700 - margin.left - margin.right
 
+  var initMaxXVal = d3.max(data,function (d) { return d['Liberal Sentiment'] });
+
   // Scales
   var xScale = d3.scale.linear()
     .domain(
       [d3.min([0,d3.min(data,function (d) { return d['Liberal Sentiment'] })])
-      ,d3.max(data,function (d) { return d['Liberal Sentiment'] })] ) // 0 to 1 for political sentiments
+      ,initMaxXVal] )
     .range([0,w])
 
   var yScaleScores = [];
@@ -78,17 +80,18 @@ function draw_political_scatterplot(data, div_id) {
       ])
     .range([h,0])
 
-  var yScale = d3.scale.linear()
-    .domain([
-      d3.min([0,d3.min(data,function (d) { return d['Post Score'] })]),
-      Math.ceil(d3.quantile(yScaleScores, 0.05)/100)*100
-      ])
-    .range([h,0])
+  // var yScale = d3.scale.linear()
+  //   .domain([
+  //     d3.min([0,d3.min(data,function (d) { return d['Post Score'] })]),
+  //     Math.ceil(d3.quantile(yScaleScores, 0.05)/100)*100
+  //     ])
+  //   .range([h,0])
+
   var svg2 = body.append('svg')
       .attr('height',h + margin.top + margin.bottom)
       .attr('width',w + margin.left + margin.right)
     .append('g')
-      .attr('transform','translate(' + margin.left + ',' + margin.top + ')')
+      .attr('transform','translate(' + (margin.left + 10) + ',' + margin.top + ')')
   // X-axis
   var xAxis = d3.svg.axis()
     .scale(xScale)
@@ -247,7 +250,7 @@ function draw_political_scatterplot(data, div_id) {
     .append("line")
       .attr("class", "mean_trendline")
       .attr("id", "mean_trendline_top_y_p")
-      .attr("x1", xScale(1.0))
+      .attr("x1", xScale(initMaxXVal))
       .attr("y1", function(d) { return yScale(d[2]); })
       .attr("x2", 0)
       .attr("y2", function(d) { return yScale(d[2]); })
@@ -259,7 +262,7 @@ function draw_political_scatterplot(data, div_id) {
       .append("line")
         .attr("class", "mean_trendline")
         .attr("id", "mean_trendline_con_y_p")
-        .attr("x1", xScale(1.0))
+        .attr("x1", xScale(initMaxXVal))
         .attr("y1", function(d) { return yScale(d[3]); })
         .attr("x2", 0)
         .attr("y2", function(d) { return yScale(d[3]); })
