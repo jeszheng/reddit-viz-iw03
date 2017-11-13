@@ -117,6 +117,8 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     controversial_titles = []
     posneg_data = []
     political_data = []
+    top_post_data = []
+    controversial_post_data = []
 
     for post in top:
         top_titles.append(unescape(post.title))
@@ -134,6 +136,10 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         posneg['Liberal Conservative Ratio'] = post.liberal/post.conservative
         posneg['Liberal Conservative Difference'] = post.liberal - post.conservative
         posneg_data.append(posneg)
+        post_data = {}
+        post_data['title'] = unescape(post.title)
+        post_data['permalink'] = post.permalink
+        top_post_data.append(post_data)
 
     for post in controversial:
         controversial_titles.append(unescape(post.title))
@@ -151,6 +157,10 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         posneg['Liberal Conservative Ratio'] = post.liberal/post.conservative # can be weird.
         posneg['Liberal Conservative Difference'] = post.liberal - post.conservative
         posneg_data.append(posneg)
+        post_data = {}
+        post_data['title'] = unescape(post.title)
+        post_data['permalink'] = post.permalink
+        controversial_post_data.append(post_data)
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
 
@@ -162,5 +172,7 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     dataset['end_date'] = end_date
     dataset['subreddit_of_interest'] = subreddit_of_interest
     dataset['posneg_data'] = posneg_data
+    dataset['top_post_data'] = top_post_data
+    dataset['controversial_post_data'] = controversial_post_data
 
     return dataset

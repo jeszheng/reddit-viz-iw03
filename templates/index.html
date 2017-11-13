@@ -45,7 +45,7 @@
   <body>
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #DCEDB8;">
        <div class="container">
-         <a class="navbar-brand" href="#" style="color: #455449; font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif">reddit headlines visualizer</a>
+         <a class="navbar-brand" href="#" style="color: #455449; font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif">reddit data visualizer</a>
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
            <span class="navbar-toggler-icon"></span>
          </button>
@@ -174,8 +174,11 @@
           Top<br/>
           Posts
         </p>
-        {% for title in top_titles %}
-          <p>{{ title }}</p>
+
+        {% for post in top_post_data %}
+          <p> {{ post.title }}
+            <a href=http://reddit.com{{ post.permalink }} target="_blank"> <i class="fa fa-link" aria-hidden="true" style="color: #63A500;"></i></a>
+          </p>
         {% endfor %}
   		</div>
   		<div class="col-md-8" style="padding-top: 20px;">
@@ -231,8 +234,10 @@
                   color: #ff772d;">
           Controversial Posts
         </p>
-        {% for title in controversial_titles %}
-          <p>{{ title }}</p>
+        {% for post in controversial_post_data %}
+        <p> {{ post.title }}
+          <a href=http://reddit.com{{ post.permalink }} target="_blank"> <i class="fa fa-link" aria-hidden="true" style="color: #ff772d;"></i></a>
+        </p>
         {% endfor %}
   		</div>
   	</div>
