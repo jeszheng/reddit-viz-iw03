@@ -287,23 +287,6 @@ function draw_political_scatterplot(data, div_id) {
       var num_to_exclude = Math.ceil((sortedArr.length * 0.05)/1);
       maxYVal = sortedArr[sortedArr.length - num_to_exclude];
     }
-    // if (value == 'Upvote Ratio') {
-    //   maxYVal = 1.0;
-    // } else if (value == 'Author Karma'){
-    //   function sortNumber(a,b) {
-    //       return a - b;
-    //   }
-    //   var sortedArr = new_yScaleScores.sort(sortNumber); // check that this doesnt mess with new_yScaleScores
-    //   //console.log(sortedArr);
-    //   var num_to_exclude = Math.ceil((sortedArr.length * 0.05)/1);
-    //   //console.log(num_to_exclude);
-    //   maxYVal = sortedArr[sortedArr.length - num_to_exclude];
-    //   //console.log("maxYVal" + maxYVal);
-    // } else if (value == 'Number of Comments'){
-    //   maxYVal = Math.ceil(d3.quantile(new_yScaleScores, 0.03)/100)*100;
-    // } else { // Post Score
-    //   maxYVal = Math.ceil(d3.quantile(new_yScaleScores, 0.05)/100)*100;
-    // }
 
     yScale // change the yScale
       .domain([
@@ -326,6 +309,7 @@ function draw_political_scatterplot(data, div_id) {
     var top_data = data.filter(function(d) {return d['Category'] == 'top'});
     var controversial_data = data.filter(function(d) {return d['Category'] == 'controversial'});
 
+    //console.log('Calc Corre between ' + curXVal + ' , ' + value);
     var xSeries_top = top_data.map(function(d) { return d[curXVal]; });
     var ySeries_top = top_data.map(function(d) { return d[value]; });
     var correlation_top = calculateCorrelation(xSeries_top, ySeries_top);
@@ -385,6 +369,7 @@ function draw_political_scatterplot(data, div_id) {
     var top_data = data.filter(function(d) {return d['Category'] == 'top'});
     var controversial_data = data.filter(function(d) {return d['Category'] == 'controversial'});
 
+    //console.log('Calc Corre between ' + value + ' , ' + curYVal);
     var xSeries_top = top_data.map(function(d) { return d[value]; });
     var ySeries_top = top_data.map(function(d) { return d[curYVal]; });
     var correlation_top = calculateCorrelation(xSeries_top, ySeries_top);
@@ -401,7 +386,6 @@ function draw_political_scatterplot(data, div_id) {
       .transition().duration(500)
       .text('controversial: r = ' + correlation_con.toFixed(3))
 
-    curXVal = value;
     var xSeries_mean_top = calculateMean(xSeries_top);
     var xSeries_mean_con = calculateMean(xSeries_con);
 
@@ -414,6 +398,6 @@ function draw_political_scatterplot(data, div_id) {
       .transition().duration(1000)
       .attr("x1", function(d) { return xScale(xSeries_mean_con); })
       .attr("x2", function(d) { return xScale(xSeries_mean_con); })
-    curYVal = value;
+    curXVal = value;
   }
 }

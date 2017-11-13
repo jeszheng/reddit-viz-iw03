@@ -3,7 +3,7 @@ from watson_developer_cloud import NaturalLanguageUnderstandingV1
 import watson_developer_cloud.natural_language_understanding.features.v1 \
   as Features
 
-def ibm_get_topics(titles):
+def ibm_get_topics(titles, num_topics):
     all_titles = ". ".join(titles)
 
     natural_language_understanding = NaturalLanguageUnderstandingV1(
@@ -15,7 +15,7 @@ def ibm_get_topics(titles):
       text = all_titles,
       features=[
         Features.Keywords(
-          limit = 6
+          limit = num_topics
         )
       ]
     )

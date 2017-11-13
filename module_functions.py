@@ -83,12 +83,20 @@ def calculateTopicModelData_old(top_titles, controversial_titles, subreddit_of_i
     return topic_model_data
 
 def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest):
-    raw_top_topics = ibm_get_topics(top_titles)
-    raw_controversial_topics = ibm_get_topics(controversial_titles)
+
+    if subreddit_of_interest == 'politics':
+        num_topics = 8
+        index_start = 0
+    else:
+        num_topics = 6
+        index_start = 0
+
+    raw_top_topics = ibm_get_topics(top_titles, num_topics)
+    raw_controversial_topics = ibm_get_topics(controversial_titles, num_topics)
 
     topic_model_data = []
 
-    for i in range(0,min(len(raw_top_topics['keywords']), len(raw_controversial_topics['keywords']))):
+    for i in range(index_start,min(len(raw_top_topics['keywords']), len(raw_controversial_topics['keywords']))):
         topic_entry = {}
         top_model = raw_top_topics['keywords'][i]
         con_model = raw_controversial_topics['keywords'][i]
