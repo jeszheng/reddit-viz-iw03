@@ -8,13 +8,13 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import indicoio
 from indicoio import political
 #indicoio.config.api_key = "656f0d163f4f34b477145c7495b42612" #My API key
-# uses: 2
+# uses: 3
 
-indicoio.config.api_key = "598d8af7949f6586681afe593346a87d" #Julie's API key
-# uses: 4
+#indicoio.config.api_key = "598d8af7949f6586681afe593346a87d" #Julie's API key
+# uses: 5
 
-#indicoio.config.api_key = '2ccb28236e4172929679bf7edf504083' # Oliver's API Key
-# uses: 4
+indicoio.config.api_key = '2ccb28236e4172929679bf7edf504083' # Oliver's API Key
+# uses: 7
 
 ################################################################################
 
@@ -206,7 +206,8 @@ for post in allPoliticalPosts:
     cur_comment_body = None
     try:
         for comment_body in top_comments_body:
-            if comment_body is None or comment_body == '' or 'http' in comment_body:
+            if comment_body is None or comment_body == '' or 'http' in comment_body or 'www.' in comment_body:
+                print 'skipped comment due to url!'
                 continue
             cur_comment_body = comment_body
             data = indicoio.political(comment_body)
@@ -222,7 +223,8 @@ for post in allPoliticalPosts:
     count = 0
     try:
         for comment_body in controversial_comments_body:
-            if comment_body is None or comment_body == '' or 'http' in comment_body:
+            if comment_body is None or comment_body == '' or 'http' in comment_body or 'www.' in comment_body:
+                print 'skipped comment due to url!'
                 continue
             cur_comment_body = comment_body
             data = indicoio.political(comment_body)
