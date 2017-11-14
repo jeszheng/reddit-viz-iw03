@@ -24,6 +24,8 @@ sid = SentimentIntensityAnalyzer()
 
 ################################################################################
 
+# Notes, doesn't discriminate against different subreddits!
+
 with open(
 '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
     allTopPosts = json.load(data_file)
