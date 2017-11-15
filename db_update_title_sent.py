@@ -2,7 +2,7 @@ from models import TopPost, ControversialPost, db
 import json
 import sys
 
-date = "20171004"
+date = "20171031"
 
 ################################################################################
 

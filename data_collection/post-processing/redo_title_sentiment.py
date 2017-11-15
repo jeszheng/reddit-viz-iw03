@@ -97,7 +97,7 @@ for post in select_controversial_posts:
         try:
             ibm_response = natural_language_understanding.analyze(text = post['title'], features=[Features.Sentiment()])
             ibm_raw_sentiment = ibm_response['sentiment']['document']['score']
-            final_sentiment = 0.65 * ibm_raw_sentiment # neturalize a bit
+            final_sentiment = 0.6 * ibm_raw_sentiment # neturalize a bit
             num_ibm_calls += 1
         except:
             final_sentiment = vader_sentiment
