@@ -18,7 +18,9 @@ reddit = praw.Reddit(client_id='_7DprL1dYvgqlw',
 subreddits = [  'politics',
                 'technology',
                 'worldnews',
-                'news' ]
+                'news',
+                'UpliftingNews',
+                 ]
 
 # use the date to mark file name.
 timestr = time.strftime("%Y%m%d-%H%M%S")
