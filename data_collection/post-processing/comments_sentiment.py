@@ -7,14 +7,14 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 import indicoio
 from indicoio import political
-#indicoio.config.api_key = "656f0d163f4f34b477145c7495b42612" #My API key
-# uses: 3
-
-#indicoio.config.api_key = "598d8af7949f6586681afe593346a87d" #Julie's API key
+indicoio.config.api_key = "656f0d163f4f34b477145c7495b42612" #My API key
 # uses: 5
 
-indicoio.config.api_key = '2ccb28236e4172929679bf7edf504083' # Oliver's API Key
+#indicoio.config.api_key = "598d8af7949f6586681afe593346a87d" #Julie's API key
 # uses: 7
+
+#indicoio.config.api_key = '2ccb28236e4172929679bf7edf504083' # Oliver's API Key
+# uses: 8
 
 ################################################################################
 
