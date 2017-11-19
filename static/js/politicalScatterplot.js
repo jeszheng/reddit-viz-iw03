@@ -10,11 +10,11 @@ function draw_political_scatterplot(data, div_id) {
                      { "text" : "Number of Comments" },
                    ]
   var selectData_X = [
+                    { "text" : 'Liberal Conservative Difference' },
                     { "text" : "Liberal Sentiment" },
                     { "text" : "Conservative Sentiment" },
-                    { "text" : "Libertarian Sentiment" },
+                    // { "text" : "Libertarian Sentiment" },
                     // { "text" : 'Liberal Conservative Ratio' },
-                    { "text" : 'Liberal Conservative Difference' },
                   ]
 
    // Select X-axis Variable
@@ -45,7 +45,7 @@ function draw_political_scatterplot(data, div_id) {
       .text(function (d) { return d.text ;})
   body.append('br')
 
-  var curXVal = 'Liberal Sentiment';
+  var curXVal = 'Liberal Conservative Difference';
   var curYVal = 'Post Score';
 
   // Variables
@@ -54,12 +54,12 @@ function draw_political_scatterplot(data, div_id) {
   var h = 500 - margin.top - margin.bottom
   var w = 700 - margin.left - margin.right
 
-  var initMaxXVal = d3.max(data,function (d) { return d['Liberal Sentiment'] });
+  var initMaxXVal = d3.max(data,function (d) { return d['Liberal Conservative Difference'] });
 
   // Scales
   var xScale = d3.scale.linear()
     .domain(
-      [d3.min([0,d3.min(data,function (d) { return d['Liberal Sentiment'] })])
+      [d3.min([0,d3.min(data,function (d) { return d['Liberal Conservative Difference'] })])
       ,initMaxXVal] )
     .range([0,w])
 
@@ -108,7 +108,7 @@ function draw_political_scatterplot(data, div_id) {
       .enter()
     .append('circle')
       .attr('class','circle-political')
-      .attr('cx',function (d) { return xScale(d['Liberal Sentiment']) })
+      .attr('cx',function (d) { return xScale(d['Liberal Conservative Difference']) })
       .attr('cy',function (d) { return yScale(d['Post Score']) })
       .attr('r','5')
       .attr('stroke','black')
@@ -140,7 +140,7 @@ function draw_political_scatterplot(data, div_id) {
                           +
                            '\nLiberal Sentiment: ' + d['Liberal Sentiment'] +
                            '\nConservative Sentiment: ' + d['Conservative Sentiment'] +
-                           '\nLibertarian Sentiment: ' + d['Libertarian Sentiment'] +
+                           //'\nLibertarian Sentiment: ' + d['Libertarian Sentiment'] +
                            '\nPost Score: ' + d['Post Score'] +
                            '\nAuthor Karma: ' + d['Author Karma'] +
                            '\nUpvote Ratio: ' + d['Upvote Ratio'] +
@@ -158,7 +158,7 @@ function draw_political_scatterplot(data, div_id) {
       .attr('x',w)
       .attr('dy','.71em')
       .style('text-anchor','end')
-      .text('Liberal Sentiment')
+      .text('Liberal Conservative Difference')
   // Y-axis
   svg2.append('g')
       .attr('class','y-axis')
@@ -177,11 +177,11 @@ function draw_political_scatterplot(data, div_id) {
     var top_data =  data.filter(function(d) {return d['Category'] == 'top'});
     var controversial_data = data.filter(function(d) {return d['Category'] == 'controversial'});
 
-    var xSeries_top = top_data.map(function(d) { return d['Liberal Sentiment']; });
+    var xSeries_top = top_data.map(function(d) { return d['Liberal Conservative Difference']; });
 		var ySeries_top = top_data.map(function(d) { return d['Post Score']; });
     var correlation_top = calculateCorrelation(xSeries_top, ySeries_top);
 
-    var xSeries_con = controversial_data.map(function(d) { return d['Liberal Sentiment']; });
+    var xSeries_con = controversial_data.map(function(d) { return d['Liberal Conservative Difference']; });
 		var ySeries_con = controversial_data.map(function(d) { return d['Post Score']; });
     var correlation_con = calculateCorrelation(xSeries_con, ySeries_con);
 

@@ -176,8 +176,33 @@
         </p>
 
         {% for post in top_post_data %}
-          <p> {{ post.title }}
+          <p>
             <a href=http://reddit.com{{ post.permalink }} target="_blank"> <i class="fa fa-link" aria-hidden="true" style="color: #63A500;"></i></a>
+            {{ post.title }}
+            <!--
+            <a> <i class="fa fa-bar-chart" aria-hidden="true" style="color: #63A500;" data-toggle="modal" data-target=#{{post.post_id}}></i> </a>
+
+            <style>.modal-backdrop.show {
+                opacity: 0.05;
+            }</style>
+            
+            <div class="modal fade" id={{post.post_id}} tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ post.title }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    text
+                  </div>
+                </div>
+              </div>
+            </div>
+          -->
+
           </p>
         {% endfor %}
   		</div>
@@ -235,8 +260,9 @@
           Controversial Posts
         </p>
         {% for post in controversial_post_data %}
-        <p> {{ post.title }}
+        <p>
           <a href=http://reddit.com{{ post.permalink }} target="_blank"> <i class="fa fa-link" aria-hidden="true" style="color: #ff772d;"></i></a>
+          {{ post.title }}
         </p>
         {% endfor %}
   		</div>

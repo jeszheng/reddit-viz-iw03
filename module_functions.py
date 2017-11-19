@@ -120,27 +120,6 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     top_post_data = []
     controversial_post_data = []
 
-    for post in top:
-        top_titles.append(unescape(post.title))
-        posneg = {}
-        posneg['Positive-Negative Sentiment'] = post.sentiment_compound
-        posneg['Post Score'] = post.score
-        posneg['Author Karma'] = post.author_link_karma
-        posneg['Upvote Ratio'] = post.upvote_ratio
-        posneg['Number of Comments'] = post.num_comments
-        posneg['Title'] = unescape(post.title)
-        posneg['Category'] = 'top'
-        posneg['Liberal Sentiment'] = post.liberal
-        posneg['Conservative Sentiment'] = post.conservative
-        posneg['Libertarian Sentiment'] = post.libertarian
-        posneg['Liberal Conservative Ratio'] = post.liberal/post.conservative
-        posneg['Liberal Conservative Difference'] = post.liberal - post.conservative
-        posneg_data.append(posneg)
-        post_data = {}
-        post_data['title'] = unescape(post.title)
-        post_data['permalink'] = post.permalink
-        top_post_data.append(post_data)
-
     for post in controversial:
         controversial_titles.append(unescape(post.title))
         posneg = {}
@@ -160,7 +139,30 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         post_data = {}
         post_data['title'] = unescape(post.title)
         post_data['permalink'] = post.permalink
+        post_data['post_id']= post.post_id
         controversial_post_data.append(post_data)
+
+    for post in top:
+        top_titles.append(unescape(post.title))
+        posneg = {}
+        posneg['Positive-Negative Sentiment'] = post.sentiment_compound
+        posneg['Post Score'] = post.score
+        posneg['Author Karma'] = post.author_link_karma
+        posneg['Upvote Ratio'] = post.upvote_ratio
+        posneg['Number of Comments'] = post.num_comments
+        posneg['Title'] = unescape(post.title)
+        posneg['Category'] = 'top'
+        posneg['Liberal Sentiment'] = post.liberal
+        posneg['Conservative Sentiment'] = post.conservative
+        posneg['Libertarian Sentiment'] = post.libertarian
+        posneg['Liberal Conservative Ratio'] = post.liberal/post.conservative
+        posneg['Liberal Conservative Difference'] = post.liberal - post.conservative
+        posneg_data.append(posneg)
+        post_data = {}
+        post_data['title'] = unescape(post.title)
+        post_data['permalink'] = post.permalink
+        post_data['post_id']= post.post_id
+        top_post_data.append(post_data)
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
 

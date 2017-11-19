@@ -250,7 +250,6 @@ function draw_posneg_scatterplot(data, div_id) {
       var sortedArr = new_yScaleScores.sort(sortNumber); // check that this doesnt mess with new_yScaleScores
       var num_to_exclude = Math.ceil((sortedArr.length * 0.05)/1);
       maxYVal = sortedArr[sortedArr.length - num_to_exclude];
-      console.log("recalcualted maxYVal:" + maxYVal);
     }
 
     // else if (value == 'Author Karma'){
