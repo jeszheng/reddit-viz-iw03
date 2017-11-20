@@ -228,20 +228,22 @@
                   text-align: center">
           Content Type
         </h1>
+        {% if top_post_data|length > 1 %}
         <div id="topSourceModel" style="margin-top:-50px; margin-left:10px;"></div>
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
-                  font-size: 30px;
+                  font-size: 28px;
                   color: #63A500;
-                  transform:translate(100px, -300px);">
+                  transform:translate(50px, -320px);">
           Top
         </h1>
         <div id="controversialSourceModel" style="margin-top:-100px; margin-left:10px;"></div>
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 26px;
                   color: #ff772d;
-                  transform:translate(50px, -300px);">
+                  transform:translate(50px, -360px);">
           Controversial
         </h1>
+        {% endif %}
         <style>
             #topSourceModel {
               width: 100%;
@@ -384,7 +386,6 @@
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 22px;
                   color: #758db2;
-                  margin-top: 40px;
                   text-align: center">
           Positive - Negative Sentiment Analysis
         </h1>

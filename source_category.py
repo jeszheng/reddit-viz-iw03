@@ -57,6 +57,7 @@ tech = [                'android',
                         'electr',
                         'engadget',
                         'engineering',
+                        'fastcompany.com',
                         'geekwire',
                         'gizmodo',
                         'hackread',
@@ -71,6 +72,7 @@ tech = [                'android',
                         'science',
                         'scientificamerican',
                         'silicon',
+                        'space.com',
                         'tech',
                         'thehackernews',
                         'thenextweb',
@@ -262,5 +264,6 @@ def categorize(list_of_domains):
         elif contains_domain(domain, american_news):
             categories['american_news'] += 1
         else:
+            # print domain
             categories['other'] += 1
     return categories
