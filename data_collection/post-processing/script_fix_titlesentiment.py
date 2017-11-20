@@ -6,5 +6,5 @@ from subprocess import call
 #     call(["python", "redo_title_sentiment.py", str(date)])
 
 
-date = 20171118
+date = 20171119
 call(["python", "redo_title_sentiment.py", str(date)])

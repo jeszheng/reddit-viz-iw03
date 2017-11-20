@@ -37,8 +37,8 @@ def get_results(job_key):
         controversial_post_data = job.result['controversial_post_data']
         top_domains_categories = job.result['top_domains_categories']
         controversial_domains_categories = job.result['controversial_domains_categories']
-        top_domains_freq = job.result['top_domains_freq']
-        controversial_domains_freq = job.result['controversial_domains_freq']
+        # top_domains_freq = job.result['top_domains_freq']
+        # controversial_domains_freq = job.result['controversial_domains_freq']
         return render_template('index.html',
                                         top_titles = top_titles,
                                         controversial_titles = controversial_titles,
@@ -51,8 +51,9 @@ def get_results(job_key):
                                         controversial_post_data = controversial_post_data,
                                         top_domains_categories = top_domains_categories,
                                         controversial_domains_categories = controversial_domains_categories,
-                                        top_domains_freq = top_domains_freq,
-                                        controversial_domains_freq = controversial_domains_freq)
+                                        # top_domains_freq = top_domains_freq,
+                                        # controversial_domains_freq = controversial_domains_freq
+                                        )
     else:
         return "NOT COMPLETED"
 
@@ -80,8 +81,9 @@ def main():
                                     controversial_post_data = [],
                                     top_domains_categories = [],
                                     controversial_domains_categories = [],
-                                    top_domains_freq = [],
-                                    controversial_domains_freq = [])
+                                    # top_domains_freq = [],
+                                    # controversial_domains_freq = []
+                                    )
 
 if __name__ == '__main__':
     app.debug = True # debug setting!
