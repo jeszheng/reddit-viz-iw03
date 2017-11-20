@@ -185,7 +185,7 @@
             <style>.modal-backdrop.show {
                 opacity: 0.05;
             }</style>
-            
+
             <div class="modal fade" id={{post.post_id}} tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -226,6 +226,166 @@
                   font-size: 22px;
                   color: #758db2;
                   text-align: center">
+          Content Type
+        </h1>
+        <div id="topSourceModel" style="margin-top:-50px; margin-left:10px;"></div>
+        <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+                  font-size: 30px;
+                  color: #63A500;
+                  transform:translate(100px, -300px);">
+          Top
+        </h1>
+        <div id="controversialSourceModel" style="margin-top:-100px; margin-left:10px;"></div>
+        <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+                  font-size: 26px;
+                  color: #ff772d;
+                  transform:translate(50px, -300px);">
+          Controversial
+        </h1>
+        <style>
+            #topSourceModel {
+              width: 100%;
+              height: 380px;
+              font-size: 11px;
+            }
+
+            #controversialSourceModel {
+              width: 100%;
+              height: 400px;
+              font-size: 11px;
+            }
+
+            .amcharts-pie-slice {
+              transform: scale(1);
+              transform-origin: 50% 50%;
+              transition-duration: 0.3s;
+              transition: all .3s ease-out;
+              -webkit-transition: all .3s ease-out;
+              -moz-transition: all .3s ease-out;
+              -o-transition: all .3s ease-out;
+              cursor: pointer;
+              box-shadow: 0 0 30px 0 #000;
+            }
+
+            .amcharts-pie-slice:hover {
+              transform: scale(1.1);
+              filter: url(#shadow);
+            }
+            </style>
+
+            <!-- Resources -->
+            <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+            <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+            <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+            <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+            <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
+
+            <!-- Chart code -->
+            <script>
+            function drawSourceModel(data, div_id) {
+              if (data.length == 0) {
+                return;
+              }
+              var chart = AmCharts.makeChart(div_id, {
+                "type": "pie",
+                "startDuration": 0,
+                "theme": "none",
+                "addClassNames": true,
+                "innerRadius": "30%",
+                "defs": {
+                  "filter": [{
+                    "id": "shadow",
+                    "width": "200%",
+                    "height": "200%",
+                    "feOffset": {
+                      "result": "offOut",
+                      "in": "SourceAlpha",
+                      "dx": 0,
+                      "dy": 0
+                    },
+                    "feGaussianBlur": {
+                      "result": "blurOut",
+                      "in": "offOut",
+                      "stdDeviation": 5
+                    },
+                    "feBlend": {
+                      "in": "SourceGraphic",
+                      "in2": "blurOut",
+                      "mode": "normal"
+                    }
+                  }]
+                },
+                "dataProvider": [{
+                  "source": "Fox News",
+                  "count": data['fox']
+                }, {
+                  "source": "American Newspaper",
+                  "count": data['american_news']
+                }, {
+                  "source": "International Newspaper",
+                  "count": data['international']
+                }, {
+                  "source": "Local Newspaper",
+                  "count": data['blog_opinion']
+                }, {
+                  "source": "Internet Media Site",
+                  "count": data['digital_media']
+                }, {
+                  "source": "Political Newspaper/Journal",
+                  "count": data['political_journal']
+                }, {
+                  "source": "Blog/Opinion Site",
+                  "count": data['blog_opinion']
+                }, {
+                  "source": "Academic or Professional Association",
+                  "count": data['academic_professional']
+                }, {
+                  "source": "National Government Site",
+                  "count": data['gov']
+                }, {
+                  "source": "Magazine",
+                  "count": data['magazine']
+                }, {
+                  "source": "Non-profit Organization Site",
+                  "count": data['non_profit']
+                }, {
+                  "source": "Social Media",
+                  "count": data['social_media']
+                }, {
+                  "source": "Tech News Site",
+                  "count": data['tech']
+                }, {
+                  "source": "Other",
+                  "count": data['other']
+                }, {
+                  "source": "Video",
+                  "count": data['video']
+                }],
+                "valueField": "count",
+                "titleField": "source",
+              });
+
+              chart.addListener("rollOverSlice", function(e) {
+                handleRollOver(e);
+              });
+            }
+
+            function handleRollOver(e){
+              var wedge = e.dataItem.wedge.node;
+              wedge.parentNode.appendChild(wedge);
+            }
+
+            var topSourceCategories = {{ top_domains_categories|tojson }};
+            var controversialSourceCategories = {{ controversial_domains_categories|tojson }};
+            console.log(topSourceCategories);
+            drawSourceModel(topSourceCategories, 'topSourceModel');
+            drawSourceModel(controversialSourceCategories, 'controversialSourceModel');
+        </script>
+        <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+                  font-size: 22px;
+                  color: #758db2;
+                  margin-top: 40px;
+                  text-align: center">
           Positive - Negative Sentiment Analysis
         </h1>
         <style>.y-axis { font: 10px sans-serif; }</style>
@@ -252,6 +412,7 @@
           draw_political_scatterplot(posNegData, '#politicalModel');
         </script>
         {% endif %}
+
   		</div>
   		<div class="col-md-2">
         <p style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;

@@ -6,6 +6,9 @@ from topicmodel import get_topics
 import json
 import time
 from ibm_topic_modeler import ibm_get_topics
+import tldextract
+from collections import Counter
+from source_category import categorize
 
 app = Flask(__name__)
 
@@ -25,62 +28,25 @@ def unescape(text):
     text = text.replace("&amp;", '&')
     return text
 
-def calculateTopicModelData_old(top_titles, controversial_titles, subreddit_of_interest):
-    # TODO control magnitude of each sub.
-    if subreddit_of_interest == 'politics':
-        multiply_factor = 13
-    else:
-        multiply_factor = 19
-    topic_model_data = []
-    totalWeight = 0.0
+def get_domain_name(url):
+    try:
+        result = tldextract.extract(url)
+        domain_name = '.'.join([result.domain, result.suffix])
+    except:
+        domain_name = ''
+    return domain_name
 
-    top_topic_data = get_topics(top_titles, subreddit_of_interest)
-    for model in top_topic_data:
-        topic_entry = {}
-        topic_entry['keyword'] = model['keyword']
-        # Special cases: don't add digits or keywords with only one character.
-        if topic_entry['keyword'].isdigit():
-            continue
-        elif len(topic_entry['keyword']) == 1:
-            continue
-
-        topic_entry['weight'] = model['weight'] * multiply_factor
-        # correct for extreme values
-        if topic_entry['weight'] < 0.25:
-            topic_entry['weight'] = 0.25
-        elif topic_entry['weight'] > 0.55:
-            topic_entry['weight'] = 0.55
-
-        topic_entry['category'] = 'top-' + str(model['group'])
-        topic_model_data.append(topic_entry)
-        totalWeight += topic_entry['weight']
-
-    controversial_topic_data = get_topics(controversial_titles, subreddit_of_interest)
-    for model in controversial_topic_data:
-        topic_entry = {}
-        topic_entry['keyword'] = model['keyword']
-        # Special cases: don't add digits or keywords with only one character.
-        if topic_entry['keyword'].isdigit():
-            continue
-        elif len(topic_entry['keyword']) == 1:
-            continue
-
-        topic_entry['weight'] = model['weight'] * multiply_factor
-        # correct for extreme values
-        if topic_entry['weight'] < 0.25:
-            topic_entry['weight'] = 0.25
-        elif topic_entry['weight'] > 0.55:
-            topic_entry['weight'] = 0.55
-
-        topic_entry['category'] = 'controversial-' + str(model['group'])
-        topic_model_data.append(topic_entry)
-        totalWeight += topic_entry['weight']
-
-    # Correct for overall weight.
-    tot_mult_factor = 8.0/totalWeight
-    for topic in topic_model_data:
-        topic['weight'] = topic['weight'] * tot_mult_factor
-    return topic_model_data
+def get_domain_frequencies(list_of_domains):
+    counts = Counter(list_of_domains)
+    counts_tuple = counts.most_common()
+    counts_dict_raw = dict((x,y) for x,y in counts_tuple)
+    counts_dict = []
+    for entry in counts_dict_raw:
+        element = {}
+        element['domain'] = entry
+        element['count'] = counts_dict_raw[entry]
+        counts_dict.append(element)
+    return counts_dict
 
 def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest):
 
@@ -119,6 +85,8 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     political_data = []
     top_post_data = []
     controversial_post_data = []
+    top_domains = []
+    controversial_domains = []
 
     for post in controversial:
         controversial_titles.append(unescape(post.title))
@@ -141,6 +109,7 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         post_data['permalink'] = post.permalink
         post_data['post_id']= post.post_id
         controversial_post_data.append(post_data)
+        controversial_domains.append(get_domain_name(post.url))
 
     for post in top:
         top_titles.append(unescape(post.title))
@@ -163,8 +132,13 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         post_data['permalink'] = post.permalink
         post_data['post_id']= post.post_id
         top_post_data.append(post_data)
+        top_domains.append(get_domain_name(post.url))
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
+    top_domains_freq = get_domain_frequencies(top_domains)
+    controversial_domains_freq = get_domain_frequencies(controversial_domains)
+    top_domains_categories = categorize(top_domains)
+    controversial_domains_categories = categorize(controversial_domains)
 
     dataset = {}
     dataset['top_titles'] = top_titles
@@ -176,5 +150,11 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     dataset['posneg_data'] = posneg_data
     dataset['top_post_data'] = top_post_data
     dataset['controversial_post_data'] = controversial_post_data
+    dataset['top_domains_categories'] = top_domains_categories
+    dataset['controversial_domains_categories'] = controversial_domains_categories
+    # TODO delete later if needed.
+    dataset['top_domains_freq'] = top_domains_freq
+    dataset['controversial_domains_freq'] = controversial_domains_freq
+
 
     return dataset

@@ -65,6 +65,7 @@ six==1.11.0
 smart-open==1.5.3
 SQLAlchemy==1.1.14
 stevedore==1.27.0
+tldextract==2.2.0
 traitlets==4.3.2
 ujson==1.35
 update-checker==0.16
