@@ -6,8 +6,6 @@
     <title>Reddit Data Visualizer</title>
     <!-- D3 Base CSS -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
-    <!-- D3 Bubble Chart Topic Model CSS -->
-    <!-- <link rel="stylesheet" href="../static/css/topicModel.css"> -->
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
@@ -57,7 +55,7 @@
                </a>
              </li>
              <li class="nav-item">
-               <a class="nav-link" href="#" style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif">NavItem</a>
+               <a class="nav-link" href="#" style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif">About</a>
              </li>
            </ul>
          </div>
@@ -114,7 +112,7 @@
                   setTimeout(
                     function() {
                       pollForData(job_id)
-                    }, 1500);
+                    }, 1000);
                 } else {
                   $('#spinner').hide();
                   $("#main_view").html(response);
@@ -140,12 +138,11 @@
 
         function updateData(formControl) {
           var dateValue = $('form').serializeArray()[1]["value"];
-
           var startDate = parseInt(dateValue.substring(6,10) + dateValue.substring(0,2) + dateValue.substring(3,5));
           var endDate = parseInt(dateValue.substring(19,23) + dateValue.substring(13,15) + dateValue.substring(16,18));
           if (startDate < 20171001) {
             alert("Date range is out of the supported range of 10/01/17 - 11/19/17 " + startDate);
-          } else if (endDate > 20171119) {
+          } else if (endDate > 20171118) {
             alert("Date range is out of the supported range of 10/01/17 - 11/19/17" + endDate);
           } else {
             $('#spinner').show();
@@ -244,145 +241,23 @@
           Controversial
         </h1>
         {% endif %}
-        <style>
-            #topSourceModel {
-              width: 100%;
-              height: 380px;
-              font-size: 11px;
-            }
 
-            #controversialSourceModel {
-              width: 100%;
-              height: 400px;
-              font-size: 11px;
-            }
-
-            .amcharts-pie-slice {
-              transform: scale(1);
-              transform-origin: 50% 50%;
-              transition-duration: 0.3s;
-              transition: all .3s ease-out;
-              -webkit-transition: all .3s ease-out;
-              -moz-transition: all .3s ease-out;
-              -o-transition: all .3s ease-out;
-              cursor: pointer;
-              box-shadow: 0 0 30px 0 #000;
-            }
-
-            .amcharts-pie-slice:hover {
-              transform: scale(1.1);
-              filter: url(#shadow);
-            }
-            </style>
-
-            <!-- Resources -->
-            <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-            <script src="https://www.amcharts.com/lib/3/pie.js"></script>
-            <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-            <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-            <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
-
-            <!-- Chart code -->
-            <script>
-            function drawSourceModel(data, div_id) {
-              if (data.length == 0) {
-                return;
-              }
-              var chart = AmCharts.makeChart(div_id, {
-                "type": "pie",
-                "startDuration": 0,
-                "theme": "none",
-                "addClassNames": true,
-                "innerRadius": "30%",
-                "defs": {
-                  "filter": [{
-                    "id": "shadow",
-                    "width": "200%",
-                    "height": "200%",
-                    "feOffset": {
-                      "result": "offOut",
-                      "in": "SourceAlpha",
-                      "dx": 0,
-                      "dy": 0
-                    },
-                    "feGaussianBlur": {
-                      "result": "blurOut",
-                      "in": "offOut",
-                      "stdDeviation": 5
-                    },
-                    "feBlend": {
-                      "in": "SourceGraphic",
-                      "in2": "blurOut",
-                      "mode": "normal"
-                    }
-                  }]
-                },
-                "dataProvider": [{
-                  "source": "Fox News",
-                  "count": data['fox']
-                }, {
-                  "source": "American Newspaper",
-                  "count": data['american_news']
-                }, {
-                  "source": "International Newspaper",
-                  "count": data['international']
-                }, {
-                  "source": "Local Newspaper",
-                  "count": data['blog_opinion']
-                }, {
-                  "source": "Internet Media Site",
-                  "count": data['digital_media']
-                }, {
-                  "source": "Political Newspaper/Journal",
-                  "count": data['political_journal']
-                }, {
-                  "source": "Blog/Opinion Site",
-                  "count": data['blog_opinion']
-                }, {
-                  "source": "Academic or Professional Association",
-                  "count": data['academic_professional']
-                }, {
-                  "source": "National Government Site",
-                  "count": data['gov']
-                }, {
-                  "source": "Magazine",
-                  "count": data['magazine']
-                }, {
-                  "source": "Non-profit Organization Site",
-                  "count": data['non_profit']
-                }, {
-                  "source": "Social Media",
-                  "count": data['social_media']
-                }, {
-                  "source": "Tech News Site",
-                  "count": data['tech']
-                }, {
-                  "source": "Other",
-                  "count": data['other']
-                }, {
-                  "source": "Video",
-                  "count": data['video']
-                }],
-                "valueField": "count",
-                "titleField": "source",
-              });
-
-              chart.addListener("rollOverSlice", function(e) {
-                handleRollOver(e);
-              });
-            }
-
-            function handleRollOver(e){
-              var wedge = e.dataItem.wedge.node;
-              wedge.parentNode.appendChild(wedge);
-            }
-
-            var topSourceCategories = {{ top_domains_categories|tojson }};
-            var controversialSourceCategories = {{ controversial_domains_categories|tojson }};
-            console.log(topSourceCategories);
-            drawSourceModel(topSourceCategories, 'topSourceModel');
-            drawSourceModel(controversialSourceCategories, 'controversialSourceModel');
+        <!-- Source Model Resources -->
+        <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+        <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+        <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+        <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+        <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
+        <!-- Source Model code -->
+        <link rel="stylesheet" href="../static/css/sourceModels.css">
+        <script src="../static/js/sourceModel.js"></script>
+        <script>
+        var topSourceCategories = {{ top_domains_categories|tojson }};
+        var controversialSourceCategories = {{ controversial_domains_categories|tojson }};
+        drawSourceModel(topSourceCategories, 'topSourceModel');
+        drawSourceModel(controversialSourceCategories, 'controversialSourceModel');
         </script>
+
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 22px;
                   color: #758db2;

@@ -7,12 +7,10 @@ import json
 import time
 from ibm_topic_modeler import ibm_get_topics
 import tldextract
-from collections import Counter
+# from collections import Counter
 from source_category import categorize
 
 app = Flask(__name__)
-
-# TODO COMMENT OUT BEFORE PUSH
 
 # purple
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cmodmuptjjyklg:e48f9a96060da864807bd5b967ea0447fd5c4814a7583facde3afd9d729726ce@ec2-184-72-248-8.compute-1.amazonaws.com:5432/dbogg3844cnn32'
@@ -36,17 +34,17 @@ def get_domain_name(url):
         domain_name = ''
     return domain_name
 
-def get_domain_frequencies(list_of_domains):
-    counts = Counter(list_of_domains)
-    counts_tuple = counts.most_common()
-    counts_dict_raw = dict((x,y) for x,y in counts_tuple)
-    counts_dict = []
-    for entry in counts_dict_raw:
-        element = {}
-        element['domain'] = entry
-        element['count'] = counts_dict_raw[entry]
-        counts_dict.append(element)
-    return counts_dict
+# def get_domain_frequencies(list_of_domains):
+#     counts = Counter(list_of_domains)
+#     counts_tuple = counts.most_common()
+#     counts_dict_raw = dict((x,y) for x,y in counts_tuple)
+#     counts_dict = []
+#     for entry in counts_dict_raw:
+#         element = {}
+#         element['domain'] = entry
+#         element['count'] = counts_dict_raw[entry]
+#         counts_dict.append(element)
+#     return counts_dict
 
 def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest):
 
@@ -135,8 +133,8 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         top_domains.append(get_domain_name(post.url))
 
     topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
-    top_domains_freq = get_domain_frequencies(top_domains)
-    controversial_domains_freq = get_domain_frequencies(controversial_domains)
+    # top_domains_freq = get_domain_frequencies(top_domains)
+    # controversial_domains_freq = get_domain_frequencies(controversial_domains)
     top_domains_categories = categorize(top_domains)
     controversial_domains_categories = categorize(controversial_domains)
 
@@ -152,9 +150,8 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     dataset['controversial_post_data'] = controversial_post_data
     dataset['top_domains_categories'] = top_domains_categories
     dataset['controversial_domains_categories'] = controversial_domains_categories
-    # TODO delete later if needed.
-    dataset['top_domains_freq'] = top_domains_freq
-    dataset['controversial_domains_freq'] = controversial_domains_freq
+    # dataset['top_domains_freq'] = top_domains_freq
+    # dataset['controversial_domains_freq'] = controversial_domains_freq
 
 
     return dataset
