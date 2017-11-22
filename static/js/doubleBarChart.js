@@ -26,6 +26,7 @@ function render(data, div_id) {
 
   var chart = d3.select(div_id)
           .append('svg')
+          .attr("id","topicModelSvg")
           .attr('class', 'chart')
           .attr('width', 700)
           .attr('height', height + 50);

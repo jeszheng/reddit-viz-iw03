@@ -210,13 +210,38 @@
                   text-align: center">
           Topic Model
         </h1>
+        <!-- TODO special case for oct -> nov rollover. meh given up for now -->
+        {% if start_date != end_date %}
+        <p style="text-align: center; margin: 0;">
+          Showing data for <label id="date_displayed" name="date_displayed"></label>
+        </p>
+        <div style="text-align: center;">
+          <input id="slider" style="width:300px; text-align: center;" type="range" name="slider" min={{start_date}} max={{end_date}} value={{start_date}} step="1"/>
+        </div>
+        {% endif %}
         <div id="topicModel" style="text-align: center"></div>
         <!-- <script src="../static/js/topicModelD3Bubble.js"></script> -->
         <script src="../static/js/doubleBarChart.js"></script>
         <style type="text/css"> .chart rect:hover { fill: #64707d; } .chart text { fill: #FFFFFF; } </style>
         <script>
-        var topics = {{ topic_model_data|tojson }};
-        render(topics, '#topicModel');
+        var topics_by_day = {{ topic_model_data_day|tojson }};
+        d3.select("#date_displayed").text(""+startDateDisplay);
+        render(topics_by_day[0]['data'], '#topicModel');
+
+        d3.select("#slider").on('change', function(d) {
+          var date_to_show = parseInt(this.value);
+          var date_to_show_string = '' + this.value.substring(4,6) + '/' + this.value.substring(6,8) + '/2017';
+          d3.select("#date_displayed").text(""+date_to_show_string);
+          var new_data;
+          for (i = 0; i < topics_by_day.length; i++) {
+            if (topics_by_day[i]['date'] == date_to_show) {
+              new_data = topics_by_day[i]['data'];
+              d3.select("#topicModelSvg").remove();
+              render(new_data, '#topicModel');
+              break;
+            }
+          }
+        });
         </script>
 
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
@@ -226,18 +251,18 @@
           Content Type
         </h1>
         {% if top_post_data|length > 1 %}
-        <div id="topSourceModel" style="margin-top:-50px; margin-left:10px;"></div>
+        <div id="topSourceModel" style="margin-top:-30px; margin-left:10px;"></div>
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 28px;
                   color: #63A500;
-                  transform:translate(50px, -320px);">
+                  transform:translate(50px, -300px);">
           Top
         </h1>
-        <div id="controversialSourceModel" style="margin-top:-100px; margin-left:10px;"></div>
+        <div id="controversialSourceModel" style="margin-top:-80px; margin-left:10px;"></div>
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 26px;
                   color: #ff772d;
-                  transform:translate(50px, -360px);">
+                  transform:translate(50px, -340px);">
           Controversial
         </h1>
         {% endif %}

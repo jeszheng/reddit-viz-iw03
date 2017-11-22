@@ -73,6 +73,42 @@ def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_inter
 
     return topic_model_data
 
+def getIndividualDayTitles_Top(subreddit_of_interest, start_date, end_date):
+    top_titles_by_day = []
+    cur_date = start_date
+    while cur_date <= end_date:
+        element = {}
+        element['date'] = cur_date
+        top = db.session.query(TopPost).filter(TopPost.date == cur_date).filter_by(subreddit = subreddit_of_interest)
+        top_titles = []
+        for post in top:
+            top_titles.append(unescape(post.title))
+        element['titles'] = top_titles
+        top_titles_by_day.append(element)
+        if cur_date == 20171031:
+            cur_date = 20171101
+        else:
+            cur_date += 1
+    return top_titles_by_day
+
+def getIndividualDayTitles_Controversial(subreddit_of_interest, start_date, end_date):
+    controversial_titles_by_day = []
+    cur_date = start_date
+    while cur_date <= end_date:
+        element = {}
+        element['date'] = cur_date
+        controversial = db.session.query(ControversialPost).filter(ControversialPost.date == cur_date).filter_by(subreddit = subreddit_of_interest)
+        controversial_titles = []
+        for post in controversial:
+            controversial_titles.append(unescape(post.title))
+        element['titles'] = controversial_titles
+        controversial_titles_by_day.append(element)
+        if cur_date == 20171031:
+            cur_date = 20171101
+        else:
+            cur_date += 1
+    return controversial_titles_by_day
+
 def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     top = db.session.query(TopPost).filter(TopPost.date >= start_date).filter(TopPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
     controversial = db.session.query(ControversialPost).filter(ControversialPost.date >= start_date).filter(ControversialPost.date <= end_date).filter_by(subreddit = subreddit_of_interest)
@@ -132,7 +168,24 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         top_post_data.append(post_data)
         top_domains.append(get_domain_name(post.url))
 
-    topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
+    # temporarily disable.
+    #topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
+    #topic_model_data = []
+
+    top_titles_by_day = getIndividualDayTitles_Top(subreddit_of_interest, start_date, end_date)
+    controversial_titles_by_day = getIndividualDayTitles_Controversial(subreddit_of_interest, start_date, end_date)
+
+    topic_model_data_day = []
+
+    for i in range(0, min(len(top_titles_by_day), len(controversial_titles_by_day))):
+        element = {}
+        element['date'] = top_titles_by_day[i]['date']
+        top_titles_cur_day = top_titles_by_day[i]['titles']
+        controversial_titles_cur_day = controversial_titles_by_day[i]['titles']
+        topic_model_data_one_day = calculateTopicModelData(top_titles_cur_day, controversial_titles_cur_day, subreddit_of_interest)
+        element['data'] = topic_model_data_one_day
+        topic_model_data_day.append(element)
+
     # top_domains_freq = get_domain_frequencies(top_domains)
     # controversial_domains_freq = get_domain_frequencies(controversial_domains)
     top_domains_categories = categorize(top_domains)
@@ -141,7 +194,8 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     dataset = {}
     dataset['top_titles'] = top_titles
     dataset['controversial_titles'] = controversial_titles
-    dataset['topic_model_data'] = topic_model_data
+    #dataset['topic_model_data'] = topic_model_data
+    dataset['topic_model_data_day'] = topic_model_data_day
     dataset['start_date'] = start_date
     dataset['end_date'] = end_date
     dataset['subreddit_of_interest'] = subreddit_of_interest
