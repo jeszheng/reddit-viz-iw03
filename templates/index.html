@@ -141,9 +141,9 @@
           var startDate = parseInt(dateValue.substring(6,10) + dateValue.substring(0,2) + dateValue.substring(3,5));
           var endDate = parseInt(dateValue.substring(19,23) + dateValue.substring(13,15) + dateValue.substring(16,18));
           if (startDate < 20171001) {
-            alert("Date range is out of the supported range of 10/01/17 - 11/19/17 " + startDate);
+            alert("Date range is out of the supported range of 10/01/17 - 11/18/17 " + startDate);
           } else if (endDate > 20171118) {
-            alert("Date range is out of the supported range of 10/01/17 - 11/19/17" + endDate);
+            alert("Date range is out of the supported range of 10/01/17 - 11/18/17" + endDate);
           } else {
             $('#spinner').show();
             $.ajax({
