@@ -29,7 +29,7 @@ def clean(doc):
     normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
     return normalized
 
-date = '20171015'
+date = '20171007'
 subreddit_of_interest = 'technology'
 # worldnews takes kind of long?
 
@@ -88,24 +88,26 @@ for topic_tuple in checker_lda:
 
 original_model = ldamodel1.show_topics(num_topics=number_of_topics, num_words=number_of_words, log=False, formatted=True)
 
-topic_models = []
-topic_group = 0
-for topic_tuple in original_model:
-    topic_and_weights = topic_tuple[1].split(' + ')
-    for item in topic_and_weights:
-        keyword = item[7:-1]
-        if (keyword not in checker_keyword_list):
-            # print keyword, " skipped!"
-            continue
-        topic = {}
-        topic['keyword'] = keyword
-        topic['weight'] = float(item[0:5])
-        topic['group'] = topic_group
-        topic_models.append(topic)
-    topic_group += 1
+print(ldamodel1.print_topics(num_topics=5, num_words=3))
 
-for model in topic_models:
-    print model['keyword'], model['group']
+# topic_models = []
+# topic_group = 0
+# for topic_tuple in original_model:
+#     topic_and_weights = topic_tuple[1].split(' + ')
+#     for item in topic_and_weights:
+#         keyword = item[7:-1]
+#         if (keyword not in checker_keyword_list):
+#             # print keyword, " skipped!"
+#             continue
+#         topic = {}
+#         topic['keyword'] = keyword
+#         topic['weight'] = float(item[0:5])
+#         topic['group'] = topic_group
+#         topic_models.append(topic)
+#     topic_group += 1
+#
+# for model in topic_models:
+#     print model['keyword'], model['group']
 
 # appears decently consistent.
 
