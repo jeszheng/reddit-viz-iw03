@@ -28,7 +28,7 @@ def get_results(job_key):
     if job.is_finished:
         top_titles = job.result['top_titles']
         controversial_titles = job.result['controversial_titles']
-        #topic_model_data = job.result['topic_model_data']
+        topic_model_data = job.result['topic_model_data']
         topic_model_data_day = job.result['topic_model_data_day']
         subreddit_of_interest = job.result['subreddit_of_interest']
         start_date = job.result['start_date']
@@ -43,7 +43,7 @@ def get_results(job_key):
         return render_template('index.html',
                                         top_titles = top_titles,
                                         controversial_titles = controversial_titles,
-                                        #topic_model_data = topic_model_data,
+                                        topic_model_data = topic_model_data,
                                         topic_model_data_day = topic_model_data_day,
                                         sub = subreddit_of_interest,
                                         start_date = start_date,
@@ -74,7 +74,7 @@ def main():
     return render_template('index.html',
                                     top_titles = ['top titles will be displayed here'],
                                     controversial_titles = ['controversial titles will be displayed here'],
-                                    #topic_model_data = [],
+                                    topic_model_data = [],
                                     topic_model_data_day = [],
                                     sub = 'politics',
                                     start_date = 20171001,

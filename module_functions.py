@@ -47,30 +47,52 @@ def get_domain_name(url):
 #     return counts_dict
 
 def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest):
-
+    # TODO control magnitude of each sub.
     if subreddit_of_interest == 'politics':
-        num_topics = 8
-        index_start = 0
+        multiply_factor = 13
     else:
-        num_topics = 6
-        index_start = 0
-
-    raw_top_topics = ibm_get_topics(top_titles, num_topics)
-    raw_controversial_topics = ibm_get_topics(controversial_titles, num_topics)
-
+        multiply_factor = 19
     topic_model_data = []
 
-    for i in range(index_start,min(len(raw_top_topics['keywords']), len(raw_controversial_topics['keywords']))):
+    top_topic_data = get_topics(top_titles, subreddit_of_interest)
+    for model in top_topic_data:
         topic_entry = {}
-        top_model = raw_top_topics['keywords'][i]
-        con_model = raw_controversial_topics['keywords'][i]
-        topic_entry['top-keyword'] = top_model['text']
-        topic_entry['top-relevance'] = top_model['relevance']
-        topic_entry['con-keyword'] = con_model['text']
-        topic_entry['con-relevance'] = con_model['relevance']
-        topic_entry['index'] = i
+        topic_entry['keyword'] = model['keyword']
+        # Special cases: don't add digits or keywords with only one character.
+        if topic_entry['keyword'].isdigit():
+            continue
+        elif len(topic_entry['keyword']) == 1:
+            continue
+
+        topic_entry['weight'] = model['weight'] * multiply_factor
+        # correct for extreme values
+        if topic_entry['weight'] < 0.25:
+            topic_entry['weight'] = 0.25
+        elif topic_entry['weight'] > 0.55:
+            topic_entry['weight'] = 0.55
+
+        topic_entry['category'] = 'top-' + str(model['group'])
         topic_model_data.append(topic_entry)
 
+    controversial_topic_data = get_topics(controversial_titles, subreddit_of_interest)
+    for model in controversial_topic_data:
+        topic_entry = {}
+        topic_entry['keyword'] = model['keyword']
+        # Special cases: don't add digits or keywords with only one character.
+        if topic_entry['keyword'].isdigit():
+            continue
+        elif len(topic_entry['keyword']) == 1:
+            continue
+
+        topic_entry['weight'] = model['weight'] * multiply_factor
+        # correct for extreme values
+        if topic_entry['weight'] < 0.25:
+            topic_entry['weight'] = 0.25
+        elif topic_entry['weight'] > 0.55:
+            topic_entry['weight'] = 0.55
+
+        topic_entry['category'] = 'controversial-' + str(model['group'])
+        topic_model_data.append(topic_entry)
     return topic_model_data
 
 def getIndividualDayTitles_Top(subreddit_of_interest, start_date, end_date):
@@ -169,7 +191,7 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         top_domains.append(get_domain_name(post.url))
 
     # temporarily disable.
-    #topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
+    topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
     #topic_model_data = []
 
     top_titles_by_day = getIndividualDayTitles_Top(subreddit_of_interest, start_date, end_date)
@@ -194,7 +216,7 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     dataset = {}
     dataset['top_titles'] = top_titles
     dataset['controversial_titles'] = controversial_titles
-    #dataset['topic_model_data'] = topic_model_data
+    dataset['topic_model_data'] = topic_model_data
     dataset['topic_model_data_day'] = topic_model_data_day
     dataset['start_date'] = start_date
     dataset['end_date'] = end_date

@@ -220,9 +220,13 @@
         </div>
         {% endif %}
         <div id="topicModel" style="text-align: center"></div>
-        <!-- <script src="../static/js/topicModelD3Bubble.js"></script> -->
-        <script src="../static/js/doubleBarChart.js"></script>
-        <style type="text/css"> .chart rect:hover { fill: #64707d; } .chart text { fill: #FFFFFF; } </style>
+        <script src="../static/js/topicModelD3Bubble.js"></script>
+        <script>
+        var topics = {{ topic_model_data|tojson }};
+        draw_bubbles(topics, "#topicModel");
+        </script>
+        <!-- <script src="../static/js/doubleBarChart.js"></script> -->
+        <!-- <style type="text/css"> .chart rect:hover { fill: #64707d; } .chart text { fill: #FFFFFF; } </style>
         <script>
         var topics_by_day = {{ topic_model_data_day|tojson }};
         d3.select("#date_displayed").text(""+startDateDisplay);
@@ -242,7 +246,7 @@
             }
           }
         });
-        </script>
+        </script> -->
 
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 22px;
