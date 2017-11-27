@@ -52,7 +52,7 @@ def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_inter
         num_topics = 8
         index_start = 0
     else:
-        num_topics = 6
+        num_topics = 8
         index_start = 0
 
     raw_top_topics = ibm_get_topics(top_titles, num_topics)
@@ -204,6 +204,8 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     dataset['controversial_post_data'] = controversial_post_data
     dataset['top_domains_categories'] = top_domains_categories
     dataset['controversial_domains_categories'] = controversial_domains_categories
+    dataset['top_titles_by_day'] = top_titles_by_day
+    dataset['controversial_titles_by_day'] = controversial_titles_by_day
     # dataset['top_domains_freq'] = top_domains_freq
     # dataset['controversial_domains_freq'] = controversial_domains_freq
 

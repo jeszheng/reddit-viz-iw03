@@ -141,9 +141,9 @@
           var startDate = parseInt(dateValue.substring(6,10) + dateValue.substring(0,2) + dateValue.substring(3,5));
           var endDate = parseInt(dateValue.substring(19,23) + dateValue.substring(13,15) + dateValue.substring(16,18));
           if (startDate < 20171001) {
-            alert("Date range is out of the supported range of 10/01/17 - 11/18/17 " + startDate);
+            alert("Date range is out of the supported range of 10/01/17 - 11/18/17");
           } else if (endDate > 20171118) {
-            alert("Date range is out of the supported range of 10/01/17 - 11/18/17" + endDate);
+            alert("Date range is out of the supported range of 10/01/17 - 11/18/17");
           } else {
             $('#spinner').show();
             $.ajax({
@@ -226,7 +226,9 @@
         <script>
         var topics_by_day = {{ topic_model_data_day|tojson }};
         d3.select("#date_displayed").text(""+startDateDisplay);
-        render(topics_by_day[0]['data'], '#topicModel');
+        if (topics_by_day.length > 0) {
+          render(topics_by_day[0]['data'], '#topicModel');
+        }
 
         d3.select("#slider").on('change', function(d) {
           var date_to_show = parseInt(this.value);
@@ -243,6 +245,57 @@
           }
         });
         </script>
+
+        {% if top_post_data|length > 1 and start_date != end_date %}
+        <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+                  font-size: 22px;
+                  color: #758db2;
+                  text-align: center">
+          Phrase Frequency Over Time
+        </h1>
+        <div style="text-align: center;">
+          <form class="form-inline" role="form" style="display: inherit; padding-top: 10px;">
+            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="phraseInput" placeholder="Enter Phrase">
+            <button type='button' class="btn btn-success" onclick="trackPhrase();">Go</button>
+          </form>
+          <div id="phraseFrequencyModel" style="text-align: center; padding-bottom: 40px;"></div>
+          <!-- Frequence model resources. -->
+          <link rel="stylesheet" href="../static/css/frequencyModel.css">
+          <script src="../static/js/frequencyModel.js"></script>
+          <script>
+          var topTitlesByDay = {{ top_titles_by_day|tojson }};
+          var controversialTitlesByDay = {{ controversial_titles_by_day|tojson }};
+          function trackPhrase() {
+            var phrase = $('#phraseInput').val().toLowerCase();
+            var dataToRender = [];
+            for (i = 0; i < topTitlesByDay.length; i++) {
+              var element = {};
+              element['date'] = topTitlesByDay[i]['date'];
+              element['top'] = 0;
+              element['controversial'] = 0;
+              var top_titles = topTitlesByDay[i]['titles'];
+              var con_titles = controversialTitlesByDay[i]['titles'];
+              for (j = 0; j < top_titles.length; j++) {
+                var title_to_search = top_titles[j].toLowerCase();
+                if (title_to_search.includes(phrase)) {
+                  element['top'] += 1;
+                }
+              }
+              for (j = 0; j < con_titles.length; j++) {
+                var title_to_search = con_titles[j].toLowerCase();
+                if (title_to_search.includes(phrase)) {
+                  element['controversial'] += 1;
+                }
+              }
+              dataToRender.push(element);
+            }
+            d3.select("#phraseFrequencyModelSvg").remove();
+            renderPhraseFrequency(dataToRender, '#phraseFrequencyModel');
+          }
+          </script>
+        </div>
+        {% endif %}
+
 
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 22px;
