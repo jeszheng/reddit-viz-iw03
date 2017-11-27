@@ -71,7 +71,7 @@ function renderPhraseFrequency(data, div_id) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("number of headlines containing phrase");
+      .text("# headlines containing keyword");
 
   var freq = svg.selectAll(".freq")
       .data(freq_data)
