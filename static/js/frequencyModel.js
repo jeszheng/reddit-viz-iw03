@@ -28,7 +28,8 @@ function renderPhraseFrequency(data, div_id) {
   var svg = d3.select(div_id).append("svg")
       .attr("id","phraseFrequencyModelSvg")
       .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      // .attr("height", height + margin.top + margin.bottom)
+      .attr("height", 460)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -61,7 +62,14 @@ function renderPhraseFrequency(data, div_id) {
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+      .call(xAxis)
+      .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", function(d) {
+                return "rotate(-65)"
+                });
 
   svg.append("g")
       .attr("class", "y axis")
