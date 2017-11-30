@@ -20,7 +20,7 @@ def get_topics(titles, subreddit_of_interest):
 
     # vary between subs?
     number_of_topics = 3
-    number_of_words = 5
+    number_of_words = 4
 
     if subreddit_of_interest == 'politics':
         number_of_passes = 50
@@ -44,18 +44,18 @@ def get_topics(titles, subreddit_of_interest):
 
     # Running and Training LDA model on the document term matrix.
     ldamodel1 = Lda(title_term_matrix, num_topics=number_of_topics, id2word = dictionary, passes=number_of_passes)
-    ldamodel2 = Lda(title_term_matrix, num_topics=number_of_topics, id2word = dictionary, passes=number_of_passes)
+    #ldamodel2 = Lda(title_term_matrix, num_topics=number_of_topics, id2word = dictionary, passes=number_of_passes)
 
     # TODO comment out print statement beefore deploy!
     #print "analysis time: ", (time.time() - start_time), " seconds"
 
     # Create checker list for  batch modeling
-    checker_lda = ldamodel2.show_topics(num_topics=number_of_topics, num_words=number_of_words, log=False, formatted=True)
-    checker_keyword_list = []
-    for topic_tuple in checker_lda:
-        topic_and_weights = topic_tuple[1].split(' + ')
-        for item in topic_and_weights:
-            checker_keyword_list.append(item[7:-1])
+    # checker_lda = ldamodel2.show_topics(num_topics=number_of_topics, num_words=number_of_words, log=False, formatted=True)
+    # checker_keyword_list = []
+    # for topic_tuple in checker_lda:
+    #     topic_and_weights = topic_tuple[1].split(' + ')
+    #     for item in topic_and_weights:
+    #         checker_keyword_list.append(item[7:-1])
 
     # Return results that are in the intersection of both batches
     result = ldamodel1.show_topics(num_topics=number_of_topics, num_words=number_of_words, log=False, formatted=True)
@@ -66,8 +66,8 @@ def get_topics(titles, subreddit_of_interest):
         topic_and_weights = topic_tuple[1].split(' + ')
         for item in topic_and_weights:
             keyword = item[7:-1]
-            if (keyword not in checker_keyword_list):
-                continue
+            # if (keyword not in checker_keyword_list):
+            #     continue
             topic = {}
             topic['keyword'] = keyword
             topic['weight'] = float(item[0:5])
