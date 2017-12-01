@@ -19,11 +19,6 @@ function render(data, div_id) {
   var y = d3.scale.ordinal()
           .rangeBands([20, height]);
 
-  var sub_const_top = d3.min(data,function (d) { return d[top] }) - 0.01;
-  var mult_const = 1200;
-  var sub_const_con = d3.min(data,function (d) { return d[con] }) - 0.01;
-  var add_const = 200;
-
   var chart = d3.select(div_id)
           .append('svg')
           .attr("id","topicModelSvg")
@@ -32,10 +27,10 @@ function render(data, div_id) {
           .attr('height', height + 50);
 
   xFrom.domain(d3.extent(data, function (d) {
-      return d[top]*mult_const + add_const;
+      return d[top]*350;
   }));
   xTo.domain(d3.extent(data, function (d) {
-      return d[con]*mult_const + add_const;
+      return d[con]*350;
   }));
 
   y.domain(data.map(function (d) {
@@ -49,12 +44,12 @@ function render(data, div_id) {
           .data(data)
           .enter().append("rect")
           .attr("x", function (d) {
-              return width - (d[top]-sub_const_top)*mult_const - add_const;
+            return width - (d[top]*350);
           })
           .attr("y", yPosByIndex)
           .attr("class", "left")
           .attr("width", function (d) {
-              return (d[top]-sub_const_top)*mult_const + add_const;
+            return (d[top]*350);
           })
           .attr("height", y.rangeBand())
           .attr('stroke','white')
@@ -89,7 +84,7 @@ function render(data, div_id) {
           .attr("y", yPosByIndex)
           .attr("class", "right")
           .attr("width", function (d) {
-              return (d[con]-sub_const_con)*mult_const + add_const;
+              return d[con]*350;
           })
           .attr("height", y.rangeBand())
           .attr('stroke','white')
