@@ -89,12 +89,12 @@
   			</h1>
   		</div>
   		<div class="col-md-3" style="padding-top: 7px; padding-left: 0px; padding-right:0px; max-width:22%">
-        <form class="form-date" action="/" method="post" role="form">
+        <form class="form-date" id='dateForm' action="/" method="post" role="form">
             <input type="text" class="form-control" name="daterange">
         </form>
   		</div>
       <div class="col-md-2" style="padding-top: 7px; padding-left: 10px;">
-        <form class="form-date" action="/" method="post" role="form">
+        <form class="form-go" action="/" method="post" role="form">
           <button type="button" class="btn btn-success" onclick="updateData(this);">Go</button>
         </form>
         <div id="spinner">
@@ -134,6 +134,13 @@
 
         $(function() {
             $('input[name="daterange"]').daterangepicker({ "startDate": startDateDisplay, "endDate": endDateDisplay});
+        });
+
+        // If the user hits enter to track a phrase
+        // Overrides the default browser behaviour
+        $('#dateForm').submit(function(event){
+          event.preventDefault();
+          updateData(null);
         });
 
         function updateData(formControl) {
@@ -254,7 +261,9 @@
           Keyword Frequency Over Time
         </h1>
         <div style="text-align: center;">
-          <form class="form-inline" role="form" style="display: inherit; padding-top: 10px;">
+            <!-- <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="phraseInput" placeholder="Enter Keyword">
+            <button type='button' class="btn btn-success" onclick="trackPhrase();">Go</button> -->
+          <form class="form-inline" id="phraseInputForm" role="form" style="display: inherit; padding-top: 10px;">
             <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="phraseInput" placeholder="Enter Keyword">
             <button type='button' class="btn btn-success" onclick="trackPhrase();">Go</button>
           </form>
@@ -292,6 +301,13 @@
             d3.select("#phraseFrequencyModelSvg").remove();
             renderPhraseFrequency(dataToRender, '#phraseFrequencyModel');
           }
+
+          // If the user hits enter to track a phrase
+          // Overrides the default browser behaviour
+          $('#phraseInputForm').submit(function(event){
+            event.preventDefault();
+            trackPhrase();
+          });
           </script>
         </div>
         {% endif %}
@@ -300,8 +316,9 @@
         <h1 style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
                   font-size: 22px;
                   color: #758db2;
-                  text-align: center">
-          Content Type
+                  text-align: center;
+                  padding-top: 30px;">
+          Content Source
         </h1>
         {% if top_post_data|length > 1 %}
         <div id="topSourceModel" style="margin-top:-30px; margin-left:10px;"></div>
@@ -349,7 +366,7 @@
                   font-size: 22px;
                   color: #758db2;
                   text-align: center">
-          Political Sentiment Analysis
+          Political Lean Analysis
         </h1>
         <div id="politicalModel" style="text-align: center"></div>
         {% endif %}
