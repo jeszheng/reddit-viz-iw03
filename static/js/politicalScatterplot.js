@@ -125,7 +125,7 @@ function draw_political_scatterplot(data, div_id) {
         d3.select(this)
           .transition()
           .duration(500)
-          .attr('r',9)
+          .attr('r',11)
           .attr('stroke-width',3)
       })
       .on('mouseout', function () {
@@ -201,7 +201,7 @@ function draw_political_scatterplot(data, div_id) {
   .append('text') // controversial correlation
     .attr('id','correlation-con-pol')
     .attr('x',w)
-    .attr('y',22)
+    .attr('y',39)
     .style('text-anchor','end')
     .style('fill','#ff4d00')
     .text('controversial: r = ' + correlation_con.toFixed(3))
@@ -209,9 +209,9 @@ function draw_political_scatterplot(data, div_id) {
   // calculate the mean x value.
   var xSeries_mean_top = calculateMean(xSeries_top);
   var xSeries_mean_con = calculateMean(xSeries_con);
-  var ySeries_mean_top = calculateMedian(ySeries_top);
-  var ySeries_mean_con = calculateMedian(ySeries_con);
-  var mean_trendData = [[xSeries_mean_top, xSeries_mean_con, ySeries_mean_top, ySeries_mean_con]]
+  var ySeries_median_top = calculateMedian(ySeries_top);
+  var ySeries_median_con = calculateMedian(ySeries_con);
+  var mean_trendData = [[xSeries_mean_top, xSeries_mean_con, ySeries_median_top, ySeries_median_con]]
 
   var mean_trendline_top_x_p = svg2.selectAll(".mean_trendline_top_x_p")
     .data(mean_trendData);
@@ -270,6 +270,27 @@ function draw_political_scatterplot(data, div_id) {
         .attr("stroke-width", 2)
         .style("stroke-dasharray", ("3, 3"))
 
+    // Median Labels for y values
+    svg2.append('g')
+        .attr('class','median-top-p')
+    .append('text')
+      .attr('id','median-top-p')
+      .attr('x',w)
+      .attr('y',22)
+      .style('text-anchor','end')
+      .style('fill','#24A800')
+      .text('median post score' + ' = ' + ySeries_median_top)
+
+    svg2.append('g')
+        .attr('class','median-con-p')
+    .append('text')
+      .attr('id','median-con-p')
+      .attr('x',w)
+      .attr('y',56)
+      .style('text-anchor','end')
+      .style('fill','#ff4d00')
+      .text('median post score' + ' = ' + ySeries_median_con)
+
   function yChange() {
     var value = this.value // get the new y value
     var new_yScaleScores = [];
@@ -326,18 +347,27 @@ function draw_political_scatterplot(data, div_id) {
       .transition().duration(500)
       .text('controversial: r = ' + correlation_con.toFixed(3))
 
-    var ySeries_mean_top = calculateMedian(ySeries_top);
-    var ySeries_mean_con = calculateMedian(ySeries_con);
+    var ySeries_median_top = calculateMedian(ySeries_top);
+    var ySeries_median_con = calculateMedian(ySeries_con);
 
     d3.select('#mean_trendline_top_y_p')
       .transition().duration(1000)
-      .attr("y1", function(d) { return yScale(ySeries_mean_top); })
-      .attr("y2", function(d) { return yScale(ySeries_mean_top); })
+      .attr("y1", function(d) { return yScale(ySeries_median_top); })
+      .attr("y2", function(d) { return yScale(ySeries_median_top); })
 
     d3.select('#mean_trendline_con_y_p')
       .transition().duration(1000)
-      .attr("y1", function(d) { return yScale(ySeries_mean_con); })
-      .attr("y2", function(d) { return yScale(ySeries_mean_con); })
+      .attr("y1", function(d) { return yScale(ySeries_median_con); })
+      .attr("y2", function(d) { return yScale(ySeries_median_con); })
+
+    d3.select('#median-top-p')
+      .transition().duration(500)
+      .text('median ' + value.toLowerCase() + ' = ' + ySeries_median_top)
+
+    d3.select('#median-con-p')
+      .transition().duration(500)
+      .text('median ' + value.toLowerCase() + ' = ' + ySeries_median_con)
+
     curYVal = value;
   }
 
