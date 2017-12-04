@@ -264,7 +264,7 @@
             <!-- <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="phraseInput" placeholder="Enter Keyword">
             <button type='button' class="btn btn-success" onclick="trackPhrase();">Go</button> -->
           <form class="form-inline" id="phraseInputForm" role="form" style="display: inherit; padding-top: 10px; padding-bottom: 20px;">
-            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="phraseInput" placeholder="Enter Keyword">
+            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="phraseInput" placeholder="Enter Keyword" style="width: 350px;">
             <button type='button' class="btn btn-success" onclick="trackPhrase();">Go</button>
           </form>
           <div id="phraseFrequencyModel" style="text-align: center; padding-bottom: 20px;"></div>
@@ -275,7 +275,8 @@
           var topTitlesByDay = {{ top_titles_by_day|tojson }};
           var controversialTitlesByDay = {{ controversial_titles_by_day|tojson }};
           function trackPhrase() {
-            var phrase = $('#phraseInput').val().toLowerCase();
+            var phrase_input = $('#phraseInput').val().toLowerCase();
+            var phrases = phrase_input.split(', ');
             var dataToRender = [];
             for (i = 0; i < topTitlesByDay.length; i++) {
               var element = {};
@@ -286,14 +287,20 @@
               var con_titles = controversialTitlesByDay[i]['titles'];
               for (j = 0; j < top_titles.length; j++) {
                 var title_to_search = top_titles[j].toLowerCase();
-                if (title_to_search.includes(phrase)) {
-                  element['top'] += 1;
+                for (k = 0; k < phrases.length; k++) {
+                  if (title_to_search.includes(phrases[k])) {
+                    element['top'] += 1;
+                    break;
+                  }
                 }
               }
               for (j = 0; j < con_titles.length; j++) {
                 var title_to_search = con_titles[j].toLowerCase();
-                if (title_to_search.includes(phrase)) {
-                  element['controversial'] += 1;
+                for (k = 0; k < phrases.length; k++) {
+                  if (title_to_search.includes(phrases[k])) {
+                    element['controversial'] += 1;
+                    break;
+                  }
                 }
               }
               dataToRender.push(element);
