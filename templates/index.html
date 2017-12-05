@@ -55,7 +55,7 @@
                </a>
              </li>
              <li class="nav-item">
-               <a class="nav-link" href="#" style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif">About</a>
+               <a class="nav-link" style="font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif"><label id="about-hover">About</label></a>
              </li>
            </ul>
          </div>
@@ -433,7 +433,7 @@
       + '<br/>'
       + 'Topic Modeling finds the key topics and ideas present within a set of headlines.'
       + '<br/><br/>'
-      + '<b>Usage:</b> Hover over each topic bar to view its relevance index. Use the slider to switch between days.'
+      + '<b>Usage:</b> Hover over each topic bar to view its relevance index. Use the slider to switch between multiple days.'
       + '<br/><br/>'
       + "<b>Implementation:</b> <a href='https://natural-language-understanding-demo.ng.bluemix.net/?cm_mc_uid=55250413417115103371602&cm_mc_sid_50200000=1510686915&cm_mc_sid_52640000=1510686915' target='_blank'>IBM Watson</a> Natural Language Understanding 'Keywords'"
       + '</p>';
@@ -500,6 +500,22 @@
       $("#political-info").hovercard({
           detailsHTML: politicalSentimentModel,
           width: 420,
+      });
+
+      var aboutHover = '<p style="font-size: 15px; text-align: left">'
+      + '<br/>'
+      + 'This web app is part of the project <i>Upvoted and Unbiased? A textual analysis of “Top” vs “Controversial” Reddit headlines</i> '
+      + 'in the independent work seminar <a href="https://www.cs.princeton.edu/ugrad/independent-work/independent-work-seminar-offerings-fall-2017" target="_blank">Computer Science Tools and Techniques for Digital Humanities</a>.'
+      + '<br/><br/>'
+      + 'Junior independent work by Jessica Zheng'
+      + '<br/>'
+      + 'advised by Professor Brian Kernighan.'
+      + '<br/><br/>'
+      + 'Princeton University, Fall 2017.'
+      + '</p>';
+      $("#about-hover").hovercard({
+          detailsHTML: aboutHover,
+          width: 400,
       });
   });
   </script>
