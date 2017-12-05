@@ -7,8 +7,8 @@ import json
 # with open(
 # '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
 #     allPosts = json.load(data_file)
-date = '20171101'
-subreddits_of_interest = ['news', 'politics', 'worldnews', 'technology']
+date = '20171020'
+subreddits_of_interest = ['politics','news', 'worldnews', 'technology']
 
 with open(
 '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
@@ -74,8 +74,12 @@ for title in titles:
     ss = sid.polarity_scores(title)
     if ss['compound'] == 0.0:
         print title
-        print ss
+        #print ss
         num_neutral += 1
+    # if ss['compound'] > 0.3:
+    #     print title
+    #     print ss['compound']
+    #     num_neutral += 1
 
 print num_neutral , " on ", date
 

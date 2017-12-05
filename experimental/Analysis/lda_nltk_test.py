@@ -29,8 +29,8 @@ def clean(doc):
     normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
     return normalized
 
-date = '20171007'
-subreddit_of_interest = 'technology'
+date = '20171002'
+subreddit_of_interest = 'politics'
 # worldnews takes kind of long?
 
 with open(

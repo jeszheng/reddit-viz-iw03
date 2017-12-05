@@ -37,8 +37,8 @@ def display_topics(model, feature_names, no_top_words):
                         for i in topic.argsort()[:-no_top_words - 1:-1]])
 #
 #
-date = '20171007'
-subreddit_of_interest = 'technology'
+date = '20171002'
+subreddit_of_interest = 'politics'
 
 with open(
 '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:

@@ -216,6 +216,7 @@
                   color: #758db2;
                   text-align: center">
           Topic Model
+          <label id="topic-model-info"><i class="fa fa-question-circle-o"></i></label>
         </h1>
         <!-- TODO special case for oct -> nov rollover. meh given up for now -->
         {% if start_date != end_date %}
@@ -259,12 +260,13 @@
                   color: #758db2;
                   text-align: center;">
           Keyword Frequency Over Time
+          <label id="keyword-frequency-info"><i class="fa fa-question-circle-o"></i></label>
         </h1>
         <div style="text-align: center;">
             <!-- <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="phraseInput" placeholder="Enter Keyword">
             <button type='button' class="btn btn-success" onclick="trackPhrase();">Go</button> -->
           <form class="form-inline" id="phraseInputForm" role="form" style="display: inherit; padding-top: 10px; padding-bottom: 20px;">
-            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="phraseInput" placeholder="Enter Keyword" style="width: 350px;">
+            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="phraseInput" placeholder="Enter Keyword(s)" style="width: 350px;">
             <button type='button' class="btn btn-success" onclick="trackPhrase();">Go</button>
           </form>
           <div id="phraseFrequencyModel" style="text-align: center; padding-bottom: 20px;"></div>
@@ -276,8 +278,15 @@
           var controversialTitlesByDay = {{ controversial_titles_by_day|tojson }};
           function trackPhrase() {
             var phrase_input = $('#phraseInput').val().toLowerCase();
-            var phrases = phrase_input.split(', ');
+            var phrases = phrase_input.split(',');
+
+            // Trim leading/trailing whitespace in queries.
+            for (i = 0; i < phrases.length; i++) {
+              phrases[i] = $.trim(phrases[i]);
+            }
             var dataToRender = [];
+
+            // For each day
             for (i = 0; i < topTitlesByDay.length; i++) {
               var element = {};
               element['date'] = topTitlesByDay[i]['date'];
@@ -285,6 +294,7 @@
               element['controversial'] = 0;
               var top_titles = topTitlesByDay[i]['titles'];
               var con_titles = controversialTitlesByDay[i]['titles'];
+              // For each top title
               for (j = 0; j < top_titles.length; j++) {
                 var title_to_search = top_titles[j].toLowerCase();
                 for (k = 0; k < phrases.length; k++) {
@@ -294,6 +304,7 @@
                   }
                 }
               }
+              // For each controversial title
               for (j = 0; j < con_titles.length; j++) {
                 var title_to_search = con_titles[j].toLowerCase();
                 for (k = 0; k < phrases.length; k++) {
@@ -325,6 +336,7 @@
                   color: #758db2;
                   text-align: center;">
           Content Source
+          <label id="content-source-info"><i class="fa fa-question-circle-o"></i></label>
         </h1>
         {% if top_post_data|length > 1 %}
         <div id="topSourceModel" style="margin-top:-30px; margin-left:10px;"></div>
@@ -364,6 +376,7 @@
                   color: #758db2;
                   text-align: center">
           Positive - Negative Sentiment Analysis
+          <label id="posneg-sentiment-info"><i class="fa fa-question-circle-o"></i></label>
         </h1>
         <style>.y-axis { font: 10px sans-serif; }</style>
         <div id="posNegModel" style="text-align: center"></div>
@@ -373,6 +386,7 @@
                   color: #758db2;
                   text-align: center">
           Political Lean Analysis
+          <label id="political-info"><i class="fa fa-question-circle-o"></i></label>
         </h1>
         <div id="politicalModel" style="text-align: center"></div>
         {% endif %}
@@ -410,4 +424,83 @@
   <!-- Bootstrap Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  <!-- Hovercard Script -->
+  <script src="../static/js/jquery.hovercard.min.js"></script>
+  <script
+    type="text/javascript">
+  $(document).ready(function () {
+      var hoverTopicModel = '<p style="font-size: 15px;">'
+      + '<br/>'
+      + 'Topic Modeling finds the key topics and ideas present within a set of headlines.'
+      + '<br/><br/>'
+      + '<b>Usage:</b> Hover over each topic bar to view its relevance index. Use the slider to switch between days.'
+      + '<br/><br/>'
+      + "<b>Implementation:</b> <a href='https://natural-language-understanding-demo.ng.bluemix.net/?cm_mc_uid=55250413417115103371602&cm_mc_sid_50200000=1510686915&cm_mc_sid_52640000=1510686915' target='_blank'>IBM Watson</a> Natural Language Understanding 'Keywords'"
+      + '</p>';
+      $("#topic-model-info").hovercard({
+          detailsHTML: hoverTopicModel,
+          width: 350
+      });
+
+      var keywordFreqModel = '<p style="font-size: 15px;">'
+      + '<br/>'
+      + 'Track how often keywords and phrases appear in Reddit headlines.'
+      + '<br/><br/>'
+      + "<b>Usage:</b> To track multiple keywords, enter a comma-separated list. The headlines returned contain one or more of the specified keywords."
+      + '</p>';
+      $("#keyword-frequency-info").hovercard({
+          detailsHTML: keywordFreqModel,
+          width: 350
+      });
+
+      var countentSourceModel = '<p style="font-size: 15px;">'
+      + '<br/>'
+      + 'See what kinds of media sources posts are coming from.'
+      + '<br/><br/>'
+      + "The newspaper Fox News was singled out in particular because of its notoriety for <a href='http://www.mintpressnews.com/media-analysis-reveals-fox-news-only-tells-the-truth-22-of-the-time/214456/' target='_blank'>factual inaccuracy</a>."
+      + '</p>';
+      $("#content-source-info").hovercard({
+          detailsHTML: countentSourceModel,
+          width: 350,
+      });
+
+      var posnegSentimentModel = '<p style="font-size: 15px;">'
+      + '<br/>'
+      + 'Positive-Negative Sentiment Analysis predicts whether a headline has more positive or negative connotations.'
+      + '<br/><br/>'
+      + '<b>Usage: </b>'
+      + 'Sentiment is plotted on the X-Axis, from -1.0 (most negative) to 1.0 (most positive). '
+      + 'Different measures of content popularity, such as post score, can be plotted along the Y-Axis by using the dropdown menu. '
+      + '<br/><br/>'
+      + 'Horizontal lines reprent median values, and vertical lines represent mean values.'
+      + '<br/><br/>'
+      + 'Hover over individual data points for individual post information.'
+      + '<br/><br/>'
+      + "<b>Implementation:</b> Python <a href='http://www.nltk.org/howto/sentiment.html' target='_blank'>NLTK Vader</a> Sentiment Analysis and <a href='https://natural-language-understanding-demo.ng.bluemix.net/?cm_mc_uid=55250413417115103371602&cm_mc_sid_50200000=1510686915&cm_mc_sid_52640000=1510686915' target='_blank'>IBM Watson</a> Natural Language Understanding 'Sentiment'."
+      + '</p>';
+      $("#posneg-sentiment-info").hovercard({
+          detailsHTML: posnegSentimentModel,
+          width: 400
+      });
+
+      var politicalSentimentModel = '<p style="font-size: 15px;">'
+      + '<br/>'
+      + 'Political Lean Analysis attempts to predict whether a headline has a political lean towards liberal or conservative ideologies.'
+      + '<br/><br/>'
+      + '<b>Usage:</b>'
+      + "Sentiment is plotted on the X-Axis. For the 'Liberal-Conservative Difference' measure, negative values are more conservative and positive values are more liberal. "
+      + 'Different measures of content popularity, such as post score, can be plotted along the Y-Axis by using the dropdown menu. '
+      + '<br/><br/>'
+      + 'Horizontal lines reprent median values, and vertical lines represent mean values.'
+      + '<br/><br/>'
+      + 'Hover over individual data points for individual post information.'
+      + '<br/><br/>'
+      + "<b>Implementation:</b> <a href='https://indico.io/product?api=political' target='_blank'>Indico.io</a> Political Analysis API."
+      + '</p>';
+      $("#political-info").hovercard({
+          detailsHTML: politicalSentimentModel,
+          width: 420,
+      });
+  });
+  </script>
 </html>
