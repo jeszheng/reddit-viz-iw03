@@ -7,8 +7,8 @@ import json
 # with open(
 # '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
 #     allPosts = json.load(data_file)
-date = '20171020'
-subreddits_of_interest = ['politics','news', 'worldnews', 'technology']
+date = '20171101'
+subreddits_of_interest = ['news', 'worldnews', 'technology']
 
 with open(
 '/Users/jessicazheng/Documents/Academics/2017-2018/IW3/reddit-viz-iw03/data_collection/' + date + '_top.json') as data_file:
