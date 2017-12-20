@@ -177,14 +177,14 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
 
     topic_model_data_day = []
 
-    for i in range(0, min(len(top_titles_by_day), len(controversial_titles_by_day))):
-        element = {}
-        element['date'] = top_titles_by_day[i]['date']
-        top_titles_cur_day = top_titles_by_day[i]['titles']
-        controversial_titles_cur_day = controversial_titles_by_day[i]['titles']
-        topic_model_data_one_day = calculateTopicModelData(top_titles_cur_day, controversial_titles_cur_day, subreddit_of_interest)
-        element['data'] = topic_model_data_one_day
-        topic_model_data_day.append(element)
+    # for i in range(0, min(len(top_titles_by_day), len(controversial_titles_by_day))):
+    #     element = {}
+    #     element['date'] = top_titles_by_day[i]['date']
+    #     top_titles_cur_day = top_titles_by_day[i]['titles']
+    #     controversial_titles_cur_day = controversial_titles_by_day[i]['titles']
+    #     topic_model_data_one_day = calculateTopicModelData(top_titles_cur_day, controversial_titles_cur_day, subreddit_of_interest)
+    #     element['data'] = topic_model_data_one_day
+    #     topic_model_data_day.append(element)
 
     # top_domains_freq = get_domain_frequencies(top_domains)
     # controversial_domains_freq = get_domain_frequencies(controversial_domains)

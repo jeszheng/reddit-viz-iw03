@@ -232,7 +232,11 @@ def categorize(list_of_domains):
     categories['other'] = 0
     categories['total'] = 0
 
+
+    d = {}
+
     for domain in list_of_domains:
+        d[domain] = d.get(domain, 0) + 1
         categories['total'] += 1
         if contains_domain(domain, gov):
             categories['gov'] += 1
@@ -266,4 +270,13 @@ def categorize(list_of_domains):
         else:
             # print domain
             categories['other'] += 1
+
+    items = [(v, k) for k, v in d.items()]
+    items.sort()
+    items.reverse()
+    items = [(k, v) for v, k in items]
+
+    for i in range(0,min(25, len(items))):
+        print items[i]
+
     return categories
