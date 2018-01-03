@@ -273,22 +273,6 @@ function draw_posneg_scatterplot(data, div_id) {
       maxYVal = sortedArr[sortedArr.length - num_to_exclude];
     }
 
-    // else if (value == 'Author Karma'){
-    //   function sortNumber(a,b) {
-    //       return a - b;
-    //   }
-    //   var sortedArr = new_yScaleScores.sort(sortNumber); // check that this doesnt mess with new_yScaleScores
-    //   //console.log(sortedArr);
-    //   var num_to_exclude = Math.ceil((sortedArr.length * 0.05)/1);
-    //   //console.log(num_to_exclude);
-    //   maxYVal = sortedArr[sortedArr.length - num_to_exclude];
-    //   //console.log("maxYVal" + maxYVal);
-    // } else if (value == 'Number of Comments'){
-    //   maxYVal = Math.ceil(d3.quantile(new_yScaleScores, 0.03)/100)*100;
-    // } else { // Post Score
-    //   maxYVal = Math.ceil(d3.quantile(new_yScaleScores, 0.05)/100)*100;
-    // }
-
     yScale // change the yScale
       .domain([
         d3.min([0,d3.min(data,function (d) { return d[value] })]),

@@ -10,11 +10,22 @@ from rq.job import Job
 from worker import conn
 from module_functions import *
 
+# -----------------------------------------------------------------------------#
+# app.py
+# -----------------------------------------------------------------------------#
+# This is the main file for the flask application. It handles user input
+# to analyze new datasets (endpoint /updateDataset), enqueues the call to
+# compute the new dataset information in the worker dyno, and fetches
+# the completed computation (endpoint /results/<job_key>) and passes the
+# information to the front end.
+# -----------------------------------------------------------------------------#
+
 app = Flask(__name__)
 
-# purple
+# Currently used database URL.
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cmodmuptjjyklg:e48f9a96060da864807bd5b967ea0447fd5c4814a7583facde3afd9d729726ce@ec2-184-72-248-8.compute-1.amazonaws.com:5432/dbogg3844cnn32'
 
+# Previously used database URL.
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cqvjbobiquqase:a7d4d05d62c673ed79207cd44c9ae86573c164871b6c26e6b46bed410624295e@ec2-54-221-221-153.compute-1.amazonaws.com:5432/dac5ce63jaaa4s'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -28,7 +39,6 @@ def get_results(job_key):
     if job.is_finished:
         top_titles = job.result['top_titles']
         controversial_titles = job.result['controversial_titles']
-        #topic_model_data = job.result['topic_model_data']
         topic_model_data_day = job.result['topic_model_data_day']
         subreddit_of_interest = job.result['subreddit_of_interest']
         start_date = job.result['start_date']
@@ -40,12 +50,9 @@ def get_results(job_key):
         controversial_domains_categories = job.result['controversial_domains_categories']
         top_titles_by_day = job.result['top_titles_by_day']
         controversial_titles_by_day = job.result['controversial_titles_by_day']
-        # top_domains_freq = job.result['top_domains_freq']
-        # controversial_domains_freq = job.result['controversial_domains_freq']
         return render_template('index.html',
                                         top_titles = top_titles,
                                         controversial_titles = controversial_titles,
-                                        #topic_model_data = topic_model_data,
                                         topic_model_data_day = topic_model_data_day,
                                         sub = subreddit_of_interest,
                                         start_date = start_date,
@@ -57,8 +64,6 @@ def get_results(job_key):
                                         controversial_domains_categories = controversial_domains_categories,
                                         top_titles_by_day = top_titles_by_day,
                                         controversial_titles_by_day = controversial_titles_by_day
-                                        # top_domains_freq = top_domains_freq,
-                                        # controversial_domains_freq = controversial_domains_freq
                                         )
     else:
         return "NOT COMPLETED"
@@ -78,7 +83,6 @@ def main():
     return render_template('index.html',
                                     top_titles = ['top titles will be displayed here'],
                                     controversial_titles = ['controversial titles will be displayed here'],
-                                    #topic_model_data = [],
                                     topic_model_data_day = [],
                                     sub = 'politics',
                                     start_date = 20171001,
@@ -90,10 +94,8 @@ def main():
                                     controversial_domains_categories = [],
                                     top_titles_by_day = [],
                                     controversial_titles_by_day = []
-                                    # top_domains_freq = [],
-                                    # controversial_domains_freq = []
                                     )
 
 if __name__ == '__main__':
-    app.debug = True # debug setting!
+    app.debug = False # debug setting!
     app.run()

@@ -4,8 +4,12 @@ from flask_heroku import Heroku
 
 app = Flask(__name__)
 
-# TODO COMMENT OUT LINE BELOW BEFORE PUSH
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/devel_db'
+# -----------------------------------------------------------------------------#
+# models.py
+# -----------------------------------------------------------------------------#
+# Database Schema. I used two tables, one for top posts and one for
+# controversial posts.
+# -----------------------------------------------------------------------------#
 
 # purple
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cmodmuptjjyklg:e48f9a96060da864807bd5b967ea0447fd5c4814a7583facde3afd9d729726ce@ec2-184-72-248-8.compute-1.amazonaws.com:5432/dbogg3844cnn32'

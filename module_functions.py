@@ -7,14 +7,23 @@ import json
 import time
 from ibm_topic_modeler import ibm_get_topics
 import tldextract
-# from collections import Counter
 from source_category import categorize
+
+# -----------------------------------------------------------------------------#
+# module_functions.py
+# -----------------------------------------------------------------------------#
+# This file contains the functions needed to calculate the new data
+# for the specified dataset. dataToBeRendered() is the overarching function
+# performing the calculations and returning the information, the rest are
+# helper methods.
+# -----------------------------------------------------------------------------#
 
 app = Flask(__name__)
 
-# purple
+# Database currently used.
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cmodmuptjjyklg:e48f9a96060da864807bd5b967ea0447fd5c4814a7583facde3afd9d729726ce@ec2-184-72-248-8.compute-1.amazonaws.com:5432/dbogg3844cnn32'
 
+# Databse previously used.
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cqvjbobiquqase:a7d4d05d62c673ed79207cd44c9ae86573c164871b6c26e6b46bed410624295e@ec2-54-221-221-153.compute-1.amazonaws.com:5432/dac5ce63jaaa4s'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -34,26 +43,17 @@ def get_domain_name(url):
         domain_name = ''
     return domain_name
 
-# def get_domain_frequencies(list_of_domains):
-#     counts = Counter(list_of_domains)
-#     counts_tuple = counts.most_common()
-#     counts_dict_raw = dict((x,y) for x,y in counts_tuple)
-#     counts_dict = []
-#     for entry in counts_dict_raw:
-#         element = {}
-#         element['domain'] = entry
-#         element['count'] = counts_dict_raw[entry]
-#         counts_dict.append(element)
-#     return counts_dict
-
 def calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest):
+    num_topics = 8
+    index_start = 0
 
-    if subreddit_of_interest == 'politics':
-        num_topics = 8
-        index_start = 0
-    else:
-        num_topics = 8
-        index_start = 0
+    # Previously customized the number of topics shown for each dataset.
+    # if subreddit_of_interest == 'politics':
+    #     num_topics = 8
+    #     index_start = 0
+    # else:
+    #     num_topics = 8
+    #     index_start = 0
 
     raw_top_topics = ibm_get_topics(top_titles, num_topics)
     raw_controversial_topics = ibm_get_topics(controversial_titles, num_topics)
@@ -168,15 +168,13 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         top_post_data.append(post_data)
         top_domains.append(get_domain_name(post.url))
 
-    # temporarily disable.
-    #topic_model_data = calculateTopicModelData(top_titles, controversial_titles, subreddit_of_interest)
-    #topic_model_data = []
-
     top_titles_by_day = getIndividualDayTitles_Top(subreddit_of_interest, start_date, end_date)
     controversial_titles_by_day = getIndividualDayTitles_Controversial(subreddit_of_interest, start_date, end_date)
 
     topic_model_data_day = []
 
+    # Calculate the topic model data for each day in the specified range.
+    # Separate by days to enable overtime data viewing.
     for i in range(0, min(len(top_titles_by_day), len(controversial_titles_by_day))):
         element = {}
         element['date'] = top_titles_by_day[i]['date']
@@ -186,15 +184,12 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
         element['data'] = topic_model_data_one_day
         topic_model_data_day.append(element)
 
-    # top_domains_freq = get_domain_frequencies(top_domains)
-    # controversial_domains_freq = get_domain_frequencies(controversial_domains)
     top_domains_categories = categorize(top_domains)
     controversial_domains_categories = categorize(controversial_domains)
 
     dataset = {}
     dataset['top_titles'] = top_titles
     dataset['controversial_titles'] = controversial_titles
-    #dataset['topic_model_data'] = topic_model_data
     dataset['topic_model_data_day'] = topic_model_data_day
     dataset['start_date'] = start_date
     dataset['end_date'] = end_date
@@ -206,8 +201,5 @@ def dataToBeRendered(subreddit_of_interest, start_date, end_date):
     dataset['controversial_domains_categories'] = controversial_domains_categories
     dataset['top_titles_by_day'] = top_titles_by_day
     dataset['controversial_titles_by_day'] = controversial_titles_by_day
-    # dataset['top_domains_freq'] = top_domains_freq
-    # dataset['controversial_domains_freq'] = controversial_domains_freq
-
 
     return dataset

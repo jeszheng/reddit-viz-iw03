@@ -1,3 +1,14 @@
+# -----------------------------------------------------------------------------#
+# source_category.py
+# -----------------------------------------------------------------------------#
+# This file handles the categorization of a domain URL into one of the
+# specified categories:
+# fox news, government websites, academic or professional organizations, video,
+# social media, digital media, non profit organization, political journal/site,
+# technology news site, magazine, blog/opinion site, international newspaper,
+# american newspaper, local (american) newspaper, other. 
+# -----------------------------------------------------------------------------#
+
 gov = ['.gov']
 fox = ['fox']
 academic_professional = ['.edu', '.ieee']
@@ -264,6 +275,5 @@ def categorize(list_of_domains):
         elif contains_domain(domain, american_news):
             categories['american_news'] += 1
         else:
-            # print domain
             categories['other'] += 1
     return categories

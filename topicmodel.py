@@ -5,6 +5,14 @@ import gensim
 from gensim import corpora
 import time
 
+# -----------------------------------------------------------------------------#
+# topicmodel.py - NO LONGER USED
+# -----------------------------------------------------------------------------#
+# This file was previously used to perform topic model computation via LDA.
+# However, I eventually decided to use IBM Watson's Natural Language understanding
+# service instead. 
+# -----------------------------------------------------------------------------#
+
 stop = set(stopwords.words('english'))
 exclude = set(string.punctuation)
 lemma = WordNetLemmatizer()

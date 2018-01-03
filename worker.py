@@ -1,7 +1,13 @@
 import os
-
 import redis
 from rq import Worker, Queue, Connection
+
+# -----------------------------------------------------------------------------#
+# worker.py
+# -----------------------------------------------------------------------------#
+# File that runs the worker dyno for the background computations on each
+# new dataset query.
+# -----------------------------------------------------------------------------#
 
 listen = ['default']
 
